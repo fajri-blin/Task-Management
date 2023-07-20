@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Task Management\Task_Management.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Home\" />
+  </ItemGroup>
+
 </Project>
