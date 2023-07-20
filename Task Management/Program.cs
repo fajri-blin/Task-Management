@@ -28,6 +28,7 @@ builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProgressRepository, ProgressRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IAdditionalRepository, AdditionalRepository>();
 
 //Add Services
 builder.Services.AddScoped<AccountRoleService>();
@@ -38,6 +39,7 @@ builder.Services.AddScoped<AssignmentService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProgressService>();
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<AdditionalService>();
 
 // Add Service for token handler
 builder.Services.AddScoped<ITokenHandlers, TokenHandlers>();
