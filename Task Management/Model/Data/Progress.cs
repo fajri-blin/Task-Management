@@ -27,5 +27,6 @@ public class Progress : BaseEntity
     //Cardinality
     public ICollection<AccountProgress>? AccountProgress { get; set; }
     public Assignment? Assignment { get; set; }
+    public ICollection<Additional> Additionals { get; set; }
 
 }

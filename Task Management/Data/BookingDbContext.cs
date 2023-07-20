@@ -16,6 +16,7 @@ public class BookingDbContext : DbContext
     public DbSet<Assignment> Assignments { get; set; }
     public DbSet<AssignMap> AssignMaps { get; set; }
     public DbSet<AccountProgress> AccountProgresss { get; set; }
+    public DbSet<Additional> Additionals { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -85,5 +86,12 @@ public class BookingDbContext : DbContext
             .WithOne(acc_prog => acc_prog.Progress)
             .HasForeignKey(acc_prog => acc_prog.ProgressGuid)
             .OnDelete(DeleteBehavior.SetNull);
+
+        //Progress - Additional (One to Many)
+        modelBuilder.Entity<Progress>()
+            .HasMany(prog => prog.Additionals)
+            .WithOne(additional => additional.Progress)
+            .HasForeignKey(additional => additional.ProgressGuid)
+            .OnDelete (DeleteBehavior.SetNull);
     }
 }
