@@ -19,21 +19,6 @@ public class AssignmentService
         _bookingContext = bookingDbContext;
     }
 
-    //public AddAssigmentDto? AddAssignment(AddAssigmentDto addAssigmentDto)
-    //{
-    //    var transaction = _bookingContext.Database.BeginTransaction();
-    //    try
-    //    {
-    //        var createdAssigment = _assignemtnRepository.Create((Assignment)addAssigmentDto);
-    //        if (createdAssigment is null) return null;
-    //    }
-    //    catch
-    //    {
-    //        transaction.Rollback();
-    //        return null;
-    //    }
-    //}
-
     // Basic CRUD ===================================================
     public IEnumerable<AssignmentDto>? Get()
     {

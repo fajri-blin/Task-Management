@@ -4,5 +4,6 @@ public enum RoleLevel
 {
     Staff,
     ProjectManager,
-    Admin
+    Admin,
+    Developer
 }

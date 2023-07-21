@@ -13,7 +13,7 @@ public class RegisterDto
     [Required]
     public string Name { get; set; }
     [Required]
-    [PasswordPolicy]
+    //[PasswordPolicy]
     public string Password { get; set; }
     [Required]
     public string? ConfirmPassword { get; set; }

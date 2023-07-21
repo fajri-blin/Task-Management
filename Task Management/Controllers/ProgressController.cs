@@ -19,50 +19,50 @@ public class ProgressController : ControllerBase
     }
 
     //Basic CRUD
-    //[HttpGet]
-    //public IActionResult GetAll()
-    //{
-    //    var entities = _progressServices.Get();
-    //    if (entities == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    return Ok(entities);
-    //}
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var entities = _progressServices.Get();
+        if (entities == null)
+        {
+            return NotFound();
+        }
+        return Ok(entities);
+    }
 
-    //[HttpGet("{guid}")]
-    //public IActionResult Get(Guid guid) 
-    //{
-    //    var entity = _progressServices.Get(guid);
-    //    if (entity == null) return NotFound();
+    [HttpGet("{guid}")]
+    public IActionResult Get(Guid guid) 
+    {
+        var entity = _progressServices.Get(guid);
+        if (entity == null) return NotFound();
 
-    //    return Ok(entity);
-    //}
+        return Ok(entity);
+    }
 
-    //[HttpPost]
-    //public IActionResult Create(NewProgressDto entity)
-    //{
-    //    var created = _progressServices.Create(entity);
-    //    if (created == null) return NotFound();
+    [HttpPost]
+    public IActionResult Create(NewProgressDto entity)
+    {
+        var created = _progressServices.Create(entity);
+        if (created == null) return NotFound();
         
-    //    return Ok(created);
-    //}
+        return Ok(created);
+    }
 
-    //[HttpPut]
-    //public IActionResult Update(ProgressDto entity) 
-    //{
-    //    var updated = _progressServices.Update(entity);
-    //    if(updated is -1) return NotFound();
+    [HttpPut]
+    public IActionResult Update(ProgressDto entity) 
+    {
+        var updated = _progressServices.Update(entity);
+        if(updated is -1) return NotFound();
 
-    //    return Ok();
-    //}
+        return Ok();
+    }
 
-    //[HttpDelete]
-    //public IActionResult Delete(Guid guid)
-    //{
-    //    var delete = _progressServices.Delete(guid);
-    //    if (delete is -1) return NotFound();
-    //    return Ok(delete);
-    //}
+    [HttpDelete]
+    public IActionResult Delete(Guid guid)
+    {
+        var delete = _progressServices.Delete(guid);
+        if (delete is -1) return NotFound();
+        return Ok(delete);
+    }
     //==========
 }

@@ -19,50 +19,50 @@ public class AssignmentController : ControllerBase
     }
 
     //Basic CRUD
-    //[HttpGet]
-    //public IActionResult GetAll()
-    //{
-    //    var entities = _assignmentServices.Get();
-    //    if (entities == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    return Ok(entities);
-    //}
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var entities = _assignmentServices.Get();
+        if (entities == null)
+        {
+            return NotFound();
+        }
+        return Ok(entities);
+    }
 
-    //[HttpGet("{guid}")]
-    //public IActionResult Get(Guid guid) 
-    //{
-    //    var entity = _assignmentServices.Get(guid);
-    //    if (entity == null) return NotFound();
+    [HttpGet("{guid}")]
+    public IActionResult Get(Guid guid)
+    {
+        var entity = _assignmentServices.Get(guid);
+        if (entity == null) return NotFound();
 
-    //    return Ok(entity);
-    //}
+        return Ok(entity);
+    }
 
-    //[HttpPost]
-    //public IActionResult Create(NewAssignmentDto entity)
-    //{
-    //    var created = _assignmentServices.Create(entity);
-    //    if (created == null) return NotFound();
-        
-    //    return Ok(created);
-    //}
+    [HttpPost]
+    public IActionResult Create(NewAssignmentDto entity)
+    {
+        var created = _assignmentServices.Create(entity);
+        if (created == null) return NotFound();
 
-    //[HttpPut]
-    //public IActionResult Update(AssignmentDto entity) 
-    //{
-    //    var updated = _assignmentServices.Update(entity);
-    //    if(updated is -1) return NotFound();
+        return Ok(created);
+    }
 
-    //    return Ok();
-    //}
+    [HttpPut]
+    public IActionResult Update(AssignmentDto entity)
+    {
+        var updated = _assignmentServices.Update(entity);
+        if (updated is -1) return NotFound();
 
-    //[HttpDelete]
-    //public IActionResult Delete(Guid guid)
-    //{
-    //    var delete = _assignmentServices.Delete(guid);
-    //    if (delete is -1) return NotFound();
-    //    return Ok(delete);
-    //}
+        return Ok();
+    }
+
+    [HttpDelete]
+    public IActionResult Delete(Guid guid)
+    {
+        var delete = _assignmentServices.Delete(guid);
+        if (delete is -1) return NotFound();
+        return Ok(delete);
+    }
     //==========
 }
