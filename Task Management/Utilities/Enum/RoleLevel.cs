@@ -2,7 +2,7 @@
 
 public enum RoleLevel
 {
-    User,
-    Admin,
-    Developer
+    Staff,
+    ProjectManager,
+    Admin
 }
