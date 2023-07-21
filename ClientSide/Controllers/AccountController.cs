@@ -1,5 +1,5 @@
 ﻿using ClientSide.Contract;
-using Microsoft.AspNetCore.Authorization;
+using ClientSide.ViewModels.Account;
 using Microsoft.AspNetCore.Mvc;
 using Task_Management.DTOs.AccountDto;
 
@@ -21,8 +21,9 @@ public class AccountController : Controller
         var result = await _accountRepository.Register(registerDto);
         if (result == null)
         {
-            return RedirectToAction("Error","Index");
-        }else if(result.Code == 200)
+            return RedirectToAction("Error", "Index");
+        }
+        else if (result.Code == 200)
         {
             return View("Index");
         }
@@ -36,9 +37,9 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> SignIn(LoginDto loginDto)
+    public async Task<IActionResult> SignIn(SignInDto signInDto)
     {
-        var result = await _accountRepository.Login(loginDto);
+        var result = await _accountRepository.Login(signInDto);
         if (result == null)
         {
             return RedirectToAction("Error", "Home");
