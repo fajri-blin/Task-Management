@@ -93,16 +93,32 @@ public class AccountController : ControllerBase
         var entities = _accountSevices.Get();
         if (entities == null)
         {
-            return NotFound();
+            return NotFound(new ResponseHandlers<AccountDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Not Found"
+            });
         }
-        return Ok(entities);
+        return Ok(new ResponseHandlers<AccountDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Login Successfully",
+            Data = (AccountDto)entities
+        });
     }
 
     [HttpGet("{guid}")]
     public IActionResult Get(Guid guid) 
     {
         var entity = _accountSevices.Get(guid);
-        if (entity == null) return NotFound();
+        if (entity == null) return NotFound(new ResponseHandlers<AccountDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
 
         return Ok(entity);
     }
@@ -111,26 +127,57 @@ public class AccountController : ControllerBase
     public IActionResult Create(NewAccountDto entity)
     {
         var created = _accountSevices.Create(entity);
-        if (created == null) return NotFound();
+        if (created == null) return NotFound(new ResponseHandlers<AccountDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
         
-        return Ok(created);
+        return Ok(new ResponseHandlers<AccountDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Login Successfully",
+            Data = (AccountDto)created
+        });
     }
 
     [HttpPut]
     public IActionResult Update(AccountDto entity) 
     {
         var updated = _accountSevices.Update(entity);
-        if(updated is -1) return NotFound();
+        if(updated is -1) return NotFound(new ResponseHandlers<AccountDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
 
-        return Ok();
+        return Ok(new ResponseHandlers<AccountDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data has been Updated",
+        });
     }
 
     [HttpDelete]
     public IActionResult Delete(Guid guid)
     {
         var delete = _accountSevices.Delete(guid);
-        if (delete is -1) return NotFound();
-        return Ok(delete);
+        if (delete is -1) return NotFound(new ResponseHandlers<AccountDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
+        return Ok(new ResponseHandlers<AccountDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Login Successfully",
+        });
     }
     //==========
 }
