@@ -72,7 +72,7 @@ public class AccountService
                 Username = register.Username,
                 Name = register.Name,
                 Email = register.Email,
-                Password = register.Password,
+                Password = Hashing.HashPassword(register.Password),
                 OTP = 0,
                 IsUsedOTP = false,
                 ImageProfile = register.ImageProfile
