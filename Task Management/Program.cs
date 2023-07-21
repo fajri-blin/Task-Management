@@ -1,7 +1,9 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 using Task_Management.Contract.Data;
 using Task_Management.Contract.Handler;
@@ -9,6 +11,7 @@ using Task_Management.Data;
 using Task_Management.Repository.Data;
 using Task_Management.Service;
 using Task_Management.Utilities.Handler;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +43,10 @@ builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProgressService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AdditionalService>();
+
+// Register Fluent validation
+builder.Services.AddFluentValidationAutoValidation()
+       .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 // Add Service for token handler
 builder.Services.AddScoped<ITokenHandlers, TokenHandlers>();
