@@ -8,8 +8,17 @@ namespace ClientSide.Repositories;
 
 public class AccountRepository : GeneralRepository<AccountDto>, IAccountRepository
 {
+    private readonly HttpClient _httpClient;
+    private readonly string _request;
 
-    public AccountRepository(string request = "Account/") : base(request) { }
+    public AccountRepository(string request = "Account/") : base(request)
+    {
+        _httpClient = new HttpClient
+        {
+            BaseAddress = new Uri("https://localhost:7113/api/")
+        };
+        this._request = request;
+    }
 
     public async Task<ResponseHandlers<string>> Login(SignInDto signInDto)
     {
