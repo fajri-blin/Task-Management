@@ -9,4 +9,9 @@ public class AccountProgressRepository : GeneralRepository<AccountProgress>, IAc
     public AccountProgressRepository(BookingDbContext bookingDbContext) : base(bookingDbContext)
     {
     }
+
+    public IEnumerable<AccountProgress> GetByProgressForeignKey (Guid guid)
+    {
+        return _bookingDbContext.Set<AccountProgress>().Where(acc_prog => acc_prog.Guid == guid);
+    }
 }

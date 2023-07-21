@@ -10,6 +10,8 @@ public class AssignmentService
 {
     private readonly IAssignmentRepository _assignemtnRepository;
     private readonly IProgressRepository _progressRepository;
+    private readonly IAccountProgressRepository _accountProgressRepository;
+    private readonly IAdditionalRepository _additionalRepository;
     private readonly BookingDbContext _bookingContext;
 
     public AssignmentService(IAssignmentRepository TaskRepository, IProgressRepository progressRepository, BookingDbContext bookingDbContext)
@@ -17,6 +19,48 @@ public class AssignmentService
         _assignemtnRepository = TaskRepository;
         _progressRepository = progressRepository;
         _bookingContext = bookingDbContext;
+    }
+
+    public int DeleteDeepAssignment(Guid guid)
+    {
+        var transaction = _bookingContext.Database.BeginTransaction();
+        try
+        {
+            var getAssignment = _assignemtnRepository.GetByGuid(guid);
+            if (getAssignment != null) return -1;
+
+            var getListProgress = _progressRepository.GetByAssignmentForeignKey(getAssignment.Guid);
+            if (getListProgress != null)
+            {
+                foreach (var progress in getListProgress)
+                {
+                    var getListAccountProgress = _accountProgressRepository.GetByProgressForeignKey(progress.Guid);
+                    if (getListAccountProgress != null)
+                    {
+                        foreach (var accountProgress in getListAccountProgress)
+                        {
+                            _accountProgressRepository.Delete(accountProgress);
+                        }
+                    }
+                    var getListAdditional = _additionalRepository.GetByProgressForeignKey(progress.Guid);
+                    if (getListAdditional != null)
+                    {
+                        foreach (var additional in getListAdditional)
+                        {
+                            _additionalRepository.Delete(additional);
+                        }
+                    }
+
+                    _progressRepository.Delete(progress);
+                }
+            }
+            _assignemtnRepository.Delete(getAssignment);
+            return 1;
+        }
+        catch
+        {
+            return 0;
+        }
     }
 
     // Basic CRUD ===================================================

@@ -9,4 +9,9 @@ public class AdditionalRepository : GeneralRepository<Additional>, IAdditionalRe
     public AdditionalRepository(BookingDbContext bookingDbContext) : base(bookingDbContext)
     {
     }
+
+    public IEnumerable<Additional> GetByProgressForeignKey(Guid guid)
+    {
+        return _bookingDbContext.Set<Additional>().Where(a => a.Guid == guid);
+    }
 }

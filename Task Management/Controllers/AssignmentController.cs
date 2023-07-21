@@ -18,6 +18,13 @@ public class AssignmentController : ControllerBase
         _assignmentServices = accountSevices;
     }
 
+    [HttpDelete("DeepDeleteAssignment")]
+    public IActionResult Delete(Guid guid)
+    {
+        var delete = _assignmentServices.DeleteDeepAssignment(guid);
+        if (delete is -1) return NotFound();
+        return Ok(delete);
+    }
     //Basic CRUD
     [HttpGet]
     public IActionResult GetAll()
