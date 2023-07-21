@@ -1,9 +1,8 @@
 ﻿using ClientSide.Contract;
+using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Account;
 using Newtonsoft.Json;
 using System.Text;
-using Task_Management.DTOs.AccountDto;
-using Task_Management.Utilities.Handler;
 
 namespace ClientSide.Repositories;
 

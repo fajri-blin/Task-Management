@@ -1,7 +1,6 @@
 ﻿using ClientSide.Contract;
 using ClientSide.ViewModels.Account;
 using Microsoft.AspNetCore.Mvc;
-using Task_Management.DTOs.AccountDto;
 
 namespace ClientSide.Controllers;
 

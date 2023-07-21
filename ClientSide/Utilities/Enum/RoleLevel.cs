@@ -1,6 +1,9 @@
 ﻿namespace ClientSide.Utilities.Enum
 {
-    public class RoleLevel
+    public enum RoleLevel
     {
+        Staff,
+        ProjectManager,
+        Admin
     }
 }
