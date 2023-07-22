@@ -104,7 +104,7 @@ public class AccountController : ControllerBase
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
-            Message = "Login Successfully",
+            Message = "Data Found",
             Data = (AccountDto)entities
         });
     }
@@ -138,7 +138,7 @@ public class AccountController : ControllerBase
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
-            Message = "Login Successfully",
+            Message = "Data Successfully created",
             Data = (AccountDto)created
         });
     }
@@ -176,7 +176,7 @@ public class AccountController : ControllerBase
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
-            Message = "Login Successfully",
+            Message = "Data Successfully deleted",
         });
     }
     //==========

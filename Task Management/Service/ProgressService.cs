@@ -8,12 +8,56 @@ namespace Task_Management.Service;
 public class ProgressService
 {
     private readonly IProgressRepository _progressRepository;
+    private readonly IAdditionalRepository _additionalRepository;
+    private readonly IAccountProgressRepository _accountProgressRepository;
+
     private readonly BookingDbContext _bookingContext;
 
-    public ProgressService(IProgressRepository ProgressRepository, BookingDbContext bookingDbContext)
+    public ProgressService(IProgressRepository ProgressRepository, 
+                           IAdditionalRepository additionalRepository,
+                           IAccountProgressRepository accountProgressRepository, 
+                           BookingDbContext bookingDbContext)
     {
         _progressRepository = ProgressRepository;
+        _additionalRepository = additionalRepository;
+        _accountProgressRepository = accountProgressRepository;
         _bookingContext = bookingDbContext;
+    }
+
+    public int DeleteDeepProgress(Guid guid)
+    {
+        var transaction = _bookingContext.Database.BeginTransaction();
+        try
+        {
+            var getProgress = _progressRepository.GetByGuid(guid);
+            if (getProgress is null) return -1;
+
+            var getListAdditional = _additionalRepository.GetByProgressForeignKey(getProgress.Guid);
+            if (getListAdditional != null)
+            {
+                foreach (var additional in getListAdditional)
+                {
+                    _additionalRepository.Delete(additional);
+                }
+            }
+
+            var getListAccountProgress = _accountProgressRepository.GetByProgressForeignKey(getProgress.Guid);
+            if (getListAccountProgress != null)
+            {
+                foreach (var accountProgress in getListAccountProgress)
+                {
+                    _accountProgressRepository.Delete(accountProgress);
+                }
+            }
+
+            _progressRepository.Delete(getProgress);
+            transaction.Commit();
+            return 1;
+        }catch
+        {
+            transaction.Rollback();
+            return 0;
+        }
     }
 
     // Basic CRUD ===================================================

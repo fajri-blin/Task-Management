@@ -50,15 +50,16 @@ public class AssignmentService
                             _additionalRepository.Delete(additional);
                         }
                     }
-
                     _progressRepository.Delete(progress);
                 }
             }
             _assignemtnRepository.Delete(getAssignment);
+            transaction.Commit();
             return 1;
         }
         catch
         {
+            transaction.Rollback();
             return 0;
         }
     }
