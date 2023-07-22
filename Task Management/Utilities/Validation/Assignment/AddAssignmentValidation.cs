@@ -7,6 +7,7 @@ namespace Task_Management.Utilities.Validation.Assignment
     {
         public AddAssignmentValidation()
         {
+
             RuleFor(p => p.Title)
           .NotEmpty();
 

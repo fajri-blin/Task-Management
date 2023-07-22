@@ -7,6 +7,7 @@ namespace Task_Management.Utilities.Validation.Role
     {
         public NewRoleValidation()
         {
+
             RuleFor(p => p.Name)
           .NotEmpty();
         }

@@ -10,6 +10,7 @@ namespace Task_Management.Utilities.Validation.Account
 
         public RegisterValidation(IAccountRepository accountRepository)
         {
+
             _accountRepository = accountRepository;
 
             RuleFor(p => p.Username)

@@ -7,6 +7,7 @@ namespace Task_Management.Utilities.Validation.Progress
     {
         public ProgressValidation()
         {
+
             RuleFor(p => p.Description)
         .NotEmpty();
 
