@@ -17,8 +17,6 @@ namespace Task_Management.Utilities.Validation.Assignment
             RuleFor(p => p.DueDate)
           .NotEmpty();
 
-            RuleFor(p => p.IsCompleted)
-          .NotEmpty();
         }
     }
 }
