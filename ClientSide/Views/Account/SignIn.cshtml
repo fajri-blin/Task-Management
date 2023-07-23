@@ -7,7 +7,7 @@
 <div class="container-xxl">
     <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner">
-            <!-- Register -->
+            <!-- SignIn -->
             <div class="card">
                 <div class="card-body">
                     <!-- Logo -->
@@ -21,7 +21,6 @@
                     <p class="mb-4">Please sign-in to your account and start the adventure</p>
 
                     <form id="formAuthentication" class="mb-3" asp-action="SignIn">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email or Username</label>
                             <input type="text"
@@ -54,7 +53,7 @@
                     </form>
                 </div>
             </div>
-            <!-- /Register -->
+            <!-- /SignIn -->
         </div>
     </div>
 </div>
