@@ -55,4 +55,10 @@ public class AccountController : Controller
         }
         return View();
     }
+
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View();
+    }
 }
