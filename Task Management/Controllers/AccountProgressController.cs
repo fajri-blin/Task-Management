@@ -3,6 +3,11 @@ using Task_Management.Service;
 using Task_Management.DTOs.AccountProgressDto;
 using Microsoft.AspNetCore.Authorization;
 using Task_Management.Utilities.Enum;
+using System.Net;
+using Task_Management.DTOs.AccountDto;
+using Task_Management.Utilities.Handler;
+using Task_Management.DTOs.AccountRoleDto;
+using Task_Management.DTOs.ProgressDto;
 
 namespace Task_Management.Controllers;
 
@@ -11,58 +16,133 @@ namespace Task_Management.Controllers;
 //[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]
 public class AccountProgressController : ControllerBase
 {
-    private readonly AccountProgressService _accountRoleSevices;
+    private readonly AccountProgressService _accountProgressSevices;
 
     public AccountProgressController(AccountProgressService accountSevices)
     {
-        _accountRoleSevices = accountSevices;
+        _accountProgressSevices = accountSevices;
     }
+
+    [HttpGet("GetByProgressKey/{guid}")]
+    public IActionResult GetByProgressKey(Guid guid)
+    {
+        var entities = _accountProgressSevices.GetByProgressGuid(guid);
+        if (entities == null) return NotFound(new ResponseHandlers<AccountProgressDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
+
+        return Ok(new ResponseHandlers<IEnumerable<AccountProgressDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = entities
+        });
+    }
+
+
 
     //Basic CRUD
     [HttpGet]
     public IActionResult GetAll()
     {
-        var entities = _accountRoleSevices.Get();
+        var entities = _accountProgressSevices.Get();
         if (entities == null)
         {
-            return NotFound();
+            return NotFound(new ResponseHandlers<AccountProgressDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Not Found"
+            });
         }
-        return Ok(entities);
+        return Ok(new ResponseHandlers<IEnumerable<AccountProgressDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = entities
+        });
     }
 
     [HttpGet("{guid}")]
     public IActionResult Get(Guid guid) 
     {
-        var entity = _accountRoleSevices.Get(guid);
-        if (entity == null) return NotFound();
+        var entity = _accountProgressSevices.Get(guid);
+        if (entity == null) return NotFound(new ResponseHandlers<AccountRoleDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
 
-        return Ok(entity);
+        return Ok(new ResponseHandlers<AccountProgressDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = entity
+        });
     }
 
     [HttpPost]
     public IActionResult Create(NewAccountProgressDto entity)
     {
-        var created = _accountRoleSevices.Create(entity);
-        if (created == null) return NotFound();
+        var created = _accountProgressSevices.Create(entity);
+        if (created == null) return NotFound(new ResponseHandlers<AccountProgressDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Failed to created"
+        });
         
-        return Ok(created);
+        return Ok(new ResponseHandlers<AccountProgressDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Successfully created",
+            Data = created
+        });
     }
 
     [HttpPut]
     public IActionResult Update(AccountProgressDto entity) 
     {
-        var updated = _accountRoleSevices.Update(entity);
-        if(updated is -1) return NotFound();
+        var updated = _accountProgressSevices.Update(entity);
+        if(updated is -1) return NotFound(new ResponseHandlers<int>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
 
-        return Ok();
+        return Ok(new ResponseHandlers<int>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data has been updated"
+        });
     }
 
     [HttpDelete]
     public IActionResult Delete(Guid guid)
     {
-        var delete = _accountRoleSevices.Delete(guid);
-        if (delete is -1) return NotFound();
-        return Ok(delete);
+        var delete = _accountProgressSevices.Delete(guid);
+        if (delete is -1) return NotFound(new ResponseHandlers<int>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
+        return Ok(new ResponseHandlers<int>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data failed to deleted"
+        });
     }
     //==========
 }

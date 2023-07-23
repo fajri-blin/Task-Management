@@ -1,21 +1,29 @@
 ﻿using ClientSide.Contract;
+using ClientSide.Utilities.Handlers;
+using ClientSide.ViewModels.Account;
 using Newtonsoft.Json;
 using System.Text;
-using System.Text.Json.Serialization;
-using Task_Management.DTOs.AccountDto;
-using Task_Management.Utilities.Handler;
 
 namespace ClientSide.Repositories;
 
-public class AccountRepository : GeneralRepository<AccountDto>,IAccountRepository
+public class AccountRepository : GeneralRepository<AccountDto>, IAccountRepository
 {
+    private readonly HttpClient _httpClient;
+    private readonly string _request;
 
-    public AccountRepository(string request = "Account/") : base(request) { }
+    public AccountRepository(string request = "Account/") : base(request)
+    {
+        _httpClient = new HttpClient
+        {
+            BaseAddress = new Uri("https://localhost:7113/api/")
+        };
+        this._request = request;
+    }
 
-    public async Task<ResponseHandlers<string>> Login(LoginDto loginDto)
+    public async Task<ResponseHandlers<string>> Login(SignInDto signInDto)
     {
         ResponseHandlers<string> entityVM = null;
-        StringContent content = new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json");
+        StringContent content = new StringContent(JsonConvert.SerializeObject(signInDto), Encoding.UTF8, "application/json");
         using (var response = _httpClient.PostAsync(_request + "Login", content).Result)
         {
             string apiResponse = await response.Content.ReadAsStringAsync();

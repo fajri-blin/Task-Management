@@ -12,7 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 
-// Add Repository]
+// Add Repository
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 // Set Authentication
@@ -49,7 +49,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // Custome Error page
-app.UseStatusCodePages(async context => {
+app.UseStatusCodePages(async context =>
+{
     var response = context.HttpContext.Response;
 
     if (response.StatusCode.Equals((int)HttpStatusCode.Unauthorized))

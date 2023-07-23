@@ -4,4 +4,5 @@ namespace Task_Management.Contract.Data;
 
 public interface IAccountProgressRepository : IGeneralRepository<AccountProgress>
 {
+    IEnumerable<AccountProgress> GetByProgressForeignKey(Guid guid);
 }
