@@ -12,5 +12,8 @@ public class AccountRepository : GeneralRepository<Account>, IAccountRepository
     {
         return _bookingDbContext.Set<Account>().FirstOrDefault(ac => ac.Username == account || ac.Email == account);
     }
-
+    public bool IsDuplicateValue(string value)
+    {
+        return _bookingDbContext.Set<Account>().Any(ac => ac.Username == value || ac.Email == value);
+    }
 }
