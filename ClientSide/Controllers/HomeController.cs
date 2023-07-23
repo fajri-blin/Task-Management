@@ -1,4 +1,5 @@
 ﻿using ClientSide.Models;
+using ClientSide.Utilities.Handlers;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -15,11 +16,13 @@ namespace ClientSide.Controllers
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
+            var components = new ComponentHandlers
+            {
+                Footer = false,
+                SideBar = true,
+                Navbar = true,
+            };
+            ViewBag.Components = components;
             return View();
         }
 
