@@ -24,6 +24,21 @@ public class ProgressService
         _bookingContext = bookingDbContext;
     }
 
+    public IEnumerable<ProgressDto> GetByAssignmentGuid(Guid guid)
+    {
+        var list = _progressRepository.GetByAssignmentForeignKey(guid);
+        if (list == null) return null;
+
+        var baseList = new List<ProgressDto>();
+
+        foreach(var item in list)
+        {
+            baseList.Add((ProgressDto)item);
+        }
+
+        return baseList;
+    }
+
     public int DeleteDeepProgress(Guid guid)
     {
         var transaction = _bookingContext.Database.BeginTransaction();

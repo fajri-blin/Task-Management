@@ -21,6 +21,26 @@ public class ProgressController : ControllerBase
         _progressServices = accountSevices;
     }
 
+    [HttpGet("GetByAssigmentKey/{guid}")]
+    public IActionResult GetByAssigmentKey(Guid guid)
+    {
+        var entities = _progressServices.GetByAssignmentGuid(guid);
+        if (entities == null) return NotFound(new ResponseHandlers<ProgressDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
+
+        return Ok(new ResponseHandlers<IEnumerable<ProgressDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = entities
+        });
+    }
+
     [HttpDelete("DeepDelete/{guid}")]
     public IActionResult DeepDelete(Guid guid)
     {

@@ -100,12 +100,12 @@ public class AccountController : ControllerBase
                 Message = "Data Not Found"
             });
         }
-        return Ok(new ResponseHandlers<AccountDto>
+        return Ok(new ResponseHandlers<IEnumerable<AccountDto>>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
             Message = "Data Found",
-            Data = (AccountDto)entities
+            Data = entities
         });
     }
 

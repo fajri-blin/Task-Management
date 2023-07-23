@@ -16,6 +16,20 @@ public class AccountProgressService
         _bookingContext = bookingDbContext;
     }
 
+    public IEnumerable<AccountProgressDto> GetByProgressGuid(Guid guid)
+    {
+        var list = _accountRoleRepository.GetByProgressForeignKey(guid);
+        if (list is null) return null;
+
+        var baseList = new List<AccountProgressDto>();
+        foreach(var item in list)
+        {
+            baseList.Add((AccountProgressDto)item);
+        }
+
+        return baseList;
+    }
+
     // Basic CRUD ===================================================
     public IEnumerable<AccountProgressDto>? Get()
     {

@@ -8,19 +8,32 @@ namespace Task_Management.Service;
 
 public class AdditionalService
 {
-    private readonly IAdditionalRepository _accountRoleRepository;
+    private readonly IAdditionalRepository _additionalRepository;
     private readonly BookingDbContext _bookingContext;
 
     public AdditionalService(IAdditionalRepository AdditionalRepository, BookingDbContext bookingDbContext)
     {
-        _accountRoleRepository = AdditionalRepository;
+        _additionalRepository = AdditionalRepository;
         _bookingContext = bookingDbContext;
+    }
+
+    public IEnumerable<AdditionalDto> GetByProgressGuid(Guid guid)
+    {
+        var list = _additionalRepository.GetByProgressForeignKey(guid);
+        if (list == null) return null;
+
+        var baseList = new List<AdditionalDto>();
+        foreach(var item in list)
+        {
+            baseList.Add((AdditionalDto)item);
+        }
+        return baseList;
     }
 
     // Basic CRUD ===================================================
     public IEnumerable<AdditionalDto>? Get()
     {
-        var entities = _accountRoleRepository.GetAll();
+        var entities = _additionalRepository.GetAll();
         if (!entities.Any()) return null;
         var listAdditional = new List<AdditionalDto>();
 
@@ -33,7 +46,7 @@ public class AdditionalService
 
     public AdditionalDto? Get(Guid guid)
     {
-        var entity = _accountRoleRepository.GetByGuid(guid);
+        var entity = _additionalRepository.GetByGuid(guid);
         if (entity is null) return null;
 
         var Dto = (AdditionalDto)entity;
@@ -46,7 +59,7 @@ public class AdditionalService
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            var created = _accountRoleRepository.Create(Additional);
+            var created = _additionalRepository.Create(Additional);
             transaction.Commit();
             return (AdditionalDto) created;
         }
@@ -60,7 +73,7 @@ public class AdditionalService
     public int Update(AdditionalDto Additionaldto)
     {
 
-        var getEntity = _accountRoleRepository.GetByGuid(Additionaldto.Guid);
+        var getEntity = _additionalRepository.GetByGuid(Additionaldto.Guid);
         if (getEntity is null) return 0;
 
         Additional Additional = (Additional) Additionaldto;
@@ -71,7 +84,7 @@ public class AdditionalService
         try
         {
 
-            _accountRoleRepository.Update(Additional);
+            _additionalRepository.Update(Additional);
             transaction.Commit();
             return 1;
         }
@@ -84,13 +97,13 @@ public class AdditionalService
 
     public int Delete(Guid guid)
     {
-        var entity = _accountRoleRepository.GetByGuid(guid);
+        var entity = _additionalRepository.GetByGuid(guid);
         if(entity == null) return -1;
 
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            _accountRoleRepository.Delete(entity);
+            _additionalRepository.Delete(entity);
             transaction.Commit();
             return 1;
         }
