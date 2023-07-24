@@ -12,7 +12,6 @@ namespace Task_Management.Utilities.Validation.Account
         {
 
             _accountRepository = accountRepository;
-
             /* RuleFor(p => p.Username)
            .NotEmpty()
            .Must(BeUniqueProperty).WithMessage("'Username' already registered");
@@ -43,7 +42,7 @@ namespace Task_Management.Utilities.Validation.Account
 
         private bool BeUniqueProperty(string property)
         {
-            return _accountRepository.IsDuplicateValue(property);
+            return !_accountRepository.IsDuplicateValue(property);
         }
 
     }
