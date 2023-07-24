@@ -376,12 +376,13 @@ namespace Task_Management.Migrations
                 {
                     b.HasOne("Task_Management.Model.Data.Account", "Account")
                         .WithMany("AccountRoles")
-                        .HasForeignKey("AccountGuid");
+                        .HasForeignKey("AccountGuid")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Task_Management.Model.Data.Role", "Role")
                         .WithMany("AccountRoles")
                         .HasForeignKey("RoleGuid")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Account");
 
@@ -408,7 +409,7 @@ namespace Task_Management.Migrations
                     b.HasOne("Task_Management.Model.Data.Category", "Category")
                         .WithMany("AssignMaps")
                         .HasForeignKey("CategoryGuid")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Assignment");
 

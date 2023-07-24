@@ -70,4 +70,5 @@ public class GeneralRepository<TEntity> : IGeneralRepository<TEntity>
     {
         return GetByGuid(guid) != null;
     }
+
 }

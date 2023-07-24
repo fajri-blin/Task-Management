@@ -1,7 +1,10 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 using Task_Management.Contract.Data;
 using Task_Management.Contract.Handler;
@@ -12,7 +15,7 @@ using Task_Management.Utilities.Handler;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<BookingDbContext>(option =>option.UseSqlServer(builder.Configuration
+builder.Services.AddDbContext<BookingDbContext>(option => option.UseSqlServer(builder.Configuration
                                                                .GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
@@ -28,6 +31,15 @@ builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProgressRepository, ProgressRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IAdditionalRepository, AdditionalRepository>();
+
+// Add SmtpClient
+builder.Services.AddTransient<IEmailHandler, EmailHandler>(_ => new EmailHandler(
+    builder.Configuration["EmailService:SmtpServer"],
+    int.Parse(builder.Configuration["EmailService:SmtpPort"]),
+    builder.Configuration["EmailService:FromEmailAddress"],
+    builder.Configuration["EmailService:SmtpPassword"]
+));
 
 //Add Services
 builder.Services.AddScoped<AccountRoleService>();
@@ -38,6 +50,11 @@ builder.Services.AddScoped<AssignmentService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProgressService>();
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<AdditionalService>();
+
+// Register Fluent validation
+builder.Services.AddFluentValidationAutoValidation()
+       .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 // Add Service for token handler
 builder.Services.AddScoped<ITokenHandlers, TokenHandlers>();
@@ -74,7 +91,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x => {
+builder.Services.AddSwaggerGen(x =>
+{
     x.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
@@ -110,7 +128,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-{   
+{
     app.UseSwagger();
     app.UseSwaggerUI();
 }

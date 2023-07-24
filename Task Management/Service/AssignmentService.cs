@@ -1,7 +1,6 @@
 ﻿using Task_Management.Contract.Data;
 using Task_Management.Data;
 using Task_Management.DTOs.AssignmentDto;
-using Task_Management.Model;
 using Task_Management.Model.Data;
 
 namespace Task_Management.Service;
@@ -10,6 +9,8 @@ public class AssignmentService
 {
     private readonly IAssignmentRepository _assignemtnRepository;
     private readonly IProgressRepository _progressRepository;
+    private readonly IAccountProgressRepository _accountProgressRepository;
+    private readonly IAdditionalRepository _additionalRepository;
     private readonly BookingDbContext _bookingContext;
 
     public AssignmentService(IAssignmentRepository TaskRepository, IProgressRepository progressRepository, BookingDbContext bookingDbContext)
@@ -19,20 +20,48 @@ public class AssignmentService
         _bookingContext = bookingDbContext;
     }
 
-    //public AddAssigmentDto? AddAssignment(AddAssigmentDto addAssigmentDto)
-    //{
-    //    var transaction = _bookingContext.Database.BeginTransaction();
-    //    try
-    //    {
-    //        var createdAssigment = _assignemtnRepository.Create((Assignment)addAssigmentDto);
-    //        if (createdAssigment is null) return null;
-    //    }
-    //    catch
-    //    {
-    //        transaction.Rollback();
-    //        return null;
-    //    }
-    //}
+    public int DeleteDeepAssignment(Guid guid)
+    {
+        var transaction = _bookingContext.Database.BeginTransaction();
+        try
+        {
+            var getAssignment = _assignemtnRepository.GetByGuid(guid);
+            if (getAssignment != null) return -1;
+
+            var getListProgress = _progressRepository.GetByAssignmentForeignKey(getAssignment.Guid);
+            if (getListProgress != null)
+            {
+                foreach (var progress in getListProgress)
+                {
+                    var getListAccountProgress = _accountProgressRepository.GetByProgressForeignKey(progress.Guid);
+                    if (getListAccountProgress != null)
+                    {
+                        foreach (var accountProgress in getListAccountProgress)
+                        {
+                            _accountProgressRepository.Delete(accountProgress);
+                        }
+                    }
+                    var getListAdditional = _additionalRepository.GetByProgressForeignKey(progress.Guid);
+                    if (getListAdditional != null)
+                    {
+                        foreach (var additional in getListAdditional)
+                        {
+                            _additionalRepository.Delete(additional);
+                        }
+                    }
+                    _progressRepository.Delete(progress);
+                }
+            }
+            _assignemtnRepository.Delete(getAssignment);
+            transaction.Commit();
+            return 1;
+        }
+        catch
+        {
+            transaction.Rollback();
+            return 0;
+        }
+    }
 
     // Basic CRUD ===================================================
     public IEnumerable<AssignmentDto>? Get()
@@ -51,6 +80,16 @@ public class AssignmentService
     public AssignmentDto? Get(Guid guid)
     {
         var entity = _assignemtnRepository.GetByGuid(guid);
+        if (entity is null) return null;
+
+        var Dto = (AssignmentDto)entity;
+
+        return Dto;
+    }
+
+    public AssignmentDto? GetByManager(Guid guid)
+    {
+        var entity = _assignemtnRepository.GetByManager(guid);
         if (entity is null) return null;
 
         var Dto = (AssignmentDto)entity;

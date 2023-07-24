@@ -36,21 +36,21 @@ public class BookingDbContext : DbContext
             .HasMany(role => role.AccountRoles)
             .WithOne(acc_role => acc_role.Role)
             .HasForeignKey(acc_role => acc_role.RoleGuid)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         //Category - AssignMap (One to Many)
         modelBuilder.Entity<Category>()
             .HasMany(cat => cat.AssignMaps)
             .WithOne(assign_map => assign_map.Category)
             .HasForeignKey(assign_map => assign_map.CategoryGuid)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         //Account - AccountRole (One to Many)
         modelBuilder.Entity<Account>()
             .HasMany(acc => acc.AccountRoles)
             .WithOne(acc_role => acc_role.Account)
-            .HasForeignKey(acc_role => acc_role.AccountGuid);
-
+            .HasForeignKey(acc_role => acc_role.AccountGuid)
+            .OnDelete(DeleteBehavior.Cascade);
 
         //Assignment - AssignMap (One to Many)
         modelBuilder.Entity<Assignment>()

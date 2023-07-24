@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using Task_Management.DTOs.AccountRoleDto;
 using Task_Management.DTOs.AssignMapDto;
 using Task_Management.Service;
 using Task_Management.Utilities.Enum;
+using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
 
@@ -25,44 +28,97 @@ public class AssignMapController : ControllerBase
         var entities = _assignmentServices.Get();
         if (entities == null)
         {
-            return NotFound();
+            return NotFound(new ResponseHandlers<AssignMapDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Not Found"
+            });
         }
-        return Ok(entities);
+        return Ok(new ResponseHandlers<IEnumerable<AssignMapDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = entities
+        });
     }
 
     [HttpGet("{guid}")]
     public IActionResult Get(Guid guid) 
     {
         var entity = _assignmentServices.Get(guid);
-        if (entity == null) return NotFound();
+        if (entity == null) return NotFound(new ResponseHandlers<AssignMapDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
 
-        return Ok(entity);
+        return Ok(new ResponseHandlers<AssignMapDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = entity
+        });
     }
 
     [HttpPost]
     public IActionResult Create(NewAssignMapDto entity)
     {
         var created = _assignmentServices.Create(entity);
-        if (created == null) return NotFound();
+        if (created == null) return NotFound(new ResponseHandlers<AssignMapDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
         
-        return Ok(created);
+        return Ok(new ResponseHandlers<AssignMapDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Not Found",
+            Data = created
+        });
     }
 
     [HttpPut]
     public IActionResult Update(AssignMapDto entity) 
     {
         var updated = _assignmentServices.Update(entity);
-        if(updated is -1) return NotFound();
+        if(updated is -1) return NotFound(new ResponseHandlers<AssignMapDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
 
-        return Ok();
+        return Ok(new ResponseHandlers<AssignMapDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data has been updated"
+        });
     }
 
     [HttpDelete]
     public IActionResult Delete(Guid guid)
     {
         var delete = _assignmentServices.Delete(guid);
-        if (delete is -1) return NotFound();
-        return Ok(delete);
+        if (delete is -1) return NotFound(new ResponseHandlers<AssignMapDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
+        return Ok(new ResponseHandlers<AssignMapDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data has been deleted"
+        });
     }
     //==========
 }

@@ -1,4 +1,6 @@
-﻿namespace Task_Management.DTOs.AccountDto;
+﻿using Task_Management.Utilities.Enum;
+
+namespace Task_Management.DTOs.AccountDto;
 
 public class RegisterDto
 {
@@ -7,6 +9,6 @@ public class RegisterDto
     public string Name { get; set; }
     public string Password { get; set; }
     public string? ConfirmPassword { get; set; }
-    public string Role { get; set; }
-    public string? ImageProfile { get;set; }
+    public RoleLevel Role { get; set; }
+    public string? ImageProfile { get; set; }
 }

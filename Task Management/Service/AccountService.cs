@@ -2,8 +2,8 @@
 using Task_Management.Contract.Data;
 using Task_Management.Contract.Handler;
 using Task_Management.Data;
+using Task_Management.Dtos.AccountDto;
 using Task_Management.DTOs.AccountDto;
-using Task_Management.Model;
 using Task_Management.Model.Data;
 using Task_Management.Utilities;
 
@@ -15,19 +15,22 @@ public class AccountService
     private readonly IAccountRoleRepository _accountRoleRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly ITokenHandlers _tokenHandlers;
+    private readonly IEmailHandler _emailHandler;
     private readonly BookingDbContext _bookingContext;
 
-    public AccountService(IAccountRepository accountRepository, 
-                          IAccountRoleRepository accountRoleRepository, 
+    public AccountService(IAccountRepository accountRepository,
+                          IAccountRoleRepository accountRoleRepository,
                           IRoleRepository roleRepository,
                           ITokenHandlers tokenHandlers,
-                          BookingDbContext bookingDbContext)
+                          BookingDbContext bookingDbContext,
+                          IEmailHandler emailHandler)
     {
         _accountRepository = accountRepository;
         _accountRoleRepository = accountRoleRepository;
         _roleRepository = roleRepository;
         _tokenHandlers = tokenHandlers;
         _bookingContext = bookingDbContext;
+        _emailHandler = emailHandler;
     }
 
     public string Login(LoginDto loginDto)
@@ -41,6 +44,7 @@ public class AccountService
         {
             var claims = new List<Claim>
             {
+                new Claim("Guid", getAccount.Guid.ToString()),
                 new Claim("Username", getAccount.Username),
                 new Claim("Email", getAccount.Email),
             };
@@ -72,7 +76,7 @@ public class AccountService
                 Username = register.Username,
                 Name = register.Name,
                 Email = register.Email,
-                Password = register.Password,
+                Password = Hashing.HashPassword(register.Password),
                 OTP = 0,
                 IsUsedOTP = false,
                 ImageProfile = register.ImageProfile
@@ -80,13 +84,13 @@ public class AccountService
             var createAccount = _accountRepository.Create(accountSet);
             if (createAccount is null) return null;
 
-            var IsExist = _roleRepository.GetByName(register.Role);
+            var IsExist = _roleRepository.GetByName(nameof(register.Role));
             if (IsExist is null)
             {
                 var roleSet = new Role
                 {
                     Guid = Guid.NewGuid(),
-                    Name = register.Role
+                    Name = nameof(register.Role)
                 };
 
                 var createRole = _roleRepository.Create(roleSet);
@@ -125,14 +129,51 @@ public class AccountService
 
     }
 
-// Basic CRUD ===================================================
-public IEnumerable<AccountDto>? Get()
+    public int ForgotPassword(ForgotPasswordDto forgotPassword)
+    {
+        var entity = _accountRepository.GetEmailorUsername(forgotPassword.Email);
+        if (entity is null)
+            return 0; // Email not found
+
+        var account = _accountRepository.GetByGuid(entity.Guid);
+        if (account is null)
+            return -1;
+
+        var otp = new Random().Next(111111, 999999);
+        var isUpdated = _accountRepository.Update(new Account
+        {
+            Guid = account.Guid,
+            Username = account.Username,
+            Email = account.Email,
+            Name = account.Name,
+            Password = account.Password,
+            OTP = otp,
+            IsUsedOTP = false,
+            ImageProfile = account.ImageProfile,
+            ModifiedAt = DateTime.Now,
+            CreatedAt = account.CreatedAt,
+        });
+
+        if (!isUpdated)
+        {
+            return -1;
+        }
+
+        _emailHandler.SendEmail(forgotPassword.Email,
+                                "Forgot Password",
+                                $"Your OTP is {otp}");
+
+        return 1;
+    }
+
+    // Basic CRUD ===================================================
+    public IEnumerable<AccountDto>? Get()
     {
         var entities = _accountRepository.GetAll();
         if (!entities.Any()) return null;
         var listAccount = new List<AccountDto>();
 
-        foreach ( var entity in entities)
+        foreach (var entity in entities)
         {
             listAccount.Add((AccountDto)entity);
         }
@@ -156,7 +197,7 @@ public IEnumerable<AccountDto>? Get()
         {
             var created = _accountRepository.Create(account);
             transaction.Commit();
-            return (AccountDto) created;
+            return (AccountDto)created;
         }
         catch
         {
@@ -171,11 +212,11 @@ public IEnumerable<AccountDto>? Get()
         var getEntity = _accountRepository.GetByGuid(accountdto.Guid);
         if (getEntity is null) return 0;
 
-        Account account = (Account) accountdto;
+        Account account = (Account)accountdto;
         account.ModifiedAt = DateTime.Now;
         account.CreatedAt = getEntity.CreatedAt;
 
-        var transaction = _bookingContext.Database.BeginTransaction();        
+        var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
 
@@ -193,7 +234,7 @@ public IEnumerable<AccountDto>? Get()
     public int Delete(Guid guid)
     {
         var entity = _accountRepository.GetByGuid(guid);
-        if(entity == null) return -1;
+        if (entity == null) return -1;
 
         var transaction = _bookingContext.Database.BeginTransaction();
         try
