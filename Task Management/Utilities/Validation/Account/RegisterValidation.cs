@@ -43,7 +43,7 @@ namespace Task_Management.Utilities.Validation.Account
 
         private bool BeUniqueProperty(string property)
         {
-            return _accountRepository.IsDuplicateValue(property);
+            return !_accountRepository.IsDuplicateValue(property);
         }
 
     }
