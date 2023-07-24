@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Task_Management.Service;
-using Task_Management.DTOs.AccountDto;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Task_Management.Dtos.AccountDto;
+using Task_Management.DTOs.AccountDto;
+using Task_Management.Service;
 using Task_Management.Utilities.Handler;
-using Microsoft.AspNetCore.Authorization;
-using Task_Management.Utilities.Enum;
 
 namespace Task_Management.Controllers;
 
@@ -110,7 +110,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("{guid}")]
-    public IActionResult Get(Guid guid) 
+    public IActionResult Get(Guid guid)
     {
         var entity = _accountSevices.Get(guid);
         if (entity == null) return NotFound(new ResponseHandlers<AccountDto>
@@ -133,7 +133,7 @@ public class AccountController : ControllerBase
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
-        
+
         return Ok(new ResponseHandlers<AccountDto>
         {
             Code = StatusCodes.Status200OK,
@@ -144,10 +144,10 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update(AccountDto entity) 
+    public IActionResult Update(AccountDto entity)
     {
         var updated = _accountSevices.Update(entity);
-        if(updated is -1) return NotFound(new ResponseHandlers<AccountDto>
+        if (updated is -1) return NotFound(new ResponseHandlers<AccountDto>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),
@@ -177,6 +177,34 @@ public class AccountController : ControllerBase
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
             Message = "Data Successfully deleted",
+        });
+    }
+
+    [HttpPost("ForgotPassword")]
+    public IActionResult ForgotPassword(ForgotPasswordDto forgotPassword)
+    {
+        var isUpdated = _accountSevices.ForgotPassword(forgotPassword);
+        if (isUpdated == 0)
+            return NotFound(new ResponseHandlers<AccountDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Email not found"
+            });
+
+        if (isUpdated is -1)
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandlers<AccountDto>
+            {
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Error retrieving data from the database"
+            });
+
+        return Ok(new ResponseHandlers<AccountDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Otp has been sent to your email"
         });
     }
     //==========

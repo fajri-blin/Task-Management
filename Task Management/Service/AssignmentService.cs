@@ -1,7 +1,6 @@
 ﻿using Task_Management.Contract.Data;
 using Task_Management.Data;
 using Task_Management.DTOs.AssignmentDto;
-using Task_Management.Model;
 using Task_Management.Model.Data;
 
 namespace Task_Management.Service;
@@ -81,6 +80,16 @@ public class AssignmentService
     public AssignmentDto? Get(Guid guid)
     {
         var entity = _assignemtnRepository.GetByGuid(guid);
+        if (entity is null) return null;
+
+        var Dto = (AssignmentDto)entity;
+
+        return Dto;
+    }
+
+    public AssignmentDto? GetByManager(Guid guid)
+    {
+        var entity = _assignemtnRepository.GetByManager(guid);
         if (entity is null) return null;
 
         var Dto = (AssignmentDto)entity;

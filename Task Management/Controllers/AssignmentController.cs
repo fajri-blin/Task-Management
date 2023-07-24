@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Task_Management.DTOs.AccountRoleDto;
 using Task_Management.DTOs.AssignmentDto;
 using Task_Management.Service;
 using Task_Management.Utilities.Enum;
@@ -67,6 +66,26 @@ public class AssignmentController : ControllerBase
     public IActionResult Get(Guid guid)
     {
         var entity = _assignmentServices.Get(guid);
+        if (entity == null) return NotFound(new ResponseHandlers<AssignmentDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
+
+        return Ok(new ResponseHandlers<AssignmentDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Found",
+            Data = entity
+        });
+    }
+
+    [HttpGet("Manager/{guid}")]
+    public IActionResult GetByManagerId(Guid guid)
+    {
+        var entity = _assignmentServices.GetByManager(guid);
         if (entity == null) return NotFound(new ResponseHandlers<AssignmentDto>
         {
             Code = StatusCodes.Status404NotFound,
