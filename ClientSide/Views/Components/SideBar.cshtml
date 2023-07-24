@@ -101,12 +101,12 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="auth-login-basic.html" class="menu-link" target="_blank">
+                    <a class="menu-link" target="_blank" asp-controller="Account" asp-action="SignIn">
                         <div data-i18n="Basic">Login</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="auth-register-basic.html" class="menu-link" target="_blank">
+                    <a class="menu-link" target="_blank" asp-controller="Account" asp-action="SignUp">
                         <div data-i18n="Basic">Register</div>
                     </a>
                 </li>
@@ -136,5 +136,18 @@
             </ul>
         </li>
         <!-- /Menu -->
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
+                <div data-i18n="Authentications">Assignment</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a class="menu-link" target="_blank" asp-controller="Assignment" asp-action="SignIn">
+                        <div data-i18n="Basic">Asssignment</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
 </aside>
