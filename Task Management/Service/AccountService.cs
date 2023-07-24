@@ -172,7 +172,14 @@ public class AccountService
     {
         var isExist = _accountRepository.GetByEmailOtp(checkOtp.Email, checkOtp.OTP);
         if (isExist is null) return 0;
-        return 1;
+        TimeSpan timeDifference = DateTime.Now - isExist.ModifiedAt;
+        double minutesDifference = timeDifference.TotalMinutes;
+
+        if (minutesDifference >= 3)
+        {
+            return 1;
+        }
+        return 2;
     }
 
     public int ChangePassword(ChangePasswordDto changePasswordDto)
