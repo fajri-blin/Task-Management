@@ -13,14 +13,14 @@ namespace Task_Management.Utilities.Validation.Account
 
             _accountRepository = accountRepository;
 
-            RuleFor(p => p.Username)
-          .NotEmpty()
-          .Must(BeUniqueProperty).WithMessage("'Username' already registered");
+          //  RuleFor(p => p.Username)
+          //.NotEmpty()
+          //.Must(BeUniqueProperty).WithMessage("'Username' already registered");
 
-            RuleFor(p => p.Email)
-          .NotEmpty()
-          .Must(BeUniqueProperty).WithMessage("'Email' already registered")
-          .EmailAddress();
+          //  RuleFor(p => p.Email)
+          //.NotEmpty()
+          //.Must(BeUniqueProperty).WithMessage("'Email' already registered")
+          //.EmailAddress();
 
             RuleFor(p => p.Name)
           .NotEmpty();
