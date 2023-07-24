@@ -1,4 +1,4 @@
-﻿@model ClientSide.ViewModels.Account.SignInDto
+﻿@model ClientSide.ViewModels.Account.SignInVM
 
 @{
     ViewData["Title"] = "SignIn - Metrodata Task Management";
@@ -33,7 +33,7 @@
                         <div class="mb-3 form-password-toggle">
                             <div class="d-flex justify-content-between">
                                 <label class="form-label" for="password">Password</label>
-                                <a href="auth-forgot-password-basic.html">
+                                <a asp-controller="Account" asp-action="ForgotPass">
                                     <small>Forgot Password?</small>
                                 </a>
                             </div>

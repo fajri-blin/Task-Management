@@ -2,7 +2,7 @@
 
 namespace ClientSide.ViewModels.Account
 {
-    public class SignInDto
+    public class SignInVM
     {
         [Required]
         public string AccountLogin { get; set; }

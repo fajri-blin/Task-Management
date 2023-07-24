@@ -179,6 +179,7 @@ public class AccountController : ControllerBase
             Message = "Data Successfully deleted",
         });
     }
+    //==========
 
     [HttpPost("ForgotPassword")]
     public IActionResult ForgotPassword(ForgotPasswordDto forgotPassword)
@@ -207,5 +208,4 @@ public class AccountController : ControllerBase
             Message = "Otp has been sent to your email"
         });
     }
-    //==========
 }

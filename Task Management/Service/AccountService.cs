@@ -92,7 +92,7 @@ public class AccountService
                 var roleSet = new Role
                 {
                     Guid = Guid.NewGuid(),
-                    Name = nameof(register.Role)
+                    Name = roleName
                 };
 
                 var createRole = _roleRepository.Create(roleSet);

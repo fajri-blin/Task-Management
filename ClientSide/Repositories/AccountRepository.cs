@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ClientSide.Repositories;
 
-public class AccountRepository : GeneralRepository<AccountDto>, IAccountRepository
+public class AccountRepository : GeneralRepository<AccountVM>, IAccountRepository
 {
     private readonly HttpClient _httpClient;
     private readonly string _request;
@@ -20,7 +20,19 @@ public class AccountRepository : GeneralRepository<AccountDto>, IAccountReposito
         this._request = request;
     }
 
-    public async Task<ResponseHandlers<string>> Login(SignInDto signInDto)
+    public async Task<ResponseHandlers<ForgotPasswordVM>> ForgotPassword(ForgotPasswordVM forgotPasswordVM)
+    {        
+        ResponseHandlers<ForgotPasswordVM> entityVM = null;
+        StringContent content = new StringContent(JsonConvert.SerializeObject(forgotPasswordVM), Encoding.UTF8, "application/json");
+        using (var response = _httpClient.PostAsync(_request + "ForgotPassword", content).Result)
+        {
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<ForgotPasswordVM>>(apiResponse);
+        }
+        return entityVM;
+    }
+
+    public async Task<ResponseHandlers<string>> Login(SignInVM signInDto)
     {
         ResponseHandlers<string> entityVM = null;
         StringContent content = new StringContent(JsonConvert.SerializeObject(signInDto), Encoding.UTF8, "application/json");
@@ -32,14 +44,14 @@ public class AccountRepository : GeneralRepository<AccountDto>, IAccountReposito
         return entityVM;
     }
 
-    public async Task<ResponseHandlers<RegisterDto>> Register(RegisterDto registerDto)
+    public async Task<ResponseHandlers<RegisterVM>> Register(RegisterVM registerDto)
     {
-        ResponseHandlers<RegisterDto> entityVM = null;
+        ResponseHandlers<RegisterVM> entityVM = null;
         StringContent content = new StringContent(JsonConvert.SerializeObject(registerDto), Encoding.UTF8, "application/json");
         using (var response = _httpClient.PostAsync(_request + "Register", content).Result)
         {
             string apiResponse = await response.Content.ReadAsStringAsync();
-            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<RegisterDto>>(apiResponse);
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<RegisterVM>>(apiResponse);
         }
         return entityVM;
     }
