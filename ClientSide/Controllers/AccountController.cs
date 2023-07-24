@@ -57,7 +57,7 @@ public class AccountController : Controller
     }
 
     [HttpGet]
-    public IActionResult Register()
+    public IActionResult SignUp()
     {
         return View();
     }

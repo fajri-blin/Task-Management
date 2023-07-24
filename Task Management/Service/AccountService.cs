@@ -6,6 +6,7 @@ using Task_Management.Dtos.AccountDto;
 using Task_Management.DTOs.AccountDto;
 using Task_Management.Model.Data;
 using Task_Management.Utilities;
+using Task_Management.Utilities.Enum;
 
 namespace Task_Management.Service;
 
@@ -84,7 +85,8 @@ public class AccountService
             var createAccount = _accountRepository.Create(accountSet);
             if (createAccount is null) return null;
 
-            var IsExist = _roleRepository.GetByName(nameof(register.Role));
+            var roleName = Enum.GetName(typeof(RoleLevel), register.Role);
+            var IsExist = _roleRepository.GetByName(roleName);
             if (IsExist is null)
             {
                 var roleSet = new Role
