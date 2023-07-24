@@ -363,5 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # appsetting.json
-/Task Management/appsettings.json
+
 Task Management/appsettings.json
