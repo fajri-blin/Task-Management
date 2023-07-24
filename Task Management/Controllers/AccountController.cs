@@ -114,6 +114,25 @@ public class AccountController : ControllerBase
         });
     }
 
+    [HttpPost("CheckOtp")]
+    public IActionResult CheckOtp(CheckOtp checkOtp)
+    {
+        var isUpdated = _accountSevices.CheckOtp(checkOtp);
+        if (isUpdated == 0)
+            return NotFound(new ResponseHandlers<AccountDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Otp doesn't match"
+            });
+        return Ok(new ResponseHandlers<AccountDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Otp match"
+        });
+    }
+
     [HttpPut("changePassword")]
     public IActionResult Update(ChangePasswordDto changePasswordDto)
     {

@@ -3,10 +3,15 @@ using Task_Management.Dtos.AccountDto;
 
 namespace Task_Management.Utilities.Validation.Account
 {
-    public class ChangePassword : AbstractValidator<ChangePasswordDto>
+    public class ChangePasswordValidation : AbstractValidator<ChangePasswordDto>
     {
-        public ChangePassword()
+        public ChangePasswordValidation()
         {
+            RuleFor(p => p.Otp)
+          .NotEmpty().WithMessage("OTP is required.");
+
+            RuleFor(p => p.Email)
+          .NotEmpty().WithMessage("Email is required.");
 
             RuleFor(p => p.NewPassword)
           .NotEmpty().WithMessage("Password is required.")

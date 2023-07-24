@@ -166,6 +166,13 @@ public class AccountService
         return 1;
     }
 
+    public int CheckOtp(CheckOtp checkOtp)
+    {
+        var isExist = _accountRepository.GetByEmailOtp(checkOtp.Email, checkOtp.OTP);
+        if (isExist is null) return 0;
+        return 1;
+    }
+
     public int ChangePassword(ChangePasswordDto changePasswordDto)
     {
         var isExist = _accountRepository.GetEmailorUsername(changePasswordDto.Email);
