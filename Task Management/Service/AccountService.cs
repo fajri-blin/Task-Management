@@ -166,6 +166,56 @@ public class AccountService
         return 1;
     }
 
+    public int ChangePassword(ChangePasswordDto changePasswordDto)
+    {
+        var isExist = _accountRepository.GetEmailorUsername(changePasswordDto.Email);
+        if (isExist is null)
+        {
+            return -1; // Account not found
+        }
+
+        var getAccount = _accountRepository.GetByGuid(isExist.Guid);
+        if (getAccount.OTP != changePasswordDto.Otp)
+        {
+            return 0;
+        }
+
+        if (getAccount.IsUsedOTP == true)
+        {
+            return 1;
+        }
+
+        TimeSpan timeDifference = DateTime.Now - getAccount.ModifiedAt;
+        double minutesDifference = timeDifference.TotalMinutes;
+
+        if (minutesDifference >= 3)
+        {
+            return 2;
+        }
+
+        var account = new Account
+        {
+            Guid = getAccount.Guid,
+            Username = getAccount.Username,
+            Email = getAccount.Email,
+            Name = getAccount.Name,
+            Password = Hashing.HashPassword(changePasswordDto.NewPassword),
+            OTP = getAccount.OTP,
+            IsUsedOTP = true,
+            ImageProfile = getAccount.ImageProfile,
+            ModifiedAt = DateTime.Now,
+            CreatedAt = getAccount.CreatedAt,
+        };
+
+        var isUpdate = _accountRepository.Update(account);
+        if (!isUpdate)
+        {
+            return 0; // Account not updated
+        }
+
+        return 3;
+    }
+
     // Basic CRUD ===================================================
     public IEnumerable<AccountDto>? Get()
     {
