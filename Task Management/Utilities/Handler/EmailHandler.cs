@@ -23,7 +23,7 @@ namespace Task_Management.Utilities.Handler
         public void SendEmail(string toEmail, string subject, string htmlMessage)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Your Name", _fromEmailAddress));
+            message.From.Add(new MailboxAddress("Sender From Metrodata Task Management", _fromEmailAddress));
             message.To.Add(MailboxAddress.Parse(toEmail));
             message.Subject = subject;
 

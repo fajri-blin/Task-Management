@@ -36,7 +36,7 @@ builder.Services.AddScoped<IAdditionalRepository, AdditionalRepository>();
 // Add SmtpClient
 builder.Services.AddTransient<IEmailHandler, EmailHandler>(_ => new EmailHandler(
     builder.Configuration["EmailService:SmtpServer"],
-    int.Parse(builder.Configuration["EmailService:SmtpPort(SSL)"]),
+    int.Parse(builder.Configuration["EmailService:SmtpPort"]),
     builder.Configuration["EmailService:FromEmailAddress"],
     builder.Configuration["EmailService:SmtpPassword"]
 ));

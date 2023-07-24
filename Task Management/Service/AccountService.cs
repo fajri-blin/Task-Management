@@ -44,6 +44,7 @@ public class AccountService
         {
             var claims = new List<Claim>
             {
+                new Claim("Guid", getAccount.Guid.ToString()),
                 new Claim("Username", getAccount.Username),
                 new Claim("Email", getAccount.Email),
             };
