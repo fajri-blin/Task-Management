@@ -1,3 +1,4 @@
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +12,10 @@ using Task_Management.Data;
 using Task_Management.Repository.Data;
 using Task_Management.Service;
 using Task_Management.Utilities.Handler;
-using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<BookingDbContext>(option =>option.UseSqlServer(builder.Configuration
+builder.Services.AddDbContext<BookingDbContext>(option => option.UseSqlServer(builder.Configuration
                                                                .GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
@@ -32,6 +32,14 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProgressRepository, ProgressRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IAdditionalRepository, AdditionalRepository>();
+
+// Add SmtpClient
+builder.Services.AddTransient<IEmailHandler, EmailHandler>(_ => new EmailHandler(
+    builder.Configuration["EmailService:SmtpServer"],
+    int.Parse(builder.Configuration["EmailService:SmtpPort(SSL)"]),
+    builder.Configuration["EmailService:FromEmailAddress"],
+    builder.Configuration["EmailService:SmtpPassword"]
+));
 
 //Add Services
 builder.Services.AddScoped<AccountRoleService>();
@@ -83,7 +91,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x => {
+builder.Services.AddSwaggerGen(x =>
+{
     x.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
@@ -119,7 +128,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-{   
+{
     app.UseSwagger();
     app.UseSwaggerUI();
 }
