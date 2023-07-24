@@ -14,6 +14,7 @@ builder.Services.AddSession();
 
 // Add Repository
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 
 // Set Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
