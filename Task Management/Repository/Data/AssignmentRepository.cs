@@ -9,4 +9,9 @@ public class AssignmentRepository : GeneralRepository<Assignment>, IAssignmentRe
     public AssignmentRepository(BookingDbContext bookingDbContext) : base(bookingDbContext)
     {
     }
+
+    public IEnumerable<Assignment>? GetByManager(Guid managerId)
+    {
+        return _bookingDbContext.Set<Assignment>().Where(a => a.ManagerGuid == managerId);
+    }
 }
