@@ -1,5 +1,4 @@
 ﻿using ClientSide.Contract;
-using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Assignment;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,30 +18,21 @@ public class AssignmentController : Controller
     public async Task<IActionResult> GetAllAssignment()
     {
         var result = await _assignmentRepository.Get();
-        var listAssignment = new List<AssignmentVM>();
+        var listUniversity = new List<AssignmentVM>();
 
         if (result != null)
         {
-            listAssignment = result.Data.Select(entity => new AssignmentVM
+            listUniversity = result.Data.Select(entity => new AssignmentVM
             {
                 Guid = entity.Guid,
-                ManagerGuid = entity.ManagerGuid,
                 Title = entity.Title,
                 Description = entity.Description,
                 DueDate = entity.DueDate,
-                Category = entity.Category,
-                Progress = entity.Progress,
+                IsCompleted = entity.IsCompleted,
+                ManagerGuid = entity.ManagerGuid,
             }).ToList();
         }
 
-        var components = new ComponentHandlers
-        {
-            Footer = false,
-            SideBar = true,
-            Navbar = true,
-        };
-        ViewBag.Components = components;
-
-        return View("GetAllAssignment",listAssignment);
+        return View(listUniversity);
     }
 }
