@@ -2,7 +2,7 @@
 
 namespace ClientSide.ViewModels.Account
 {
-    public class RegisterDto
+    public class RegisterVM
     {
         public string Username { get; set; }
         public string Email { get; set; }

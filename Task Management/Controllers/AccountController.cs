@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Task_Management.Dtos.AccountDto;
@@ -284,6 +284,5 @@ public class AccountController : ControllerBase
             Message = "Data Successfully deleted",
         });
     }
-
     //==========
 }

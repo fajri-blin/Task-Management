@@ -3,8 +3,9 @@ using ClientSide.ViewModels.Account;
 
 namespace ClientSide.Contract;
 
-public interface IAccountRepository : IGeneralRepository<AccountDto>
+public interface IAccountRepository : IGeneralRepository<AccountVM>
 {
-    Task<ResponseHandlers<string>> Login(SignInDto signInDto);
-    Task<ResponseHandlers<RegisterDto>> Register(RegisterDto registerDto);
+    Task<ResponseHandlers<string>> Login(SignInVM signInDto);
+    Task<ResponseHandlers<RegisterVM>> Register(RegisterVM registerDto);
+    Task<ResponseHandlers<ForgotPasswordVM>> ForgotPassword(ForgotPasswordVM forgotPasswordVM);
 }
