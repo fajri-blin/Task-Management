@@ -1,6 +1,4 @@
-﻿using Task_Management.Model;
-using Task_Management.Model.Data;
-using Task_Management.Utilities.Enum;
+﻿using Task_Management.Model.Data;
 
 namespace Task_Management.DTOs.AssignmentDto;
 
@@ -22,6 +20,7 @@ public class AssignmentDto
             Description = assignment.Description,
             DueDate = assignment.DueDate,
             IsCompleted = assignment.IsCompleted,
+            ManagerGuid = assignment.ManagerGuid,
         };
     }
 
@@ -36,6 +35,7 @@ public class AssignmentDto
             IsCompleted = taskDto.IsCompleted,
             ModifiedAt = DateTime.MinValue,
             CreatedAt = DateTime.MinValue,
+            ManagerGuid = taskDto.ManagerGuid,
         };
     }
 }
