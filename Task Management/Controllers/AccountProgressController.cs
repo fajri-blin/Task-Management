@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Task_Management.Service;
-using Task_Management.DTOs.AccountProgressDto;
-using Microsoft.AspNetCore.Authorization;
-using Task_Management.Utilities.Enum;
 using System.Net;
-using Task_Management.DTOs.AccountDto;
-using Task_Management.Utilities.Handler;
+using Task_Management.DTOs.AccountProgressDto;
 using Task_Management.DTOs.AccountRoleDto;
-using Task_Management.DTOs.ProgressDto;
+using Task_Management.Service;
+using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
 
@@ -23,10 +19,30 @@ public class AccountProgressController : ControllerBase
         _accountProgressSevices = accountSevices;
     }
 
-    [HttpGet("GetByProgressKey/{guid}")]
-    public IActionResult GetByProgressKey(Guid guid)
+    [HttpGet("GetByProgress/{guid}")]
+    public IActionResult GetByProgress(Guid guid)
     {
         var entities = _accountProgressSevices.GetByProgressGuid(guid);
+        if (entities == null) return NotFound(new ResponseHandlers<AccountProgressDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
+
+        return Ok(new ResponseHandlers<IEnumerable<AccountProgressDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = entities
+        });
+    }
+
+    [HttpGet("GetByAccountGuid/{guid}")]
+    public IActionResult GetByAccountGuid(Guid guid)
+    {
+        var entities = _accountProgressSevices.GetByAccountGuid(guid);
         if (entities == null) return NotFound(new ResponseHandlers<AccountProgressDto>
         {
             Code = StatusCodes.Status404NotFound,
@@ -69,7 +85,7 @@ public class AccountProgressController : ControllerBase
     }
 
     [HttpGet("{guid}")]
-    public IActionResult Get(Guid guid) 
+    public IActionResult Get(Guid guid)
     {
         var entity = _accountProgressSevices.Get(guid);
         if (entity == null) return NotFound(new ResponseHandlers<AccountRoleDto>
@@ -98,7 +114,7 @@ public class AccountProgressController : ControllerBase
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Failed to created"
         });
-        
+
         return Ok(new ResponseHandlers<AccountProgressDto>
         {
             Code = StatusCodes.Status404NotFound,
@@ -109,10 +125,10 @@ public class AccountProgressController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update(AccountProgressDto entity) 
+    public IActionResult Update(AccountProgressDto entity)
     {
         var updated = _accountProgressSevices.Update(entity);
-        if(updated is -1) return NotFound(new ResponseHandlers<int>
+        if (updated is -1) return NotFound(new ResponseHandlers<int>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),

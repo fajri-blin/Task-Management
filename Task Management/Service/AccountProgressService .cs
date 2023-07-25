@@ -22,7 +22,21 @@ public class AccountProgressService
         if (list is null) return null;
 
         var baseList = new List<AccountProgressDto>();
-        foreach(var item in list)
+        foreach (var item in list)
+        {
+            baseList.Add((AccountProgressDto)item);
+        }
+
+        return baseList;
+    }
+
+    public IEnumerable<AccountProgressDto> GetByAccountGuid(Guid guid)
+    {
+        var list = _accountRoleRepository.GetByAccountGuid(guid);
+        if (list is null) return null;
+
+        var baseList = new List<AccountProgressDto>();
+        foreach (var item in list)
         {
             baseList.Add((AccountProgressDto)item);
         }
@@ -37,7 +51,7 @@ public class AccountProgressService
         if (!entities.Any()) return null;
         var listAccountProgress = new List<AccountProgressDto>();
 
-        foreach ( var entity in entities)
+        foreach (var entity in entities)
         {
             listAccountProgress.Add((AccountProgressDto)entity);
         }
@@ -61,7 +75,7 @@ public class AccountProgressService
         {
             var created = _accountRoleRepository.Create(AccountProgress);
             transaction.Commit();
-            return (AccountProgressDto) created;
+            return (AccountProgressDto)created;
         }
         catch
         {
@@ -76,11 +90,11 @@ public class AccountProgressService
         var getEntity = _accountRoleRepository.GetByGuid(AccountProgressdto.Guid);
         if (getEntity is null) return 0;
 
-        AccountProgress AccountProgress = (AccountProgress) AccountProgressdto;
+        AccountProgress AccountProgress = (AccountProgress)AccountProgressdto;
         AccountProgress.ModifiedAt = DateTime.Now;
         AccountProgress.CreatedAt = getEntity.CreatedAt;
 
-        var transaction = _bookingContext.Database.BeginTransaction();        
+        var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
 
@@ -98,7 +112,7 @@ public class AccountProgressService
     public int Delete(Guid guid)
     {
         var entity = _accountRoleRepository.GetByGuid(guid);
-        if(entity == null) return -1;
+        if (entity == null) return -1;
 
         var transaction = _bookingContext.Database.BeginTransaction();
         try
