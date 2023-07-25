@@ -4,9 +4,130 @@
     ViewData["Title"] = "GetAllAssignment";
 }
 
-<h1>GetAllAssignment</h1>
 
-<p>
+<!-- Test Design-->
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <!--Navigations-->
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Assignment /</span>
+            List Assignment
+        </h4>
+
+        <div class="row row-cols-md-1 g-4">
+
+            <div class="card m-1">
+                <div class="card-body">
+                    <h5 class="card-title"> Ini Judul</h5>
+                    <h6 class="card-subtitle mb-2 text-muted"> Ini Descriptions</h6>
+                    <p class="card-text">
+                        <strong>Guid:</strong> <br />
+                        <strong>Manager Guid:</strong><br />
+                        <strong>Due Date:</strong><br />
+                        <strong>Category:</strong><br />
+                        <strong>Progress:</strong>
+                    </p>
+                    <div class="btn-group">
+                        <a class="btn btn-primary" asp-action="Edit">Edit</a>
+                        <a class="btn btn-secondary" asp-action="Details">Details</a>
+                        <a class="btn btn-danger" asp-action="Delete">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card m-1">
+                <div class="card-body">
+                    <h5 class="card-title"> Ini Judul</h5>
+                    <h6 class="card-subtitle mb-2 text-muted"> Ini Descriptions</h6>
+                    <p class="card-text">
+                        <strong>Guid:</strong> <br />
+                        <strong>Manager Guid:</strong><br />
+                        <strong>Due Date:</strong><br />
+                        <strong>Category:</strong><br />
+                        <strong>Progress:</strong>
+                    </p>
+                    <div class="btn-group">
+                        <a class="btn btn-primary" asp-action="Edit">Edit</a>
+                        <a class="btn btn-secondary" asp-action="Details">Details</a>
+                        <a class="btn btn-danger" asp-action="Delete">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card m-1">
+                <div class="card-body">
+                    <h5 class="card-title"> Ini Judul</h5>
+                    <h6 class="card-subtitle mb-2 text-muted"> Ini Descriptions</h6>
+                    <p class="card-text">
+                        <strong>Guid:</strong> <br />
+                        <strong>Manager Guid:</strong><br />
+                        <strong>Due Date:</strong><br />
+                        <strong>Category:</strong><br />
+                        <strong>Progress:</strong>
+                    </p>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-primary" asp-action="Edit">Edit</a>
+                        <a class="btn btn-secondary" asp-action="Details">Details</a>
+                        <a class="btn btn-danger" asp-action="Delete">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card m-1">
+                <div class="card-body">
+                    <h5 class="card-title"> Ini Judul</h5>
+                    <h6 class="card-subtitle mb-2 text-muted"> Ini Descriptions</h6>
+                    <p class="card-text">
+                        <strong>Guid:</strong> <br />
+                        <strong>Manager Guid:</strong><br />
+                        <strong>Due Date:</strong><br />
+                        <strong>Category:</strong><br />
+                        <strong>Progress:</strong>
+                    </p>
+                    <div class="btn-group">
+                        <a class="btn btn-primary" asp-action="Edit">Edit</a>
+                        <a class="btn btn-secondary" asp-action="Details">Details</a>
+                        <a class="btn btn-danger" asp-action="Delete">Delete</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Card Version-->
+
+@*<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"> Ini Judul @Html.DisplayFor(modelItem => item.Title)</h5>
+                    <h6 class="card-subtitle mb-2 text-muted"> Ini Descriptions @Html.DisplayFor(modelItem => item.Description)</h6>
+                    <p class="card-text">
+                        <strong>Guid:</strong> @Html.DisplayFor(modelItem => item.Guid)<br />
+                        <strong>Manager Guid:</strong> @Html.DisplayFor(modelItem => item.ManagerGuid)<br />
+                        <strong>Due Date:</strong> @Html.DisplayFor(modelItem => item.DueDate)<br />
+                        <strong>Category:</strong> @Html.DisplayFor(modelItem => item.Category)<br />
+                        <strong>Progress:</strong> @Html.DisplayFor(modelItem => item.Progress)
+                    </p>
+                    <div class="btn-group">
+                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Guid">Edit</a>
+                        <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.Guid">Details</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Guid">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>*@
+
+@*<p>
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
@@ -28,7 +149,10 @@
                 @Html.DisplayNameFor(model => model.DueDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsCompleted)
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Progress)
             </th>
             <th></th>
         </tr>
@@ -52,7 +176,10 @@
                 @Html.DisplayFor(modelItem => item.DueDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsCompleted)
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Progress)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
@@ -62,4 +189,4 @@
         </tr>
 }
     </tbody>
-</table>
+</table>*@
