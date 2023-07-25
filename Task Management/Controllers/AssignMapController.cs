@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Task_Management.DTOs.AccountRoleDto;
 using Task_Management.DTOs.AssignMapDto;
 using Task_Management.Service;
-using Task_Management.Utilities.Enum;
 using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]
+/*[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]*/
 public class AssignMapController : ControllerBase
 {
     private readonly AssignMapService _assignmentServices;
@@ -45,7 +42,7 @@ public class AssignMapController : ControllerBase
     }
 
     [HttpGet("{guid}")]
-    public IActionResult Get(Guid guid) 
+    public IActionResult Get(Guid guid)
     {
         var entity = _assignmentServices.Get(guid);
         if (entity == null) return NotFound(new ResponseHandlers<AssignMapDto>
@@ -74,7 +71,7 @@ public class AssignMapController : ControllerBase
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
-        
+
         return Ok(new ResponseHandlers<AssignMapDto>
         {
             Code = StatusCodes.Status200OK,
@@ -85,10 +82,10 @@ public class AssignMapController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update(AssignMapDto entity) 
+    public IActionResult Update(AssignMapDto entity)
     {
         var updated = _assignmentServices.Update(entity);
-        if(updated is -1) return NotFound(new ResponseHandlers<AssignMapDto>
+        if (updated is -1) return NotFound(new ResponseHandlers<AssignMapDto>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),
