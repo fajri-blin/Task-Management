@@ -1,5 +1,4 @@
-﻿using Task_Management.Model;
-using Task_Management.Model.Data;
+﻿using Task_Management.Model.Data;
 using Task_Management.Utilities.Enum;
 
 namespace Task_Management.DTOs.ProgressDto;
