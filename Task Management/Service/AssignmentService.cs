@@ -11,7 +11,7 @@ namespace Task_Management.Service;
 
 public class AssignmentService
 {
-    private readonly IAssignmentRepository _assignemtnRepository;
+    private readonly IAssignmentRepository _assignmentRepository;
     private readonly IProgressRepository _progressRepository;
     private readonly IAccountProgressRepository _accountProgressRepository;
     private readonly IAdditionalRepository _additionalRepository;
@@ -19,9 +19,9 @@ public class AssignmentService
     private readonly ICategoryRepository _categoryRepository;
     private readonly BookingDbContext _bookingContext;
 
-    public AssignmentService(IAssignmentRepository TaskRepository, IProgressRepository progressRepository, BookingDbContext bookingDbContext, IAssignMapRepository assignMapRepository, IAccountProgressRepository accountProgressRepository, ICategoryRepository categoryRepository)
+    public AssignmentService(IAssignmentRepository assignmentRepository, IProgressRepository progressRepository, BookingDbContext bookingDbContext, IAssignMapRepository assignMapRepository, IAccountProgressRepository accountProgressRepository, ICategoryRepository categoryRepository)
     {
-        _assignemtnRepository = TaskRepository;
+        _assignmentRepository = assignmentRepository;
         _progressRepository = progressRepository;
         _bookingContext = bookingDbContext;
         _assignMapRepository = assignMapRepository;
@@ -34,8 +34,8 @@ public class AssignmentService
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            var getAssignment = _assignemtnRepository.GetByGuid(guid);
-            if (getAssignment != null) return -1;
+            var getAssignment = _assignmentRepository.GetByGuid(guid);
+            if (getAssignment == null) return -1;
 
             var getListProgress = _progressRepository.GetByAssignmentForeignKey(getAssignment.Guid);
             if (getListProgress != null)
@@ -61,7 +61,7 @@ public class AssignmentService
                     _progressRepository.Delete(progress);
                 }
             }
-            _assignemtnRepository.Delete(getAssignment);
+            _assignmentRepository.Delete(getAssignment);
             transaction.Commit();
             return 1;
         }
@@ -90,7 +90,7 @@ public class AssignmentService
     // Basic CRUD ===================================================
     public IEnumerable<AssignmentDto>? Get()
     {
-        var entities = _assignemtnRepository.GetAll();
+        var entities = _assignmentRepository.GetAll();
         if (!entities.Any()) return null;
         var listTask = new List<AssignmentDto>();
 
@@ -103,7 +103,7 @@ public class AssignmentService
 
     public AssignmentDto? Get(Guid guid)
     {
-        var entity = _assignemtnRepository.GetByGuid(guid);
+        var entity = _assignmentRepository.GetByGuid(guid);
         if (entity is null) return null;
 
         var Dto = (AssignmentDto)entity;
@@ -113,7 +113,7 @@ public class AssignmentService
 
     public IEnumerable<AssignmentByManagerDto>? GetByManager(Guid guid)
     {
-        var assignments = _assignemtnRepository.GetByManager(guid);
+        var assignments = _assignmentRepository.GetByManager(guid);
         if (assignments is null) return null;
 
         var assignmentMaps = _assignMapRepository.GetAll();
@@ -158,7 +158,7 @@ public class AssignmentService
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            var created = _assignemtnRepository.Create(Task);
+            var created = _assignmentRepository.Create(Task);
             transaction.Commit();
             return (AssignmentDto)created;
         }
@@ -198,7 +198,7 @@ public class AssignmentService
             }
 
             // Jika ada kategori yang sama atau baru saja dibuat, lanjutkan proses penyimpanan data
-            var createdAssignment = _assignemtnRepository.Create(Task);
+            var createdAssignment = _assignmentRepository.Create(Task);
             foreach (var categoryName in taskCategories)
             {
                 // Cari ID kategori berdasarkan nama kategori
@@ -226,7 +226,7 @@ public class AssignmentService
     public int Update(AssignmentDto assignmentDto)
     {
 
-        var getEntity = _assignemtnRepository.GetByGuid(assignmentDto.Guid);
+        var getEntity = _assignmentRepository.GetByGuid(assignmentDto.Guid);
         if (getEntity is null) return 0;
 
         Assignment assignment = (Assignment)assignmentDto;
@@ -237,7 +237,7 @@ public class AssignmentService
         try
         {
 
-            _assignemtnRepository.Update(assignment);
+            _assignmentRepository.Update(assignment);
             transaction.Commit();
             return 1;
         }
@@ -250,13 +250,13 @@ public class AssignmentService
 
     public int Delete(Guid guid)
     {
-        var entity = _assignemtnRepository.GetByGuid(guid);
+        var entity = _assignmentRepository.GetByGuid(guid);
         if (entity == null) return -1;
 
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            _assignemtnRepository.Delete(entity);
+            _assignmentRepository.Delete(entity);
             transaction.Commit();
             return 1;
         }

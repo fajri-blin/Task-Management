@@ -1,6 +1,7 @@
 ﻿using ClientSide.Contract;
 using ClientSide.ViewModels.Account;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace ClientSide.Controllers;
 
@@ -63,6 +64,7 @@ public class AccountController : Controller
             HttpContext.Session.SetString("JWToken", result.Data);
             return RedirectToAction("Index", "Home");
         }
+
         return View();
     }
 
@@ -75,6 +77,7 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult SignIn()
     {
+
         return View();
     }
 
@@ -82,5 +85,12 @@ public class AccountController : Controller
     public IActionResult ForgotPass()
     {
         return View();
+    }
+
+    [HttpGet]
+    public IActionResult LogOut()
+    {
+        HttpContext.Session.Clear();
+        return RedirectToAction("Index","Home");
     }
 }
