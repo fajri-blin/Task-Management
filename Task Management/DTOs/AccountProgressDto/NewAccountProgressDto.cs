@@ -4,7 +4,7 @@ namespace Task_Management.DTOs.AccountProgressDto;
 
 public class NewAccountProgressDto
 {
-    public Guid AccountGuid { get; set; }   
+    public Guid AccountGuid { get; set; }
     public Guid? ProgressGuid { get; set; }
 
 
