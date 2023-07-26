@@ -34,4 +34,53 @@ public class GeneralRepository<TEntity> : IGeneralRepository<TEntity>
         }
         return entityVM;
     }
+
+    public async Task<ResponseHandlers<TEntity>> Get(Guid guid)
+    {
+        ResponseHandlers<TEntity> entityVM = null;
+
+        using (var response = await _httpClient.GetAsync(_request + guid))
+        {
+            string responseApi = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<TEntity>>(responseApi);
+        }
+        return entityVM;
+    }
+
+    public async Task<ResponseHandlers<TEntity>> Post(TEntity entity)
+    {
+        ResponseHandlers<TEntity> entityVM = null;
+        StringContent content = new StringContent(JsonConvert.SerializeObject(entity), System.Text.Encoding.UTF8, "application/json");
+        using (var response = _httpClient.PostAsync(_request, content).Result)
+        {
+            string responseApi = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<TEntity>>(responseApi);
+        }
+        return entityVM;
+    }
+
+    public async Task<ResponseHandlers<TEntity>> Put(TEntity entity)
+    {
+        ResponseHandlers<TEntity> entityVM = null;
+        StringContent content = new StringContent(JsonConvert.SerializeObject(entity), System.Text.Encoding.UTF8, "application/json");
+        using (var response = _httpClient.PutAsJsonAsync(_request, entity).Result)
+        {
+            string responseApi = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<TEntity>>(responseApi);
+        }
+        return entityVM;
+    }
+
+    public async Task<ResponseHandlers<TEntity>> Delete(Guid guid)
+    {
+        ResponseHandlers<TEntity> entityVM = null;
+        StringContent content = new StringContent(JsonConvert.SerializeObject(guid), System.Text.Encoding.UTF8, "application/json");
+        using (var response = _httpClient.DeleteAsync(_request + guid).Result)
+        {
+            string responseApi = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<TEntity>>(responseApi);
+        }
+        return entityVM;
+    
+    }
 }

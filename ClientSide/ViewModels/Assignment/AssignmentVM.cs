@@ -7,6 +7,6 @@ public class AssignmentVM
     public string Title { get; set; }
     public string Description { get; set; }
     public DateTime DueDate { get; set; }
-    public string Category { get; set; }
+    public IEnumerable<string> Category { get; set; }
     public double Progress { get; set; }
 }
