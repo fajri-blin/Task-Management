@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Task_Management.Dtos.ProgressDto;
 using Task_Management.DTOs.ProgressDto;
 using Task_Management.Service;
 using Task_Management.Utilities.Handler;
@@ -131,6 +132,25 @@ public class ProgressController : ControllerBase
         });
 
         return Ok(new ResponseHandlers<ProgressDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data has been updated"
+        });
+    }
+
+    [HttpPut("Status")]
+    public IActionResult UpdateStatus(UpdateStatusDto entity)
+    {
+        var updated = _progressServices.UpdateStatus(entity);
+        if (updated is 0) return NotFound(new ResponseHandlers<UpdateStatusDto>
+        {
+            Code = StatusCodes.Status406NotAcceptable,
+            Status = HttpStatusCode.NotAcceptable.ToString(),
+            Message = "Data Failed Update"
+        });
+
+        return Ok(new ResponseHandlers<UpdateStatusDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),

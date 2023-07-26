@@ -10,9 +10,6 @@ namespace Task_Management.Utilities.Validation.Progress
 
             RuleFor(p => p.Description)
         .NotEmpty();
-
-            RuleFor(p => p.CheckMark)
-        .NotEmpty();
         }
     }
 }
