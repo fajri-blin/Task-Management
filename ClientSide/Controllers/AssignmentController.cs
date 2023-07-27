@@ -37,6 +37,25 @@ public class AssignmentController : Controller
         return View();
     }
 
+    [HttpPost]
+    public async Task<JsonResult> DeepDeleteAssignments(Guid guid)
+    {
+        var components = new ComponentHandlers
+        {
+            Footer = false,
+            SideBar = true,
+            Navbar = true,
+        };
+        ViewBag.Components = components;
+
+        var result = await _assignmentRepository.DeepDeleteAssignments(guid);
+        if (result.Code == 404)
+        {
+            return Json(new { code = 404, message = "Assignment not found" });
+        }
+        return Json(new { code = 200, message = "Assignment deleted successfully" });
+    }
+
 
 
     [HttpGet]

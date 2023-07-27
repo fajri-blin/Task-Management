@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "GetAllAssignment";
+    var deleteUrl = Url.Action("DeepDeleteAssignments", "Assignment");
 }
 
 
@@ -35,8 +36,8 @@
                     <div class="btn-group">
                         <a class="btn btn-primary" asp-action="Edit">Edit</a>
                         <a class="btn btn-secondary" asp-action="Details">Details</a>
-                        <a class="btn btn-danger" asp-action="Delete">Delete</a>
-                    </div>
+                            <a class="btn btn-danger text-white" onclick="showDeleteConfirmation('@item.Guid', '@deleteUrl')">Delete</a>
+                        </div>
                 </div>
             </div>
         }
