@@ -224,13 +224,13 @@
                 statisticsChart.render();
             }
 
-            // Income Chart - Area chart
+            // assignment Chart - Area chart
             // --------------------------------------------------------------------
             const assignmentEl = document.querySelector('#assignment'),
                 assignmentConfig = {
                     series: [
                         {
-                            data: ['@Model.totalAssignment', 21, 30, 22, 42, 26, 35, 29, 9, 10, 11, 12]
+                            data: ['@Model.totalAssignment', 0, 5, 6, 3, 9, 3, 13, 6, 4, 2, 1]
                         }
                     ],
                     chart: {
@@ -289,8 +289,8 @@
                         padding: {
                             top: -20,
                             bottom: -8,
-                            left: -10,
-                            right: 8
+                            left: 10,
+                            right: 10
                         }
                     },
                     xaxis: {
@@ -311,10 +311,10 @@
                     },
                     yaxis: {
                         labels: {
-                            show: false
+                            show: true
                         },
-                        min: 10,
-                        max: 50,
+                        min: 0,
+                        max: 15,
                         tickAmount: 4
                     }
                 };

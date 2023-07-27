@@ -4,4 +4,5 @@ namespace Task_Management.Contract.Data;
 
 public interface IAssignMapRepository : IGeneralRepository<AssignMap>
 {
+    IEnumerable<AssignMap> GetByAssignmentForeignKey(Guid guid);
 }
