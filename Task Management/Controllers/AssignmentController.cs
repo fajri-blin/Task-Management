@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Task_Management.Dtos.AssignmentDto;
 using Task_Management.DTOs.AssignmentDto;
 using Task_Management.Service;
-using Task_Management.Utilities.Enum;
 using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
@@ -47,14 +45,14 @@ public class AssignmentController : ControllerBase
         var entities = _assignmentServices.Get();
         if (entities == null)
         {
-            return NotFound(new ResponseHandlers<AssignmentDto>
+            return NotFound(new ResponseHandlers<AssignmentByManagerDto>
             {
                 Code = StatusCodes.Status404NotFound,
                 Status = HttpStatusCode.NotFound.ToString(),
                 Message = "Data Not Found"
             });
         }
-        return Ok(new ResponseHandlers<IEnumerable<AssignmentDto>>
+        return Ok(new ResponseHandlers<IEnumerable<AssignmentByManagerDto>>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.NotFound.ToString(),
@@ -67,14 +65,14 @@ public class AssignmentController : ControllerBase
     public IActionResult Get(Guid guid)
     {
         var entity = _assignmentServices.Get(guid);
-        if (entity == null) return NotFound(new ResponseHandlers<AssignmentDto>
+        if (entity == null) return NotFound(new ResponseHandlers<AssignmentByManagerDto>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
 
-        return Ok(new ResponseHandlers<AssignmentDto>
+        return Ok(new ResponseHandlers<AssignmentByManagerDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.NotFound.ToString(),
@@ -124,17 +122,17 @@ public class AssignmentController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update(AssignmentDto entity)
+    public IActionResult Update(UpdateAssignmentDto entity)
     {
         var updated = _assignmentServices.Update(entity);
-        if (updated is -1) return NotFound(new ResponseHandlers<AssignmentDto>
+        if (updated is -1) return NotFound(new ResponseHandlers<UpdateAssignmentDto>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
 
-        return Ok(new ResponseHandlers<AssignmentDto>
+        return Ok(new ResponseHandlers<UpdateAssignmentDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
