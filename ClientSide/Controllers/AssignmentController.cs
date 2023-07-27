@@ -49,11 +49,12 @@ public class AssignmentController : Controller
         ViewBag.Components = components;
 
         var result = await _assignmentRepository.DeepDeleteAssignments(guid);
+
         if (result.Code == 404)
         {
-            return Json(new { code = 404, message = "Assignment not found" });
+            return new JsonResult(new { code = 404, message = "Not found" });
         }
-        return Json(new { code = 200, message = "Assignment deleted successfully" });
+        return new JsonResult(new { code = 200, message = "Data was found", status = "OK", data = (string)null });
     }
 
 
