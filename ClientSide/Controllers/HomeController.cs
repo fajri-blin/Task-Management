@@ -1,21 +1,24 @@
-﻿using ClientSide.Models;
+﻿using ClientSide.Contract;
+using ClientSide.Models;
 using ClientSide.Utilities.Handlers;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace ClientSide.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IAssignmentRepository _assignmentRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IAssignmentRepository assignmentRepository)
         {
-            _logger = logger;
+            _assignmentRepository = assignmentRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var assignment = await _assignmentRepository.GetFromManager(Guid.Parse(HttpContext.User.FindFirstValue("Guid")));
             var components = new ComponentHandlers
             {
                 Footer = false,
@@ -23,15 +26,22 @@ namespace ClientSide.Controllers
                 Navbar = true,
             };
             ViewBag.Components = components;
-
-            var jwt = HttpContext.Session.GetString("JWToken");
-
-            var data = new 
+            DashboardHandlers data;
+            if (assignment.Code == 404)
             {
-                token = jwt,
-            };
-
-            return View(data);
+                data = new DashboardHandlers
+                {
+                    totalAssignment = 0
+                };
+            }
+            else
+            {
+                data = new DashboardHandlers
+                {
+                    totalAssignment = assignment.Data.Count()
+                };
+            }
+            return View("Index", data);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

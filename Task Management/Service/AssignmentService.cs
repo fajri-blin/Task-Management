@@ -17,9 +17,10 @@ public class AssignmentService
     private readonly IAdditionalRepository _additionalRepository;
     private readonly IAssignMapRepository _assignMapRepository;
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IAccountRepository _accountRepository;
     private readonly BookingDbContext _bookingContext;
 
-    public AssignmentService(IAssignmentRepository assignmentRepository, IProgressRepository progressRepository, BookingDbContext bookingDbContext, IAssignMapRepository assignMapRepository, IAccountProgressRepository accountProgressRepository, ICategoryRepository categoryRepository)
+    public AssignmentService(IAssignmentRepository assignmentRepository, IProgressRepository progressRepository, BookingDbContext bookingDbContext, IAssignMapRepository assignMapRepository, IAccountProgressRepository accountProgressRepository, ICategoryRepository categoryRepository, IAccountRepository accountRepository)
     {
         _assignmentRepository = assignmentRepository;
         _progressRepository = progressRepository;
@@ -27,6 +28,7 @@ public class AssignmentService
         _assignMapRepository = assignMapRepository;
         _accountProgressRepository = accountProgressRepository;
         _categoryRepository = categoryRepository;
+        _accountRepository = accountRepository;
     }
 
     public int DeleteDeepAssignment(Guid guid)
@@ -88,42 +90,18 @@ public class AssignmentService
     }
 
     // Basic CRUD ===================================================
-    public IEnumerable<AssignmentDto>? Get()
+    public IEnumerable<AssignmentByManagerDto>? Get()
     {
-        var entities = _assignmentRepository.GetAll();
-        if (!entities.Any()) return null;
-        var listTask = new List<AssignmentDto>();
-
-        foreach (var entity in entities)
-        {
-            listTask.Add((AssignmentDto)entity);
-        }
-        return listTask;
-    }
-
-    public AssignmentDto? Get(Guid guid)
-    {
-        var entity = _assignmentRepository.GetByGuid(guid);
-        if (entity is null) return null;
-
-        var Dto = (AssignmentDto)entity;
-
-        return Dto;
-    }
-
-    public IEnumerable<AssignmentByManagerDto>? GetByManager(Guid guid)
-    {
-        var assignments = _assignmentRepository.GetByManager(guid);
+        var assignments = _assignmentRepository.GetAll();
         if (assignments is null) return null;
-
         var assignmentMaps = _assignMapRepository.GetAll();
         var categories = _categoryRepository.GetAll();
         var progresses = _progressRepository.GetAll();
-
-        /*var assigmentProgress = _progressRepository.GetByAssignmentForeignKey()*/
+        var accounts = _accountRepository.GetAll();
 
         var Dto = (
             from assignment in assignments
+            join account in accounts on assignment.ManagerGuid equals account.Guid
             join assignmentMap in assignmentMaps on assignment.Guid equals assignmentMap.AssignmentGuid
             join category in categories on assignmentMap.CategoryGuid equals category.Guid
             join progress in progresses on assignment.Guid equals progress.AssignmentGuid into progressGroup
@@ -134,7 +112,7 @@ public class AssignmentService
                 assignment.Title,
                 assignment.Description,
                 assignment.DueDate,
-                assignment.ManagerGuid,
+                account.Name,
                 progress = CalculatePercentage(progressGroup.Select(p => p.Status).ToList())
 
             } into g
@@ -144,7 +122,7 @@ public class AssignmentService
                 Title = g.Key.Title,
                 Description = g.Key.Description,
                 DueDate = g.Key.DueDate,
-                ManagerGuid = g.Key.ManagerGuid,
+                Name = g.Key.Name,
                 category = g.Select(c => c.Name).Distinct().ToList(),
                 progress = g.Key.progress
             }
@@ -153,21 +131,88 @@ public class AssignmentService
         return Dto;
     }
 
-    /*public AssignmentDto? Create(NewAssignmentDto Task)
+    public AssignmentByManagerDto? Get(Guid guid)
     {
-        var transaction = _bookingContext.Database.BeginTransaction();
-        try
-        {
-            var created = _assignmentRepository.Create(Task);
-            transaction.Commit();
-            return (AssignmentDto)created;
-        }
-        catch
-        {
-            transaction.Rollback();
-            return null;
-        }
-    }*/
+        var assignments = _assignmentRepository.GetAll();
+        var assignmentMaps = _assignMapRepository.GetAll();
+        var categories = _categoryRepository.GetAll();
+        var progresses = _progressRepository.GetAll();
+        var accounts = _accountRepository.GetAll();
+
+        var Dto = (
+            from assignment in assignments
+            join account in accounts on assignment.ManagerGuid equals account.Guid
+            join assignmentMap in assignmentMaps on assignment.Guid equals assignmentMap.AssignmentGuid
+            join category in categories on assignmentMap.CategoryGuid equals category.Guid
+            join progress in progresses on assignment.Guid equals progress.AssignmentGuid into progressGroup
+            from progressItem in progressGroup.DefaultIfEmpty()
+            group category by new
+            {
+                assignment.Guid,
+                assignment.Title,
+                assignment.Description,
+                assignment.DueDate,
+                account.Name,
+                progress = CalculatePercentage(progressGroup.Select(p => p.Status).ToList())
+
+            } into g
+            select new AssignmentByManagerDto
+            {
+                Guid = g.Key.Guid,
+                Title = g.Key.Title,
+                Description = g.Key.Description,
+                DueDate = g.Key.DueDate,
+                Name = g.Key.Name,
+                category = g.Select(c => c.Name).Distinct().ToList(),
+                progress = g.Key.progress
+            }
+            ).ToList();
+        var data = Dto.FirstOrDefault(d => d.Guid == guid);
+        if (data is null) return null;
+        return data;
+    }
+
+    public IEnumerable<AssignmentByManagerDto>? GetByManager(Guid guid)
+    {
+        var assignments = _assignmentRepository.GetByManager(guid);
+        if (assignments is null) return null;
+
+        var assignmentMaps = _assignMapRepository.GetAll();
+        var categories = _categoryRepository.GetAll();
+        var progresses = _progressRepository.GetAll();
+        var accounts = _accountRepository.GetAll();
+
+        var Dto = (
+            from assignment in assignments
+            join account in accounts on assignment.ManagerGuid equals account.Guid
+            join assignmentMap in assignmentMaps on assignment.Guid equals assignmentMap.AssignmentGuid
+            join category in categories on assignmentMap.CategoryGuid equals category.Guid
+            join progress in progresses on assignment.Guid equals progress.AssignmentGuid into progressGroup
+            from progressItem in progressGroup.DefaultIfEmpty()
+            group category by new
+            {
+                assignment.Guid,
+                assignment.Title,
+                assignment.Description,
+                assignment.DueDate,
+                account.Name,
+                progress = CalculatePercentage(progressGroup.Select(p => p.Status).ToList())
+
+            } into g
+            select new AssignmentByManagerDto
+            {
+                Guid = g.Key.Guid,
+                Title = g.Key.Title,
+                Description = g.Key.Description,
+                DueDate = g.Key.DueDate,
+                Name = g.Key.Name,
+                category = g.Select(c => c.Name).Distinct().ToList(),
+                progress = g.Key.progress
+            }
+            ).ToList();
+
+        return Dto;
+    }
 
     public AssignmentDto? Create(NewAssignmentDto Task)
     {
@@ -223,19 +268,67 @@ public class AssignmentService
         }
     }
 
-    public int Update(AssignmentDto assignmentDto)
+    public int Update(UpdateAssignmentDto updateAssignmentDto)
     {
 
-        var getEntity = _assignmentRepository.GetByGuid(assignmentDto.Guid);
+        var getEntity = _assignmentRepository.GetByGuid(updateAssignmentDto.Guid);
         if (getEntity is null) return 0;
 
-        Assignment assignment = (Assignment)assignmentDto;
+        var assignmentManagerGuid = _assignmentRepository.GetByGuid(updateAssignmentDto.Guid);
+
+        Assignment assignment = (Assignment)updateAssignmentDto;
         assignment.ModifiedAt = DateTime.Now;
         assignment.CreatedAt = getEntity.CreatedAt;
+        assignment.ManagerGuid = assignmentManagerGuid.ManagerGuid;
 
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
+            var categories = _categoryRepository.GetAll();
+
+            var taskCategories = updateAssignmentDto.Category;
+
+            var assignmentMaps = _assignMapRepository.GetAll().Where(a => a.AssignmentGuid == updateAssignmentDto.Guid);
+
+            foreach (var assignmentMap in assignmentMaps)
+            {
+                _assignMapRepository.Delete(assignmentMap);
+            }
+
+            // Mengecek apakah ada kategori yang sama di antara kedua koleksi
+            var commonCategories = categories.Select(c => c.Name).Intersect(taskCategories).ToList();
+
+            // Jika tidak ada kategori yang sama, buat kategori baru di tabel category
+            var newCategories = taskCategories.Except(commonCategories).ToList();
+            foreach (var categoryName in newCategories)
+            {
+                // Periksa apakah kategori sudah ada di dalam tabel
+                var existingCategory = categories.FirstOrDefault(c => c.Name == categoryName);
+                if (existingCategory == null)
+                {
+                    var newCategory = new NewCategoryDto
+                    {
+                        Name = categoryName
+                    };
+                    _categoryRepository.Create(newCategory);
+                }
+            }
+
+            // Jika ada kategori yang sama atau baru saja dibuat, lanjutkan proses penyimpanan data
+            var updatedAssignment = _assignmentRepository.Update(assignment);
+            foreach (var categoryName in taskCategories)
+            {
+                // Cari ID kategori berdasarkan nama kategori
+                var categoryId = categories.FirstOrDefault(c => c.Name == categoryName)?.Guid;
+
+                // Buat entri baru di tabel assignmentmap untuk menghubungkan assignment dengan kategori
+                var CreateassignmentMap = new NewAssignMapDto
+                {
+                    AssignmentGuid = updateAssignmentDto.Guid,
+                    CategoryGuid = categoryId ?? _categoryRepository.GetByName(categoryName).Guid
+                };
+                _assignMapRepository.Create(CreateassignmentMap);
+            }
 
             _assignmentRepository.Update(assignment);
             transaction.Commit();

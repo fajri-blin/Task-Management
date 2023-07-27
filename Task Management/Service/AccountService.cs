@@ -48,6 +48,7 @@ public class AccountService
                 new Claim("Guid", getAccount.Guid.ToString()),
                 new Claim("Username", getAccount.Username),
                 new Claim("Email", getAccount.Email),
+                new Claim(ClaimTypes.Name, getAccount.Name),
             };
 
             var getAccountRole = _accountRoleRepository.GetAccountRolesByAccountGuid(getAccount.Guid);
