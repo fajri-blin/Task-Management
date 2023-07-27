@@ -1,6 +1,6 @@
 ﻿namespace ClientSide.ViewModels.Account
 {
-    public class AccountDto
+    public class AccountVM
     {
         public Guid Guid { get; set; }
         public string? Username { get; set; }

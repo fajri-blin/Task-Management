@@ -15,7 +15,22 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> SignUp(RegisterDto registerDto)
+    public async Task<IActionResult> ForgotPass(ForgotPasswordVM forgotPasswordVM)
+    {
+        var result = await _accountRepository.ForgotPassword(forgotPasswordVM);
+        if (result == null)
+        {
+            return RedirectToAction("Error", "Index");
+        }
+        else if (result.Code == 404)
+        {
+            return View("Index");
+        }
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SignUp(RegisterVM registerDto)
     {
         var result = await _accountRepository.Register(registerDto);
         if (result == null)
@@ -29,14 +44,9 @@ public class AccountController : Controller
         return View();
     }
 
-    [HttpGet]
-    public IActionResult SignIn()
-    {
-        return View();
-    }
 
     [HttpPost]
-    public async Task<IActionResult> SignIn(SignInDto signInDto)
+    public async Task<IActionResult> SignIn(SignInVM signInDto)
     {
         var result = await _accountRepository.Login(signInDto);
         if (result == null)
@@ -53,12 +63,37 @@ public class AccountController : Controller
             HttpContext.Session.SetString("JWToken", result.Data);
             return RedirectToAction("Index", "Home");
         }
+
         return View();
     }
 
     [HttpGet]
-    public IActionResult Register()
+    public IActionResult SignUp()
     {
         return View();
+    }
+
+    [HttpGet]
+    public IActionResult SignIn()
+    {
+        if (User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
+        return View();
+    }
+
+    [HttpGet]
+    public IActionResult ForgotPass()
+    {
+        return View();
+    }
+
+    [HttpGet]
+    public IActionResult LogOut()
+    {
+        HttpContext.Session.Clear();
+        return RedirectToAction("Index", "Home");
     }
 }

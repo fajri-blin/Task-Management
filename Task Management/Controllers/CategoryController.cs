@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Task_Management.DTOs.AccountRoleDto;
 using Task_Management.DTOs.CategoryDto;
 using Task_Management.Service;
-using Task_Management.Utilities.Enum;
 using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]
+/*[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]*/
 public class CategoryController : ControllerBase
 {
     private readonly CategoryService _cateogoryServices;
@@ -45,7 +42,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("{guid}")]
-    public IActionResult Get(Guid guid) 
+    public IActionResult Get(Guid guid)
     {
         var entity = _cateogoryServices.Get(guid);
         if (entity == null) return NotFound(new ResponseHandlers<CategoryDto>
@@ -60,7 +57,7 @@ public class CategoryController : ControllerBase
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
             Message = "Data Found",
-            Data= entity
+            Data = entity
         });
     }
 
@@ -74,21 +71,21 @@ public class CategoryController : ControllerBase
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
-        
+
         return Ok(new ResponseHandlers<CategoryDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
             Message = "Data Found",
-            Data= created
+            Data = created
         });
     }
 
     [HttpPut]
-    public IActionResult Update(CategoryDto entity) 
+    public IActionResult Update(CategoryDto entity)
     {
         var updated = _cateogoryServices.Update(entity);
-        if(updated is -1) return NotFound(new ResponseHandlers<CategoryDto>
+        if (updated is -1) return NotFound(new ResponseHandlers<CategoryDto>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),

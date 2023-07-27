@@ -14,6 +14,18 @@ builder.Services.AddSession();
 
 // Add Repository
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+
+// Add Cors
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+    });
+});
 
 // Set Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

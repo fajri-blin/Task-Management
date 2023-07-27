@@ -7,22 +7,44 @@ namespace Task_Management.Service;
 
 public class AccountProgressService
 {
-    private readonly IAccountProgressRepository _accountRoleRepository;
+    private readonly IAccountProgressRepository _accountProgressRepository;
+    private readonly IEmailHandler _emailHandler;
+    private readonly IAccountRepository _accountRepository;
+    private readonly IProgressRepository _progressRepository;
+    private readonly IAssignmentRepository _assignmentRepository;
     private readonly BookingDbContext _bookingContext;
 
-    public AccountProgressService(IAccountProgressRepository AccountProgressRepository, BookingDbContext bookingDbContext)
+    public AccountProgressService(IAccountProgressRepository accountProgressRepository, BookingDbContext bookingDbContext, IEmailHandler emailHandler, IAccountRepository accountRepository, IProgressRepository progressRepository, IAssignmentRepository assignmentRepository)
     {
-        _accountRoleRepository = AccountProgressRepository;
+        _accountProgressRepository = accountProgressRepository;
         _bookingContext = bookingDbContext;
+        _emailHandler = emailHandler;
+        _accountRepository = accountRepository;
+        _progressRepository = progressRepository;
+        _assignmentRepository = assignmentRepository;
     }
 
     public IEnumerable<AccountProgressDto> GetByProgressGuid(Guid guid)
     {
-        var list = _accountRoleRepository.GetByProgressForeignKey(guid);
+        var list = _accountProgressRepository.GetByProgressForeignKey(guid);
         if (list is null) return null;
 
         var baseList = new List<AccountProgressDto>();
-        foreach(var item in list)
+        foreach (var item in list)
+        {
+            baseList.Add((AccountProgressDto)item);
+        }
+
+        return baseList;
+    }
+
+    public IEnumerable<AccountProgressDto> GetByAccountGuid(Guid guid)
+    {
+        var list = _accountProgressRepository.GetByAccountGuid(guid);
+        if (list is null) return null;
+
+        var baseList = new List<AccountProgressDto>();
+        foreach (var item in list)
         {
             baseList.Add((AccountProgressDto)item);
         }
@@ -33,11 +55,11 @@ public class AccountProgressService
     // Basic CRUD ===================================================
     public IEnumerable<AccountProgressDto>? Get()
     {
-        var entities = _accountRoleRepository.GetAll();
+        var entities = _accountProgressRepository.GetAll();
         if (!entities.Any()) return null;
         var listAccountProgress = new List<AccountProgressDto>();
 
-        foreach ( var entity in entities)
+        foreach (var entity in entities)
         {
             listAccountProgress.Add((AccountProgressDto)entity);
         }
@@ -46,7 +68,7 @@ public class AccountProgressService
 
     public AccountProgressDto? Get(Guid guid)
     {
-        var entity = _accountRoleRepository.GetByGuid(guid);
+        var entity = _accountProgressRepository.GetByGuid(guid);
         if (entity is null) return null;
 
         var Dto = (AccountProgressDto)entity;
@@ -59,9 +81,34 @@ public class AccountProgressService
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            var created = _accountRoleRepository.Create(AccountProgress);
+            var accountStaff = _accountRepository.GetByGuid(AccountProgress.AccountGuid);
+            var progress = _progressRepository.GetByGuid((Guid)AccountProgress.ProgressGuid);
+            var assignment = _assignmentRepository.GetByGuid((Guid)progress.AssignmentGuid);
+            var manager = _accountRepository.GetByGuid((Guid)assignment.ManagerGuid);
+            if (progress is null || assignment is null || manager is null)
+            {
+                return null;
+            }
+            var created = _accountProgressRepository.Create(AccountProgress);
+            _emailHandler.SendEmail(accountStaff.Email,
+                                "New Assignment - Congratulations!",
+                                $"<p>Dear {accountStaff.Name}</p>" +
+                                $"<p>We are thrilled to inform you that you have been assigned a new task within our organization! Congratulations on this new opportunity, which we believe will showcase your talents and expertise.</p>" +
+                                $"<div style=\"padding: 20px 0px;\">" +
+                                $"<h3 style=\"color: #0066cc;\">Task Details:</h3>" +
+                                $"<p><strong>Task :</strong> {progress.Description}</p>" +
+                                $"<p><strong>Start Date:</strong> {progress.CreatedAt.ToString("dddd, dd-MM-yyyy")}</p>" +
+                                $"<p><strong>Due Date:</strong> {assignment.DueDate.ToString("dddd, dd-MM-yyyy")}</p>" +
+                                $"<p>Please take some time to review the task details thoroughly and familiarize yourself with the objectives and expectations. If you have any questions or need further clarifications, do not hesitate to reach out to your supervisor or the relevant department.</p>" +
+                                $"<p>We have full confidence in your abilities to excel in this new responsibility and contribute positively to the team's success. Your dedication and hard work have been exemplary, and we know you will approach this task with the same level of commitment and professionalism.</p>" +
+                                $"<p>Once again, congratulations on your new assignment! We look forward to witnessing your continued growth and success in your expanded role.</p>" +
+                                $" </div>" +
+                                $"<p>Best regards,</p>" +
+                                $"<p>{manager.Name}<br>" +
+                                $"Metrodata</p>");
+
             transaction.Commit();
-            return (AccountProgressDto) created;
+            return (AccountProgressDto)created;
         }
         catch
         {
@@ -73,18 +120,18 @@ public class AccountProgressService
     public int Update(AccountProgressDto AccountProgressdto)
     {
 
-        var getEntity = _accountRoleRepository.GetByGuid(AccountProgressdto.Guid);
+        var getEntity = _accountProgressRepository.GetByGuid(AccountProgressdto.Guid);
         if (getEntity is null) return 0;
 
-        AccountProgress AccountProgress = (AccountProgress) AccountProgressdto;
+        AccountProgress AccountProgress = (AccountProgress)AccountProgressdto;
         AccountProgress.ModifiedAt = DateTime.Now;
         AccountProgress.CreatedAt = getEntity.CreatedAt;
 
-        var transaction = _bookingContext.Database.BeginTransaction();        
+        var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
 
-            _accountRoleRepository.Update(AccountProgress);
+            _accountProgressRepository.Update(AccountProgress);
             transaction.Commit();
             return 1;
         }
@@ -97,13 +144,13 @@ public class AccountProgressService
 
     public int Delete(Guid guid)
     {
-        var entity = _accountRoleRepository.GetByGuid(guid);
-        if(entity == null) return -1;
+        var entity = _accountProgressRepository.GetByGuid(guid);
+        if (entity == null) return -1;
 
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            _accountRoleRepository.Delete(entity);
+            _accountProgressRepository.Delete(entity);
             transaction.Commit();
             return 1;
         }

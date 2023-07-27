@@ -10,7 +10,7 @@ public class ProgressRepository : GeneralRepository<Progress>, IProgressReposito
     {
     }
 
-    public IEnumerable<Progress> GetByAssignmentForeignKey (Guid guid)
+    public IEnumerable<Progress> GetByAssignmentForeignKey(Guid guid)
     {
         return _bookingDbContext.Set<Progress>().Where(prog => prog.AssignmentGuid == guid);
     }

@@ -10,8 +10,13 @@ public class AccountProgressRepository : GeneralRepository<AccountProgress>, IAc
     {
     }
 
-    public IEnumerable<AccountProgress> GetByProgressForeignKey (Guid guid)
+    public IEnumerable<AccountProgress> GetByProgressForeignKey(Guid guid)
     {
-        return _bookingDbContext.Set<AccountProgress>().Where(acc_prog => acc_prog.Guid == guid);
+        return _bookingDbContext.Set<AccountProgress>().Where(acc_prog => acc_prog.ProgressGuid == guid);
+    }
+
+    public IEnumerable<AccountProgress>? GetByAccountGuid(Guid accountGuid)
+    {
+        return _bookingDbContext.Set<AccountProgress>().Where(a => a.AccountGuid == accountGuid);
     }
 }

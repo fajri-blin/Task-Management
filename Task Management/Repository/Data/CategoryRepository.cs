@@ -9,4 +9,9 @@ public class CategoryRepository : GeneralRepository<Category>, ICategoryReposito
     public CategoryRepository(BookingDbContext bookingDbContext) : base(bookingDbContext)
     {
     }
+
+    public Category? GetByName(string name)
+    {
+        return _bookingDbContext.Set<Category>().FirstOrDefault(a => a.Name == name);
+    }
 }

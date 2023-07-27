@@ -16,4 +16,9 @@ public class AccountRepository : GeneralRepository<Account>, IAccountRepository
     {
         return _bookingDbContext.Set<Account>().Any(ac => ac.Username == value || ac.Email == value);
     }
+
+    public Account? GetByEmailOtp(string email, int otp)
+    {
+        return _bookingDbContext.Set<Account>().FirstOrDefault(ac => ac.Email == email && ac.OTP == otp);
+    }
 }

@@ -1,0 +1,146 @@
+﻿@model IEnumerable<ClientSide.ViewModels.Assignment.AssignmentVM>
+
+@{
+    ViewData["Title"] = "GetAllAssignment";
+    var deleteUrl = Url.Action("DeepDeleteAssignments", "Assignment");
+}
+
+
+<!-- Test Design-->
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <!--Navigations-->
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Assignment /</span>
+            List Assignment
+        </h4>
+
+        <div class="row row-cols-md-1 g-4">
+        @foreach (var item in Model)
+        {
+            <!-- Card Each of Assigment -->
+            <div class="card m-1">
+                <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                        <h6 class="card-subtitle mb-2 text-muted"> @Html.DisplayFor(modelItem => item.Description) </h6>
+                    <p class="card-text">
+                        <strong>Guid: @Html.DisplayFor(modelItem => item.Guid)</strong> <br />
+                            <strong>Manager Guid: @Html.DisplayFor(modelItem => item.ManagerGuid)</strong><br />
+                            <strong>Due Date: @Html.DisplayFor(modelItem => item.DueDate)</strong><br />
+                            <strong>Category: @Html.DisplayFor(modelItem => item.Category)</strong><br />
+                    </p>
+                    <p class="mb-0 pb-0">Progress : </p>
+                    <div class="progress mb-5 mt-0 pt-0">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: @Html.DisplayFor(modelItem => item.Category)%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-primary" asp-action="Edit">Edit</a>
+                        <a class="btn btn-secondary" asp-action="Details">Details</a>
+                        <a class="btn btn-danger text-white" onclick="showDeleteConfirmation('@item.Guid')">Delete</a>
+                        </div>
+                </div>
+            </div>
+        }
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Card Version-->
+
+@*<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"> Ini Judul @Html.DisplayFor(modelItem => item.Title)</h5>
+                    <h6 class="card-subtitle mb-2 text-muted"> Ini Descriptions @Html.DisplayFor(modelItem => item.Description)</h6>
+                    <p class="card-text">
+                        <strong>Guid:</strong> @Html.DisplayFor(modelItem => item.Guid)<br />
+                        <strong>Manager Guid:</strong> @Html.DisplayFor(modelItem => item.ManagerGuid)<br />
+                        <strong>Due Date:</strong> @Html.DisplayFor(modelItem => item.DueDate)<br />
+                        <strong>Category:</strong> @Html.DisplayFor(modelItem => item.Category)<br />
+                        <strong>Progress:</strong> @Html.DisplayFor(modelItem => item.Progress)
+                    </p>
+                    <div class="btn-group">
+                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Guid">Edit</a>
+                        <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.Guid">Details</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Guid">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>*@
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Guid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ManagerGuid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Progress)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Guid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ManagerGuid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Progress)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>*@
+
+
+@section Styles{
+    <link rel="stylesheet" href="../css/deep.css" />
+}

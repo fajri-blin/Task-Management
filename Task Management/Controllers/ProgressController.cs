@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Task_Management.DTOs.AccountRoleDto;
+using Task_Management.Dtos.ProgressDto;
 using Task_Management.DTOs.ProgressDto;
 using Task_Management.Service;
-using Task_Management.Utilities.Enum;
 using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]
+/*[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]*/
 public class ProgressController : ControllerBase
 {
     private readonly ProgressService _progressServices;
@@ -83,7 +81,7 @@ public class ProgressController : ControllerBase
     }
 
     [HttpGet("{guid}")]
-    public IActionResult Get(Guid guid) 
+    public IActionResult Get(Guid guid)
     {
         var entity = _progressServices.Get(guid);
         if (entity == null) return NotFound(new ResponseHandlers<ProgressDto>
@@ -112,7 +110,7 @@ public class ProgressController : ControllerBase
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
-        
+
         return Ok(new ResponseHandlers<ProgressDto>
         {
             Code = StatusCodes.Status200OK,
@@ -123,10 +121,10 @@ public class ProgressController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update(ProgressDto entity) 
+    public IActionResult Update(ProgressDto entity)
     {
         var updated = _progressServices.Update(entity);
-        if(updated is -1) return NotFound(new ResponseHandlers<ProgressDto>
+        if (updated is -1) return NotFound(new ResponseHandlers<ProgressDto>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),
@@ -134,6 +132,25 @@ public class ProgressController : ControllerBase
         });
 
         return Ok(new ResponseHandlers<ProgressDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data has been updated"
+        });
+    }
+
+    [HttpPut("Status")]
+    public IActionResult UpdateStatus(UpdateStatusDto entity)
+    {
+        var updated = _progressServices.UpdateStatus(entity);
+        if (updated is 0) return NotFound(new ResponseHandlers<UpdateStatusDto>
+        {
+            Code = StatusCodes.Status406NotAcceptable,
+            Status = HttpStatusCode.NotAcceptable.ToString(),
+            Message = "Data Failed Update"
+        });
+
+        return Ok(new ResponseHandlers<UpdateStatusDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),

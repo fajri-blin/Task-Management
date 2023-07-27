@@ -1,4 +1,4 @@
-﻿@model ClientSide.ViewModels.Account.RegisterDto
+﻿@model ClientSide.ViewModels.Account.RegisterVM
 
 @{
     ViewData["Title"] = "Register - Metrodata Task Management";
@@ -18,7 +18,7 @@
                         <span class="app-brand-text demo text-body fw-bolder">Create Account</span>
                     </div>
                     <!-- /Logo -->
-                    <form id="formAuthentication" class="mb-3" asp-action="Register">
+                    <form id="formAuthentication" class="mb-3" asp-action="SignUp">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text"
@@ -80,7 +80,7 @@
 
                     <p class="text-center">
                         <span>Already have an account?</span>
-                        <a href="auth-login-basic.html">
+                        <a asp-controller="Account" asp-action="SignIn">
                             <span>Sign in instead</span>
                         </a>
                     </p>
