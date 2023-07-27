@@ -3,24 +3,6 @@
     ViewData["Title"] = "Index";
 }
 
-@*<h1>Index</h1>
-<html>
-<head>
-    <title>@ViewData["Title"]</title>
-    <!-- Panggil file CSS dan JavaScript dari folder "wwwroot" -->
-    <link rel="stylesheet" href="~/template/css/style.css">
-   
-</head>
-<body>
-    <div class="container">
-        <h1>Welcome to Our Landing Page!</h1>
-        <!-- Tambahkan konten halaman landing page sesuai kebutuhan -->
-    </div>
-    <script src="~/template/js/script.js"></script>
-</body>
-</html>*@
-
-
 <!-- ======= Header ======= -->
 <header id="header" class="fixed-top ">
     <div class="container d-flex align-items-center justify-content-between">
@@ -75,13 +57,16 @@
                 <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right">
                     <h3>Metrodata Task Management</h3>
                     <p class="fst-italic">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua.
+                        Task management is the process of planning, organizing, prioritizing, and tracking tasks and activities to achieve specific goals and objectives efficiently and effectively. It is a crucial aspect of personal, professional, and project-related productivity.  
+                       
+                    </p>
+                    <p>
+                        Here are the key components and principles of task management:
                     </p>
                     <ul>
-                        <li><i class="bi bi-check-circle"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
-                        <li><i class="bi bi-check-circle"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>
-                        <li><i class="bi bi-check-circle"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</li>
+                        <li><i class="bi bi-check-circle"></i> Task Tracking: Regularly monitor and track the progress of tasks</li>
+                        <li><i class="bi bi-check-circle"></i> Time Management: Efficiently managing time is critical to completing tasks on schedule.</li>
+                        <li><i class="bi bi-check-circle"></i>Task Completion and Review: Once a task is completed, it should be reviewed to assess whether the desired outcome was achieved and whether there were any issues or improvements that can be made for future tasks.</li>
                     </ul>
                    @* <a href="#" class="read-more">Read More <i class="bi bi-long-arrow-right"></i></a>*@
                 </div>
@@ -96,7 +81,7 @@
 
             <div class="section-title">
                 <h2>Feature</h2>
-                <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
+                @*<p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>*@
             </div>
 
             <div class="row gy-4">
@@ -108,8 +93,8 @@
                             </svg>
                             <i class="bx bxl-dribbble"></i>
                         </div>
-                        <h4><a href="">Lorem Ipsum</a></h4>
-                        <p>Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi</p>
+                        <h4><a href="">Task Creation</a></h4>
+                        <p>Project Manager (PM) membuat tugas baru dengan judul, deskripsi, dan due date</p>
                     </div>
                 </div>
 
@@ -121,8 +106,8 @@
                             </svg>
                             <i class="bx bx-file"></i>
                         </div>
-                        <h4><a href="">Sed Perspiciatis</a></h4>
-                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore</p>
+                        <h4><a href="">Task Status Tracking</a></h4>
+                        <p>Project managers and staff can track the status of each task, whether it is completed, in progress, or pending.</p>
                     </div>
                 </div>
 
@@ -134,47 +119,8 @@
                             </svg>
                             <i class="bx bx-tachometer"></i>
                         </div>
-                        <h4><a href="">Magni Dolores</a></h4>
-                        <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="icon-box iconbox-yellow">
-                        <div class="icon">
-                            <svg width="100" height="100" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke="none" stroke-width="0" fill="#f5f5f5" d="M300,503.46388370962813C374.79870501325706,506.71871716319447,464.8034551963731,527.1746412648533,510.4981551193396,467.86667711651364C555.9287308511215,408.9015244558933,512.6030010748507,327.5744911775523,490.211057578863,256.5855673507754C471.097692560561,195.9906835881958,447.69079081568157,138.11976852964426,395.19560036434837,102.3242989838813C329.3053358748298,57.3949838291264,248.02791733380457,8.279543830951368,175.87071277845988,42.242879143198664C103.41431057327972,76.34704239035025,93.79494320519305,170.9812938413882,81.28167332365135,250.07896920659033C70.17666984294237,320.27484674793965,64.84698225790005,396.69656628748305,111.28512138212992,450.4950937839243C156.20124167950087,502.5303643271138,231.32542653798444,500.4755392045468,300,503.46388370962813"></path>
-                            </svg>
-                            <i class="bx bx-layer"></i>
-                        </div>
-                        <h4><a href="">Nemo Enim</a></h4>
-                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="icon-box iconbox-red">
-                        <div class="icon">
-                            <svg width="100" height="100" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke="none" stroke-width="0" fill="#f5f5f5" d="M300,532.3542879108572C369.38199826031484,532.3153073249985,429.10787420159085,491.63046689027357,474.5244479745417,439.17860296908856C522.8885846962883,383.3225815378663,569.1668002868075,314.3205725914397,550.7432151929288,242.7694973846089C532.6665558377875,172.5657663291529,456.2379748765914,142.6223662098291,390.3689995646985,112.34683881706744C326.66090330228417,83.06452184765237,258.84405631176094,53.51806209861945,193.32584062364296,78.48882559362697C121.61183558270385,105.82097193414197,62.805066853699245,167.19869350419734,48.57481801355237,242.6138429142374C34.843463184063346,315.3850353017275,76.69343916112496,383.4422959591041,125.22947124332185,439.3748458443577C170.7312796277747,491.8107796887764,230.57421082200815,532.3932930995766,300,532.3542879108572"></path>
-                            </svg>
-                            <i class="bx bx-slideshow"></i>
-                        </div>
-                        <h4><a href="">Dele Cardo</a></h4>
-                        <p>Quis consequatur saepe eligendi voluptatem consequatur dolor consequuntur</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="300">
-                    <div class="icon-box iconbox-teal">
-                        <div class="icon">
-                            <svg width="100" height="100" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke="none" stroke-width="0" fill="#f5f5f5" d="M300,566.797414625762C385.7384707136149,576.1784315230908,478.7894351017131,552.8928747891023,531.9192734346935,484.94944893311C584.6109503024035,417.5663521118492,582.489472248146,322.67544863468447,553.9536738515405,242.03673114598146C529.1557734026468,171.96086150256528,465.24506316201064,127.66468636344209,395.9583748389544,100.7403814666027C334.2173773831606,76.7482773500951,269.4350130405921,84.62216499799875,207.1952322260088,107.2889140133804C132.92018162631612,134.33871894543012,41.79353780512637,160.00259165414826,22.644507872594943,236.69541883565114C3.319112789854554,314.0945973066697,72.72355303640163,379.243833228382,124.04198916343866,440.3218312028393C172.9286146004772,498.5055451809895,224.45579914871206,558.5317968840102,300,566.797414625762"></path>
-                            </svg>
-                            <i class="bx bx-arch"></i>
-                        </div>
-                        <h4><a href="">Divera Don</a></h4>
-                        <p>Modi nostrum vel laborum. Porro fugit error sit minus sapiente sit aspernatur</p>
+                        <h4><a href="">Progress Task</a></h4>
+                        <p>A feature that can view task progress in percentage </p>
                     </div>
                 </div>
 
@@ -182,47 +128,7 @@
 
         </div>
     </section><!-- End Services Section -->
-    <!-- ======= Features Section ======= -->
-  @*  <section id="features" class="features">
-        <div class="container" data-aos="fade-up">
-
-            <div class="section-title">
-                <h2>Features</h2>
-                <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column align-items-lg-center">
-                    <div class="icon-box mt-5 mt-lg-0" data-aos="fade-up" data-aos-delay="100">
-                        <i class="bx bx-receipt"></i>
-                        <h4>Est labore ad</h4>
-                        <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
-                    </div>
-                    <div class="icon-box mt-5" data-aos="fade-up" data-aos-delay="200">
-                        <i class="bx bx-cube-alt"></i>
-                        <h4>Harum esse qui</h4>
-                        <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
-                    </div>
-                    <div class="icon-box mt-5" data-aos="fade-up" data-aos-delay="300">
-                        <i class="bx bx-images"></i>
-                        <h4>Aut occaecati</h4>
-                        <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
-                    </div>
-                    <div class="icon-box mt-5" data-aos="fade-up" data-aos-delay="400">
-                        <i class="bx bx-shield"></i>
-                        <h4>Beatae veritatis</h4>
-                        <p>Expedita veritatis consequuntur nihil tempore laudantium vitae denat pacta</p>
-                    </div>
-                </div>
-                <div class="image col-lg-6 order-1 order-lg-2 " data-aos="zoom-in" data-aos-delay="100">
-                    <img src="~/template/img/features.svg" alt="" class="img-fluid">
-                </div>
-            </div>
-
-        </div>
-    </section>
-  *@  <!-- End Features Section -->
-
+  
     <!-- ======= Contact Section ======= -->
     <section id="contact" class="contact section-bg">
         <div class="container" data-aos="fade-up">
@@ -237,7 +143,13 @@
                     <div class="info-box mb-4">
                         <i class="bx bx-map"></i>
                         <h3>Our Address</h3>
-                        <p>A108 Adam Street, New York, NY 535022</p>
+                        <p>
+                            APL Tower lt.37 Suite 1-8
+                            Jl. Letjen S. Parman Kav. 28
+                            Kel. Tanjung Duren Selatan
+                            Kec. Grogol Petamburan
+                            Kota Jakarta Barat
+                        </p>
                     </div>
                 </div>
 
@@ -245,7 +157,7 @@
                     <div class="info-box  mb-4">
                         <i class="bx bx-envelope"></i>
                         <h3>Email Us</h3>
-                        <p>contact@example.com</p>
+                        <p>contact@mii.co.id</p>
                     </div>
                 </div>
 
@@ -253,7 +165,7 @@
                     <div class="info-box  mb-4">
                         <i class="bx bx-phone-call"></i>
                         <h3>Call Us</h3>
-                        <p>+1 5589 55488 55</p>
+                        <p>+62 21 2934 57775</p>
                     </div>
                 </div>
 
@@ -264,85 +176,11 @@
                 <div class="col-sm ">
                     <iframe class="mb-4 mb-lg-0" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621" frameborder="0" style="border:0; width: 100%; height: 384px;" allowfullscreen></iframe>
                 </div>
-
-               @* <div class="col-lg-6">
-                    <form action="forms/contact.php" method="post" role="form" class="php-email-form">
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
-                            </div>
-                            <div class="col-md-6 form-group mt-3 mt-md-0">
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
-                            </div>
-                        </div>
-                        <div class="form-group mt-3">
-                            <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
-                        </div>
-                        <div class="form-group mt-3">
-                            <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
-                        </div>
-                        <div class="my-3">
-                            <div class="loading">Loading</div>
-                            <div class="error-message"></div>
-                            <div class="sent-message">Your message has been sent. Thank you!</div>
-                        </div>
-                        <div class="text-center"><button type="submit">Send Message</button></div>
-                    </form>
-                </div>*@
-
             </div>
 
         </div>
     </section><!-- End Contact Section -->
-    <!-- SignIn -->
-  @*  <section id="signin" class="signin">
-    <div class="card">
-        <div class="card-body">
-            <!-- Logo -->
-            <div class="app-brand justify-content-center">
-                <a href="#" class="app-brand-link gap-2">
-                    <span class="app-brand-text demo text-body fw-bolder">MTM</span>
-                </a>
-            </div>
-            <!-- /Logo -->
-            <h4 class="mb-2">Welcome to Metrodata Task Management! 👋</h4>
-            <p class="mb-4">Please sign-in to your account and start the adventure</p>
-
-            <form id="formAuthentication" class="mb-3" asp-action="SignIn">
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email or Username</label>
-                    <input type="text"
-                           class="form-control"
-                           id="email"
-                           name="AccountLogin"
-                           placeholder="Enter your email or username"
-                           autofocus />
-                </div>
-                <div class="mb-3 form-password-toggle">
-                    <div class="d-flex justify-content-between">
-                        <label class="form-label" for="password">Password</label>
-                        <a asp-controller="Account" asp-action="ForgotPass">
-                            <small>Forgot Password?</small>
-                        </a>
-                    </div>
-                    <div class="input-group input-group-merge">
-                        <input type="password"
-                               id="password"
-                               class="form-control"
-                               name="Password"
-                               placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                               aria-describedby="password" />
-                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    </section>*@
-    <!-- /SignIn -->
+   
 
 </main><!-- End #main -->
 <!-- ======= Footer ======= -->
@@ -355,11 +193,10 @@
                 <div class="col-lg-3 col-md-6 footer-contact">
                     <h3>Techie</h3>
                     <p>
-                        A108 Adam Street <br>
-                        New York, NY 535022<br>
-                        United States <br><br>
-                        <strong>Phone:</strong> +1 5589 55488 55<br>
-                        <strong>Email:</strong> info@example.com<br>
+                        Central Park Tower, Jl. Letjen S. Parman No.Kav 28, RT.12/RW.7, Petamburan, Kec. Grogol Petamburan Kota Jakarta Barat<br>
+                        Daerah Khusus Ibukota Jakarta 11440 <br><br>
+                        <strong>Phone:</strong> +62 21 2934 5777<br>
+                        <strong>Email:</strong> contact@mii.co.id<br>
                     </p>
                 </div>
 
@@ -368,30 +205,28 @@
                     <ul>
                         <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
                         <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Services</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Terms of service</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Feature</a></li>
                         <li><i class="bx bx-chevron-right"></i> <a href="#">Privacy policy</a></li>
                     </ul>
                 </div>
 
                 <div class="col-lg-3 col-md-6 footer-links">
-                    <h4>Our Services</h4>
+                    <h4>Our Feature</h4>
                     <ul>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Web Development</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Graphic Design</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Task Creation</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Task Status Tracking</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Progress Task</a></li>
+                  
                     </ul>
                 </div>
 
-                <div class="col-lg-4 col-md-6 footer-newsletter">
+              @*  <div class="col-lg-4 col-md-6 footer-newsletter">
                     <h4>Join Our Newsletter</h4>
                     <p>Tamen quem nulla quae legam multos aute sint culpa legam noster magna</p>
                     <form action="" method="post">
                         <input type="email" name="email"><input type="submit" value="Subscribe">
                     </form>
-                </div>
+                </div>*@
 
             </div>
         </div>
