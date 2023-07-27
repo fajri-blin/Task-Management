@@ -33,4 +33,17 @@ public class AssignmentRepository : GeneralRepository<AssignmentVM>, IAssignment
         }
         return entityVM;
     }
+
+    public async Task<ResponseHandlers<Guid>> DeepDeleteAssignments(Guid guid)
+    {
+        ResponseHandlers<Guid> entityVM = null;
+
+        using(var response = _httpClient.DeleteAsync(_request + "DeepDelete/" + guid).Result)
+        {
+            string responseApi = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<Guid>>(responseApi);
+        }
+
+        return entityVM;
+    }
 }
