@@ -16,6 +16,12 @@ public class AssignMapService
         _bookingContext = bookingDbContext;
     }
 
+    /*public IEnumerable<AssignMapDto>? CountCategory(Guid guid)
+    {
+        var entities = _assignMapRepository.GetByAssignmentForeignKey(guid);
+
+    }*/
+
     // Basic CRUD ===================================================
     public IEnumerable<AssignMapDto>? Get()
     {
@@ -23,7 +29,7 @@ public class AssignMapService
         if (!entities.Any()) return null;
         var listTaskCategoryMapping = new List<AssignMapDto>();
 
-        foreach ( var entity in entities)
+        foreach (var entity in entities)
         {
             listTaskCategoryMapping.Add((AssignMapDto)entity);
         }
@@ -47,7 +53,7 @@ public class AssignMapService
         {
             var created = _assignMapRepository.Create(TaskCategoryMapping);
             transaction.Commit();
-            return (AssignMapDto) created;
+            return (AssignMapDto)created;
         }
         catch
         {
@@ -62,11 +68,11 @@ public class AssignMapService
         var getEntity = _assignMapRepository.GetByGuid(TaskCategoryMappingdto.Guid);
         if (getEntity is null) return 0;
 
-        AssignMap TaskCategoryMapping = (AssignMap) TaskCategoryMappingdto;
+        AssignMap TaskCategoryMapping = (AssignMap)TaskCategoryMappingdto;
         TaskCategoryMapping.ModifiedAt = DateTime.Now;
         TaskCategoryMapping.CreatedAt = getEntity.CreatedAt;
 
-        var transaction = _bookingContext.Database.BeginTransaction();        
+        var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
 
@@ -84,7 +90,7 @@ public class AssignMapService
     public int Delete(Guid guid)
     {
         var entity = _assignMapRepository.GetByGuid(guid);
-        if(entity == null) return -1;
+        if (entity == null) return -1;
 
         var transaction = _bookingContext.Database.BeginTransaction();
         try

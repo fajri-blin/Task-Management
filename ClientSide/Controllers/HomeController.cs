@@ -18,6 +18,11 @@ namespace ClientSide.Controllers
 
         public async Task<IActionResult> Index()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("SignIn", "Account");
+            }
+
             var assignment = await _assignmentRepository.GetFromManager(Guid.Parse(HttpContext.User.FindFirstValue("Guid")));
             var components = new ComponentHandlers
             {
