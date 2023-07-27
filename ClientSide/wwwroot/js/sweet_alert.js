@@ -1,3 +1,7 @@
+$(document).ready(() => {
+ 
+
+});
 function showDeleteConfirmation(guid) {
     Swal.fire({
         title: 'Confirm Delete',
@@ -10,26 +14,40 @@ function showDeleteConfirmation(guid) {
         if (result.isConfirmed) {
             // If the user confirms deletion, send the delete request to the server
             $.ajax({
-                url: `/Assignment/DeepDeleteAssignments?guid=${guid}`,
                 type: 'POST',
+                url: `/Assignment/DeepDeleteAssignments?guid=${guid}`,
+                dataType: 'json',
                 success: function (data) {
-                    Swal.fire({
-                        title: 'Success',
-                        text: 'Assignment deleted successfully',
-                        icon: 'success',
-                    }).then(() => {
-                        // Optionally, refresh the page or perform other actions after success
-                        window.location.reload(); // For example, reload the page
-                    });
+                    if (data.code === 200) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Assignment deleted successfully',
+                            icon: 'success',
+                        }).then(() => {
+                            // Optionally, refresh the page or perform other actions after success
+                            window.location.reload(); // For example, reload the page
+                        });
+                    } else if (data.code === 500) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: data.message,
+                            icon: 'error',
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Unknown error occurred',
+                            icon: 'error',
+                        });
+                    }
                 },
-                error: function (xhr, status, error) {
-                    console.log(xhr.responseText);
+                error: function () {
                     Swal.fire({
                         title: 'Error',
                         text: 'Failed to delete assignment',
                         icon: 'error',
                     });
-                }
+                },
             });
         }
     });
