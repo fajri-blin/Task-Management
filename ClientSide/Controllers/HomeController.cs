@@ -23,15 +23,7 @@ namespace ClientSide.Controllers
                 Navbar = true,
             };
             ViewBag.Components = components;
-
-            var jwt = HttpContext.Session.GetString("JWToken");
-
-            var data = new 
-            {
-                token = jwt,
-            };
-
-            return View(data);
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
