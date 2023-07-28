@@ -14,31 +14,41 @@
             <span class="text-muted fw-light">Assignment /</span>
             List Assignment
         </h4>
-
-        <div class="row row-cols-md-1 g-4">
+        <div class="row mb-5">
         @foreach (var item in Model)
         {
             <!-- Card Each of Assigment -->
-            <div class="card m-1">
-                <div class="card-body">
-                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
-                        <h6 class="card-subtitle mb-2 text-muted"> @Html.DisplayFor(modelItem => item.Description) </h6>
-                    <p class="card-text">
-                        <strong>Guid: @Html.DisplayFor(modelItem => item.Guid)</strong> <br />
-                            <strong>Manager Guid: @Html.DisplayFor(modelItem => item.ManagerGuid)</strong><br />
-                            <strong>Due Date: @Html.DisplayFor(modelItem => item.DueDate)</strong><br />
-                            <strong>Category: @Html.DisplayFor(modelItem => item.Category)</strong><br />
-                    </p>
-                    <p class="mb-0 pb-0">Progress : </p>
-                    <div class="progress mb-5 mt-0 pt-0">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: @Html.DisplayFor(modelItem => item.Category)%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <div class="btn-group">
-                        <a class="btn btn-primary" asp-action="Edit">Edit</a>
-                        <a class="btn btn-secondary" asp-action="Details">Details</a>
-                        <a class="btn btn-danger text-white" onclick="showDeleteConfirmation('@item.Guid')">Delete</a>
+            <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title d-flex align-items-start justify-content-between">
+                                <div class="avatar flex-shrink-0">
+                                    <i class='bx bxs-label'></i>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn p-0" type="button" id="cardOpt4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="bx bx-dots-vertical-rounded">
+                                        </i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
+                                        <button class="dropdown-item" asp-action="Edit">Edit</button>
+                                        <button class="dropdown-item" asp-action="Details">Details</button>
+                                        <button class="dropdown-item text-danger" onclick="showDeleteConfirmation('@item.Guid')">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                            <h6 class="card-subtitle mb-2 text-muted"> @Html.DisplayFor(modelItem => item.Description) </h6>
+                            <p class="card-text">
+                                <strong>Due Date: @Html.DisplayFor(modelItem => item.DueDate)</strong><br />
+                                <strong>Category: @Html.DisplayFor(modelItem => item.Category)</strong><br />
+                            </p>
+                            <p class="mb-0 pb-0">Progress : </p>
+                            <div class="progress mb-5 mt-0 pt-0">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: @Html.DisplayFor(modelItem => item.Category)%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
                         </div>
-                </div>
+                    </div>
             </div>
         }
         </div>
