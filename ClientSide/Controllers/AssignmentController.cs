@@ -34,30 +34,35 @@ public class AssignmentController : Controller
     [HttpGet]
     public IActionResult AddAssignment()
     {
+        var components = new ComponentHandlers
+        {
+            Footer = false,
+            SideBar = true,
+            Navbar = true,
+        };
+        ViewBag.Components = components;
+
         return View();
     }
 
-        [HttpPost]
-        public async Task<IActionResult> DeepDeleteAssignments(Guid guid)
+    [HttpPost]
+    public async Task<IActionResult> DeepDeleteAssignments(Guid guid)
+    {
+        var result = await _assignmentRepository.DeepDeleteAssignment(guid);
+
+        if (result.Code == 404)
         {
-            var result = await _assignmentRepository.DeepDeleteAssignment(guid);
-
-            if (result.Code == 404)
-            {
-                return Json(new { code = 404, message = "Assignment not found" });
-            }
-            else if (result.Code == 200)
-            {
-                return Json(new { code = 200, message = "Assignment deleted successfully" });
-            }
-            else
-            {
-                return Json(new { code = result.Code, message = result.Message });
-            }
+            return Json(new { code = 404, message = "Assignment not found" });
         }
-
-
-
+        else if (result.Code == 200)
+        {
+            return Json(new { code = 200, message = "Assignment deleted successfully" });
+        }
+        else
+        {
+            return Json(new { code = result.Code, message = result.Message });
+        }
+    }
 
     [HttpGet]
     [Authorize] // Make sure the action requires authentication
@@ -93,7 +98,6 @@ public class AssignmentController : Controller
             listAssignment = result.Data.Select(entity => new AssignmentVM
             {
                 Guid = entity.Guid,
-                ManagerGuid = entity.ManagerGuid,
                 Title = entity.Title,
                 Description = entity.Description,
                 DueDate = entity.DueDate,
