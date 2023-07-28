@@ -19,6 +19,24 @@ public class AssignmentController : Controller
         _assignmentRepository = assignmentRepository;
     }
 
+    private string GetManagerGuidFromToken()
+    {
+        // Access the JWT token from the User.Claims
+        var userIdClaim = User.FindFirstValue("Guid");
+
+        // Check if the ManagerGuid claim exists and is valid
+        if (!string.IsNullOrEmpty(userIdClaim) && Guid.TryParse(userIdClaim, out var managerGuid))
+        {
+            // Return the ManagerGuid as a string
+            return managerGuid.ToString();
+        }
+
+        // Return null if ManagerGuid is not found
+        return null;
+    }
+
+
+
     [HttpPost]
     public async Task<IActionResult> AddAssignment(CreateAssignmentVM assignment)
     {
@@ -41,6 +59,12 @@ public class AssignmentController : Controller
             Navbar = true,
         };
         ViewBag.Components = components;
+
+        // Call the method to set ManagerGuid in the session
+        var managerGuid = GetManagerGuidFromToken();
+
+        // Pass the ManagerGuid to the view
+        ViewBag.ManagerGuid = managerGuid;
 
         return View();
     }
