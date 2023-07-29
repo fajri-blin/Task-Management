@@ -47,7 +47,7 @@ public class AssignmentController : Controller
             return View();
         }
         TempData["Success"] = "Data Berhasil Masuk";
-        return RedirectToAction(nameof(Index));
+        return View("GetAllAssignment");
     }
     [HttpGet]
     public IActionResult AddAssignment()
