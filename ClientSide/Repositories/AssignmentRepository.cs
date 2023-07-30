@@ -1,6 +1,7 @@
 ﻿using ClientSide.Contract;
 using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Assignment;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -67,5 +68,30 @@ public class AssignmentRepository : GeneralRepository<AssignmentVM>, IAssignment
         return entityVM;
     }
 
+    public async Task<ResponseHandlers<UpdateAssignmentVM>> Update(UpdateAssignmentVM updateAssignmentVM)
+    {
+        ResponseHandlers<UpdateAssignmentVM> entityVM = null;
+
+        var requestPayload = new UpdateAssignmentVM
+        {
+            Guid = updateAssignmentVM.Guid,
+            Title = updateAssignmentVM.Title,
+            Description = updateAssignmentVM.Description,
+            DueDate = updateAssignmentVM.DueDate,
+            Categories  = updateAssignmentVM.Categories,
+           
+        };
+
+        StringContent content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
+
+        using (var response = await _httpClient.PutAsync(_request, content))
+        {
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(apiResponse); // Add this line for logging
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<UpdateAssignmentVM>>(apiResponse);
+        }
+
+        return entityVM;
+    }
 
 }

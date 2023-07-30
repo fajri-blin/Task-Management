@@ -132,4 +132,37 @@ public class AssignmentController : Controller
 
         return View("GetAllAssignment", listAssignment);
     }
+
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(Guid guid)
+    {
+        var result = await _assignmentRepository.Get(guid);
+        if (result.Data == null)
+        {
+            return NotFound();
+        }
+
+        return View(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(UpdateAssignmentVM updateAssignmentVM)
+    {
+
+
+        var result = await _assignmentRepository.Update(updateAssignmentVM);
+        if (result.Code == 200)
+        {
+            TempData["Success"] = "Data Berhasil Diupdate";
+            return RedirectToAction(nameof(Index));
+        }
+        else if (result.Code == 409)
+        {
+            ModelState.AddModelError(string.Empty, result.Message);
+            return View(updateAssignmentVM);
+        }
+
+        return View("GetAllAssignment");
+    }
 }
