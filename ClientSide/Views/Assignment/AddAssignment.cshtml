@@ -11,50 +11,43 @@
             Create Assigment
         </h4>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <form asp-action="AddAssignment" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
+                    <div class="form-group col-md-5">
                         <label asp-for="Title" class="control-label"></label>
                         <input asp-for="Title" class="form-control" />
                         <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-5">
                         <label asp-for="DueDate" class="control-label"></label>
                         <input asp-for="DueDate" class="form-control" />
                         <span asp-validation-for="DueDate" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Description" class="control-label"></label>
-                        <input asp-for="Description" class="form-control" />
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-5">
                         <label asp-for="Category" class="control-label"></label>
                         <!-- Add an ID to the select element -->
-                        <select id="mySelect2" asp-for="Category" class="form-control" multiple="multiple">
-                        </select>
-                        <span asp-validation-for="Category" class="text-danger"></span>
+                        <div>
+                            <select id="mySelect2" asp-for="Category" class="form-control" multiple="multiple"></select>
+                            <span asp-validation-for="Category" class="text-danger"></span>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ManagerGuid" class="control-label"></label>
-                        <input asp-for="ManagerGuid" class="form-control" />
-                        <span asp-validation-for="ManagerGuid" class="text-danger"></span>
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" class="form-control" ></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <input id="managerGuidInput" asp-for="ManagerGuid" class="form-control"  value="@ViewBag.ManagerGuid" hidden/>
+
+
+                    <div class="form-group mt-3">
                         <input type="submit" value="Create" class="btn btn-primary" />
                     </div>
                 </form>
             </div>
         </div>
-
-        <div>
-            <a asp-controller="Assignment" asp-action="GetAssignment">Back to List</a>
-        </div>
     </div>
 </div>
-<h4>Create Assignment</h4>
-<hr />
 
 @section Styles{
     <!-- Select2 -->
@@ -65,8 +58,12 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script>
+
+
     <script>
         // Initialize Select2 with tagging and token separators
         $(document).ready(function () {
@@ -84,6 +81,9 @@
                     $(this).val(values).trigger('change');
                 }
             });
+
+            // Initialize CKEditor 4
+            CKEDITOR.replace('Description');
         });
     </script>
 }

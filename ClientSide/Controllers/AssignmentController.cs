@@ -19,6 +19,24 @@ public class AssignmentController : Controller
         _assignmentRepository = assignmentRepository;
     }
 
+    private string GetManagerGuidFromToken()
+    {
+        // Access the JWT token from the User.Claims
+        var userIdClaim = User.FindFirstValue("Guid");
+
+        // Check if the ManagerGuid claim exists and is valid
+        if (!string.IsNullOrEmpty(userIdClaim) && Guid.TryParse(userIdClaim, out var managerGuid))
+        {
+            // Return the ManagerGuid as a string
+            return managerGuid.ToString();
+        }
+
+        // Return null if ManagerGuid is not found
+        return null;
+    }
+
+
+
     [HttpPost]
     public async Task<IActionResult> AddAssignment(CreateAssignmentVM assignment)
     {
@@ -29,7 +47,7 @@ public class AssignmentController : Controller
             return View();
         }
         TempData["Success"] = "Data Berhasil Masuk";
-        return RedirectToAction(nameof(Index));
+        return View("GetAllAssignment");
     }
     [HttpGet]
     public IActionResult AddAssignment()
@@ -41,6 +59,12 @@ public class AssignmentController : Controller
             Navbar = true,
         };
         ViewBag.Components = components;
+
+        // Call the method to set ManagerGuid in the session
+        var managerGuid = GetManagerGuidFromToken();
+
+        // Pass the ManagerGuid to the view
+        ViewBag.ManagerGuid = managerGuid;
 
         return View();
     }
@@ -107,5 +131,38 @@ public class AssignmentController : Controller
         }
 
         return View("GetAllAssignment", listAssignment);
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(Guid guid)
+    {
+        var result = await _assignmentRepository.Get(guid);
+        if (result.Data == null)
+        {
+            return NotFound();
+        }
+
+        return View(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(UpdateAssignmentVM updateAssignmentVM)
+    {
+
+
+        var result = await _assignmentRepository.Update(updateAssignmentVM);
+        if (result.Code == 200)
+        {
+            TempData["Success"] = "Data Berhasil Diupdate";
+            return RedirectToAction(nameof(Index));
+        }
+        else if (result.Code == 409)
+        {
+            ModelState.AddModelError(string.Empty, result.Message);
+            return View(updateAssignmentVM);
+        }
+
+        return View("GetAllAssignment");
     }
 }
