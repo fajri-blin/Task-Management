@@ -1,4 +1,4 @@
-﻿namespace Task_Management.Dtos.AssignMapDto
+﻿namespace Task_Management.Dtos.Dashboard
 {
     public class CountTop3CategoryDto
     {

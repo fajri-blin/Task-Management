@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
+using System.Security.Claims;
 using Task_Management.Contract.Data;
 using Task_Management.Contract.Handler;
 using Task_Management.Data;
@@ -229,8 +231,27 @@ public class AccountService
         {
             return 0; // Account not updated
         }
-
         return 3;
+    }
+
+    public FileResult Photo(Guid guid)
+    {
+        var account = _accountRepository.GetByGuid(guid);
+
+        var filepath = Path.Combine(Directory.GetCurrentDirectory(), "Photos", account.ImageProfile);
+
+        if (!File.Exists(filepath))
+        {
+            return null;
+        }
+
+        var provider = new FileExtensionContentTypeProvider();
+        if (!provider.TryGetContentType(filepath, out var contentType))
+        {
+            contentType = "application/octet-stream";
+        }
+        var bytes = System.IO.File.ReadAllBytes(filepath);
+        return new FileContentResult(bytes, contentType);
     }
 
     // Basic CRUD ===================================================
@@ -273,19 +294,61 @@ public class AccountService
         }
     }
 
-    public int Update(AccountDto accountdto)
+    public int Update(UpdateAccountDto updateAccountDto)
     {
 
-        var getEntity = _accountRepository.GetByGuid(accountdto.Guid);
+        var getEntity = _accountRepository.GetByGuid(updateAccountDto.Guid);
         if (getEntity is null) return 0;
 
-        Account account = (Account)accountdto;
-        account.ModifiedAt = DateTime.Now;
-        account.CreatedAt = getEntity.CreatedAt;
 
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Photos");
+
+            string fileData = null;
+
+            string password = null;
+
+            if (updateAccountDto.Password != null)
+            {
+                Hashing.HashPassword(updateAccountDto.Password);
+            }
+
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+            if (updateAccountDto.ImageProfile != null && updateAccountDto.ImageProfile.Length != 0)
+            {
+                var oldPhoto = Path.Combine(filePath, getEntity.ImageProfile);
+                if (File.Exists(oldPhoto))
+                {
+                    File.Delete(oldPhoto);
+                }
+                var extension = "." + updateAccountDto.ImageProfile.FileName.Split('.')[updateAccountDto.ImageProfile.FileName.Split('.').Length - 1];
+                fileData = DateTime.Now.Ticks.ToString() + extension;
+
+                var newPhoto = Path.Combine(filePath, fileData);
+                using (var stream = new FileStream(newPhoto, FileMode.Create))
+                {
+                    updateAccountDto.ImageProfile.CopyToAsync(stream);
+                }
+            }
+
+            var account = new Account
+            {
+                Guid = updateAccountDto.Guid,
+                Email = updateAccountDto.Email ?? getEntity.Email,
+                Name = updateAccountDto.Name ?? getEntity.Name,
+                OTP = getEntity.OTP,
+                ImageProfile = fileData ?? getEntity.ImageProfile,
+                IsUsedOTP = getEntity.IsUsedOTP,
+                Password = password ?? getEntity.Password,
+                Username = updateAccountDto.Username ?? getEntity.Username,
+                CreatedAt = getEntity.CreatedAt,
+                ModifiedAt = DateTime.Now,
+            };
 
             _accountRepository.Update(account);
             transaction.Commit();

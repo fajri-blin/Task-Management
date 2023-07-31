@@ -37,25 +37,6 @@ public class AssignmentController : ControllerBase
         });
     }
 
-    [HttpGet("CountMonthManager/{guid}")]
-    public IActionResult CountMonthManager(Guid guid)
-    {
-        var entity = _assignmentServices.CountMonthManager(guid);
-        if (entity == null) return NotFound(new ResponseHandlers<AssignmentRateDto>
-        {
-            Code = StatusCodes.Status404NotFound,
-            Status = HttpStatusCode.NotFound.ToString(),
-            Message = "Data Not Found"
-        });
-
-        return Ok(new ResponseHandlers<AssignmentRateDto>
-        {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.Found.ToString(),
-            Message = "Data Found",
-            Data = entity
-        });
-    }
 
 
     //Basic CRUD
