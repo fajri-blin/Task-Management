@@ -8,4 +8,6 @@ public interface IAccountRepository : IGeneralRepository<AccountVM>
     Task<ResponseHandlers<string>> Login(SignInVM signInDto);
     Task<ResponseHandlers<RegisterVM>> Register(RegisterVM registerDto);
     Task<ResponseHandlers<ForgotPasswordVM>> ForgotPassword(ForgotPasswordVM forgotPasswordVM);
+    Task<ResponseHandlers<UpdateVM>> Update(UpdateVM updateVM);
+    Task<UpdateVM> Get(Guid guid);
 }

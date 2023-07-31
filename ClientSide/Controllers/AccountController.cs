@@ -1,6 +1,7 @@
 ﻿using ClientSide.Contract;
 using ClientSide.ViewModels.Account;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ClientSide.Controllers;
 
@@ -12,6 +13,25 @@ public class AccountController : Controller
     public AccountController(IAccountRepository accountRepository)
     {
         _accountRepository = accountRepository;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Update(UpdateVM updateVM)
+    {
+        if (ModelState.IsValid)
+        {
+            var result = await _accountRepository.Update(updateVM);
+            if (result == null)
+            {
+                return RedirectToAction("Error", "Index");
+            }
+            else if (result.Code == 404)
+            {
+                return View("Index");
+            }
+            return RedirectToAction("Index");
+        }
+        return View(updateVM);
     }
 
     [HttpPost]
@@ -95,5 +115,27 @@ public class AccountController : Controller
     {
         HttpContext.Session.Clear();
         return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Update(Guid guid)
+    {
+
+        var account = await _accountRepository.Get(guid);
+        if (account == null)
+        {
+            return RedirectToAction("Error", "Index");
+        }
+
+        var updateVM = new UpdateVM
+        {
+            Guid = account.Guid,
+            Username = account.Username,
+            Email = account.Email,
+            Name = account.Name,
+            Role = account.Role,
+            ImageProfile = account.ImageProfile
+        };
+        return View(updateVM);
     }
 }
