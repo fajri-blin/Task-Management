@@ -31,7 +31,7 @@
                                         </i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
-                                        <button class="dropdown-item" asp-action="Edit">Edit</button>
+                                        <a class="dropdown-item" asp-controller="Assignment" asp-action="EditAssignment" asp-route-guid="@item.Guid">Edit</a>
                                         <button class="dropdown-item" asp-action="Details">Details</button>
                                         <button class="dropdown-item text-danger" onclick="showDeleteConfirmation('@item.Guid')">Delete</button>
                                     </div>
