@@ -78,8 +78,7 @@ public class AssignmentRepository : GeneralRepository<AssignmentVM>, IAssignment
             Title = updateAssignmentVM.Title,
             Description = updateAssignmentVM.Description,
             DueDate = updateAssignmentVM.DueDate,
-            Categories  = updateAssignmentVM.Categories,
-           
+            Category  = updateAssignmentVM.Category,
         };
 
         StringContent content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
@@ -93,5 +92,4 @@ public class AssignmentRepository : GeneralRepository<AssignmentVM>, IAssignment
 
         return entityVM;
     }
-
 }

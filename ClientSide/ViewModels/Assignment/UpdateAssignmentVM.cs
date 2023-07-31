@@ -1,4 +1,6 @@
-﻿namespace ClientSide.ViewModels.Assignment;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ClientSide.ViewModels.Assignment;
 
 public class UpdateAssignmentVM
 {
@@ -6,5 +8,6 @@ public class UpdateAssignmentVM
     public string Title { get; set; }
     public string Description { get; set; }
     public DateTime DueDate { get; set; }
-    public List<string> Categories { get; set; }
+    [Required(ErrorMessage = "The Category field is required.")]
+    public List<string> Category { get; set; }
 }

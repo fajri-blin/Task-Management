@@ -3,6 +3,7 @@ using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Assignment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -13,10 +14,12 @@ public class AssignmentController : Controller
 {   
     private readonly IAssignmentRepository _assignmentRepository;
     private readonly IAccountRepository _accountRepository;
+    private readonly ICategoryRepository _categoryRepository;
 
-    public AssignmentController(IAssignmentRepository assignmentRepository)
+    public AssignmentController(IAssignmentRepository assignmentRepository, ICategoryRepository categoryRepository)
     {
         _assignmentRepository = assignmentRepository;
+        _categoryRepository = categoryRepository;
     }
 
     private string GetManagerGuidFromToken()
@@ -135,34 +138,78 @@ public class AssignmentController : Controller
 
 
     [HttpGet]
-    public async Task<IActionResult> Edit(Guid guid)
+    public async Task<IActionResult> EditAssignment(Guid guid)
     {
+        var components = new ComponentHandlers
+        {
+            Footer = false,
+            SideBar = true,
+            Navbar = true,
+        };
+        ViewBag.Components = components;
+
+        // Retrieve the assignment data
         var result = await _assignmentRepository.Get(guid);
         if (result.Data == null)
         {
             return NotFound();
         }
 
-        return View(result);
+        // Map AssignmentVM to UpdateAssignmentVM (assuming both have similar properties)
+        var updateAssignmentVM = new UpdateAssignmentVM
+        {
+            Guid = result.Data.Guid,
+            Title = result.Data.Title,
+            Description = result.Data.Description,
+            DueDate = result.Data.DueDate,
+            Category = result.Data.Category
+        };
+
+        // Create a SelectList for the selected categories
+        var selectedCategories = updateAssignmentVM.Category?.Select(category => new SelectListItem
+        {
+            Value = category,
+            Text = category
+        }).ToList();
+
+        return View(updateAssignmentVM);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(UpdateAssignmentVM updateAssignmentVM)
+    public async Task<IActionResult> EditAssignment(UpdateAssignmentVM updateAssignmentVM)
     {
-
-
+        // Map AssignmentVM to UpdateAssignmentVM (assuming both have similar properties)
         var result = await _assignmentRepository.Update(updateAssignmentVM);
         if (result.Code == 200)
         {
             TempData["Success"] = "Data Berhasil Diupdate";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(GetAllAssignment));
+        }
+        else if (result.Code == 400)
+        {
+            // If there is a validation error related to Categories,
+            // populate the ModelState with the error message
+            if (result.Data != null && result.Data is IDictionary<string, string[]> validationErrors)
+            {
+                foreach (var error in validationErrors)
+                {
+                    foreach (var errorMessage in error.Value)
+                    {
+                        ModelState.AddModelError(error.Key, errorMessage);
+                    }
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, result.Message);
+            }
         }
         else if (result.Code == 409)
         {
             ModelState.AddModelError(string.Empty, result.Message);
-            return View(updateAssignmentVM);
         }
 
         return View("GetAllAssignment");
     }
+
 }
