@@ -1,7 +1,6 @@
 ﻿using ClientSide.Contract;
 using ClientSide.ViewModels.Account;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ClientSide.Controllers;
 
@@ -71,7 +70,7 @@ public class AccountController : Controller
         var result = await _accountRepository.Login(signInDto);
         if (result == null)
         {
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Error", "Dashboard");
         }
         else if (result.Code == 404)
         {
