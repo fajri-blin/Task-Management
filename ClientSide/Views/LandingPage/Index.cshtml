@@ -1,6 +1,7 @@
 ﻿
 @{
     ViewData["Title"] = "Index";
+    Layout = "_LayoutLandingPage";
 }
 
 <!-- ======= Header ======= -->
@@ -14,9 +15,8 @@
             <ul>
                 <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
                 <li><a class="nav-link scrollto" href="#about">About</a></li>
-                <li><a class="nav-link scrollto" href="#services">Feature</a></li>
-@*                <li><a class="nav-link scrollto" href="#features">Features</a></li>*@
-                <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                <li><a class="nav-link scrollto" href="#feature">Feature</a></li>
+                <li><a class="nav-link scrollto" href="#contact">Contact Us</a></li>
                 <li>
                     <a class="getstarted scrollto" href="/account/signin">Login</a>
                 </li>
@@ -33,7 +33,7 @@
         <div class="row justify-content-center">
             <div class="col-xl-5 col-lg-6 pt-3 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center">
                 <h1>Metrodata Task Management</h1>
-                <h2>We are team of talented developer making task with Bootstrap</h2>
+                <h2>We are a team of talented developers who make task management </h2>
                 <div><a href="#about" class="btn-get-started scrollto">Get Started</a></div>
             </div>
             <div class="col-xl-4 col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="150">
@@ -68,23 +68,21 @@
                         <li><i class="bi bi-check-circle"></i> Time Management: Efficiently managing time is critical to completing tasks on schedule.</li>
                         <li><i class="bi bi-check-circle"></i>Task Completion and Review: Once a task is completed, it should be reviewed to assess whether the desired outcome was achieved and whether there were any issues or improvements that can be made for future tasks.</li>
                     </ul>
-                   @* <a href="#" class="read-more">Read More <i class="bi bi-long-arrow-right"></i></a>*@
                 </div>
             </div>
 
         </div>
     </section><!-- End About Section -->
  
-    <!-- ======= Services Section ======= -->
-    <section id="services" class="services section-bg">
+    <!-- ======= Feature Section ======= -->
+    <section id="feature" class="services section-bg">
         <div class="container" data-aos="fade-up">
 
             <div class="section-title">
                 <h2>Feature</h2>
-                @*<p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>*@
             </div>
 
-            <div class="row gy-4">
+            <div id="create" class="row gy-4">
                 <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
                     <div class="icon-box iconbox-blue">
                         <div class="icon">
@@ -94,11 +92,11 @@
                             <i class="bx bxl-dribbble"></i>
                         </div>
                         <h4><a href="">Task Creation</a></h4>
-                        <p>Project Manager (PM) membuat tugas baru dengan judul, deskripsi, dan due date</p>
+                        <p>Project manager creates a new task with title, description, select staff, and due date.</p>
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
+                <div id="track" class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
                     <div class="icon-box iconbox-orange ">
                         <div class="icon">
                             <svg width="100" height="100" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
@@ -107,11 +105,11 @@
                             <i class="bx bx-file"></i>
                         </div>
                         <h4><a href="">Task Status Tracking</a></h4>
-                        <p>Project managers and staff can track the status of each task, whether it is completed, in progress, or pending.</p>
+                        <p>Project manager and staff can track the status of each task, whether it is completed, in progress, or pending.</p>
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="300">
+                <div id="progress" class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="300">
                     <div class="icon-box iconbox-pink">
                         <div class="icon">
                             <svg width="100" height="100" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
@@ -127,14 +125,14 @@
             </div>
 
         </div>
-    </section><!-- End Services Section -->
+    </section><!-- End Feature Section -->
   
     <!-- ======= Contact Section ======= -->
     <section id="contact" class="contact section-bg">
         <div class="container" data-aos="fade-up">
 
             <div class="section-title">
-                <h2>Contact</h2> 
+                <h2>Contact Us</h2> 
             </div>
 
             <div class="row">
@@ -172,9 +170,10 @@
 
             <div class="row">
 
-                <div class="col-sm ">
-                    <iframe class="mb-4 mb-lg-0" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621" frameborder="0" style="border:0; width: 100%; height: 384px;" allowfullscreen></iframe>
+                <div class="col-sm">
+                    <iframe class="mb-4 mb-lg-0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.0560127517994!2d106.78938831476912!3d-6.177455262388761!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f4377ff9dbb7%3A0x15d97fcb0f883f06!2sCentral%20Park!5e0!3m2!1sen!2sid!4v1627744732371!5m2!1sen!2sid" frameborder="0" style="border:0; width: 100%; height: 384px;" allowfullscreen></iframe>
                 </div>
+
             </div>
 
         </div>
@@ -202,19 +201,19 @@
                 <div class="col-lg-2 col-md-6 footer-links">
                     <h4>Useful Links</h4>
                     <ul>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Feature</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Privacy policy</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#hero">Home</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#about">About us</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#feature">Feature</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#contact">Contact Us</a></li>
                     </ul>
                 </div>
 
                 <div class="col-lg-3 col-md-6 footer-links">
                     <h4>Our Feature</h4>
                     <ul>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Task Creation</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Task Status Tracking</a></li>
-                        <li><i class="bx bx-chevron-right"></i> <a href="#">Progress Task</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#create">Task Creation</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#track">Task Status Tracking</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#progress">Progress Task</a></li>
                   
                     </ul>
                 </div>
@@ -240,11 +239,6 @@
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 <div id="preloader"></div>
 
-@*<script>
-    document.getElementById("login").addEventListener("click", function () {
-        document.getElementById("signin").style.display = "block";
-    });
-</script>*@
 
 <!-- Vendor JS Files -->
 <script src="~/template/vendor/purecounter/purecounter_vanilla.js"></script>
