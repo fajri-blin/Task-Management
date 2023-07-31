@@ -1,62 +1,23 @@
-﻿using ClientSide.Contract;
-using ClientSide.Models;
-using ClientSide.Utilities.Handlers;
-using Microsoft.AspNetCore.Authorization;
+﻿using ClientSide.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Security.Claims;
 
 namespace ClientSide.Controllers
 {
-    [Authorize]
+    [Controller]
     public class HomeController : Controller
     {
-        private readonly IAssignmentRepository _assignmentRepository;
-        private readonly IDashboardRepository _dashboardRepository;
+        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(IAssignmentRepository assignmentRepository, IDashboardRepository boardRepository)
+        public HomeController(ILogger<HomeController> logger)
         {
-            _assignmentRepository = assignmentRepository;
-            _dashboardRepository = boardRepository;
+            _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("SignIn", "Account");
-            }
-
-            var assignment = await _assignmentRepository.GetFromManager(Guid.Parse(HttpContext.User.FindFirstValue("Guid")));
-            var month = await _dashboardRepository.CountMonth(Guid.Parse(HttpContext.User.FindFirstValue("Guid")));
-            var category = await _dashboardRepository.CountCategory(Guid.Parse(HttpContext.User.FindFirstValue("Guid")));
-            var components = new ComponentHandlers
-            {
-                Footer = false,
-                SideBar = true,
-                Navbar = true,
-            };
-            ViewBag.Components = components;
-            DashboardHandlers data;
-            if (assignment.Code == 404)
-            {
-                data = new DashboardHandlers
-                {
-                    totalAssignment = 0
-                };
-            }
-            else
-            {
-                data = new DashboardHandlers
-                {
-                    totalAssignment = assignment.Data.Count(),
-                    Count = month.Data.Count,
-                    Mount = month.Data.Month,
-                    Category = category.Data.CategoryName,
-                    CountCategory = category.Data.Count
-                };
-            }
-            return View("Index", data);
+            _logger.LogInformation("Landing page accessed.");
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
