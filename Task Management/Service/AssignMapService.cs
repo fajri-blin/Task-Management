@@ -1,5 +1,6 @@
 ﻿using Task_Management.Contract.Data;
 using Task_Management.Data;
+using Task_Management.Dtos.AssignMapDto;
 using Task_Management.DTOs.AssignMapDto;
 using Task_Management.Model.Data;
 
@@ -8,19 +9,49 @@ namespace Task_Management.Service;
 public class AssignMapService
 {
     private readonly IAssignMapRepository _assignMapRepository;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IAssignmentRepository _assignmentRepository;
     private readonly BookingDbContext _bookingContext;
 
-    public AssignMapService(IAssignMapRepository TaskCategoryMappingRepository, BookingDbContext bookingDbContext)
+    public AssignMapService(IAssignMapRepository TaskCategoryMappingRepository, BookingDbContext bookingDbContext, ICategoryRepository categoryRepository, IAssignmentRepository assignmentRepository)
     {
         _assignMapRepository = TaskCategoryMappingRepository;
         _bookingContext = bookingDbContext;
+        _categoryRepository = categoryRepository;
+        _assignmentRepository = assignmentRepository;
     }
 
-    /*public IEnumerable<AssignMapDto>? CountCategory(Guid guid)
+    public CountTop3CategoryDto? CountCategory(Guid guid)
     {
-        var entities = _assignMapRepository.GetByAssignmentForeignKey(guid);
+        var assignments = _assignmentRepository.GetByManager(guid);
+        var assignMaps = _assignMapRepository.GetAll();
+        var categories = _categoryRepository.GetAll();
 
-    }*/
+        var entity = (
+            from assignment in assignments
+            join assignMap in assignMaps on assignment.Guid equals assignMap.AssignmentGuid
+            join category in categories on assignMap.CategoryGuid equals category.Guid
+            group category by category.Name into g
+            select new
+            {
+                category = g.Key,
+                count = g.Count()
+            }).OrderByDescending(c => c.count).ToList();
+
+        var totalOtherCount = entity.Skip(3).Sum(c => c.count);
+        var top3Categories = entity.Take(3).ToList();
+
+        var dto = new CountTop3CategoryDto
+        {
+            CategoryName = top3Categories.Select(c => c.category).ToList(),
+            Count = top3Categories.Select(c => c.count).ToList(),
+        };
+
+        dto.CategoryName.Add("Other");
+        dto.Count.Add(totalOtherCount);
+
+        return dto;
+    }
 
     // Basic CRUD ===================================================
     public IEnumerable<AssignMapDto>? Get()

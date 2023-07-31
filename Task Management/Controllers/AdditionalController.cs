@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Task_Management.DTOs.AdditionalDto;
 using Task_Management.DTOs.NewAdditionalDto;
-using Task_Management.Model.Data;
 using Task_Management.Service;
 using Task_Management.Utilities.Handler;
 
@@ -19,7 +19,7 @@ public class AdditionalController : ControllerBase
         _additionalSevices = accountSevices;
     }
 
-    /*[HttpGet("GetByProgressKey/{guid}")]
+    [HttpGet("GetByProgressKey/{guid}")]
     public IActionResult GetByProgressKey(Guid guid)
     {
         var entities = _additionalSevices.GetByProgressGuid(guid);
@@ -37,32 +37,48 @@ public class AdditionalController : ControllerBase
             Message = "Data Found",
             Data = entities
         });
-    }*/
+    }
 
-    //Basic CRUD
-    /*[HttpGet]
-    public IActionResult GetAll()
+    [HttpPost("Download")]
+    public IActionResult GetFile(Guid guid)
     {
-        var entities = _additionalSevices.Get();
-        if (entities == null)
+        var fileResult = _additionalSevices.DownloadFile(guid);
+        if (fileResult == null)
         {
-            return NotFound(new ResponseHandlers<NewAdditionalDto>
+            return NotFound(new ResponseHandlers<AdditionalDto>
             {
                 Code = StatusCodes.Status404NotFound,
                 Status = HttpStatusCode.NotFound.ToString(),
                 Message = "Data Not Found"
             });
         }
-        return Ok(new ResponseHandlers<IEnumerable<NewAdditionalDto>>
+        return fileResult;
+    }
+
+    //Basic CRUD
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var entities = _additionalSevices.Get();
+        if (entities == null)
+        {
+            return NotFound(new ResponseHandlers<AdditionalDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Not Found"
+            });
+        }
+        return Ok(new ResponseHandlers<IEnumerable<AdditionalDto>>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
             Message = "Data Found",
             Data = entities
         });
-    }*/
+    }
 
-    /*[HttpGet("{guid}")]
+    [HttpGet("{guid}")]
     public IActionResult Get(Guid guid)
     {
         var entity = _additionalSevices.Get(guid);
@@ -80,7 +96,7 @@ public class AdditionalController : ControllerBase
             Message = "Data Found",
             Data = entity
         });
-    }*/
+    }
 
     [HttpPost]
     public IActionResult Create([FromForm] NewAdditionalDto entity)
@@ -93,7 +109,7 @@ public class AdditionalController : ControllerBase
             Message = "Data Not Found"
         });
 
-        return Ok(new ResponseHandlers<IEnumerable<Additional>>
+        return Ok(new ResponseHandlers<IEnumerable<AdditionalDto>>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),

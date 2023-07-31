@@ -1,4 +1,6 @@
-﻿using Task_Management.Contract.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
+using Task_Management.Contract.Data;
 using Task_Management.Data;
 using Task_Management.DTOs.AdditionalDto;
 using Task_Management.DTOs.NewAdditionalDto;
@@ -30,6 +32,29 @@ public class AdditionalService
         return baseList;
     }
 
+    public FileResult DownloadFile(Guid guid)
+    {
+        var additional = _additionalRepository.GetByGuid(guid);
+
+        var filepath = Path.Combine(Directory.GetCurrentDirectory(), "Files\\Additional", additional.FileData);
+
+        if (!File.Exists(filepath))
+        {
+            return null;
+        }
+
+        var provider = new FileExtensionContentTypeProvider();
+        if (!provider.TryGetContentType(filepath, out var contentType))
+        {
+            contentType = "application/octet-stream";
+        }
+        var bytes = System.IO.File.ReadAllBytes(filepath);
+        return new FileContentResult(bytes, contentType)
+        {
+            FileDownloadName = additional.FileName
+        };
+    }
+
     // Basic CRUD ===================================================
     public IEnumerable<AdditionalDto>? Get()
     {
@@ -54,12 +79,12 @@ public class AdditionalService
         return Dto;
     }
 
-    public IEnumerable<Additional> Create(NewAdditionalDto newAdditionalDto)
+    public IEnumerable<AdditionalDto> Create(NewAdditionalDto newAdditionalDto)
     {
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            var createdList = new List<Additional>();
+            var createdList = new List<AdditionalDto>();
             foreach (var file in newAdditionalDto.FileName)
             {
                 var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
@@ -90,7 +115,7 @@ public class AdditionalService
 
                 var created = _additionalRepository.Create(additonal);
 
-                createdList.Add(created);
+                createdList.Add((AdditionalDto)created);
             }
             transaction.Commit();
             return createdList;
