@@ -16,6 +16,7 @@ builder.Services.AddSession();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 // Add Cors
 builder.Services.AddCors(options =>
