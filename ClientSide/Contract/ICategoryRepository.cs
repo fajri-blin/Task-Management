@@ -5,5 +5,5 @@ namespace ClientSide.Contract;
 
 public interface ICategoryRepository : IGeneralRepository<CategoryVM>
 {
-    Task<ResponseHandlers<IEnumerable<string>>> GetAllCategories();
+    //Task<ResponseHandlers<IEnumerable<string>>> GetAllCategories();
 }

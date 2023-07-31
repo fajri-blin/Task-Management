@@ -12,14 +12,14 @@ public class CategoryRepository : GeneralRepository<CategoryVM>, ICategoryReposi
 
     }
 
-    public async Task<ResponseHandlers<IEnumerable<string>>> GetAllCategories()
-    {
-        ResponseHandlers<IEnumerable<string>> entityVM = null;
-        using (var response = await _httpClient.GetAsync(_request + "Categories"))
-        {
-            string apiResponse = await response.Content.ReadAsStringAsync();
-            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<IEnumerable<string>>>(apiResponse);
-        }
-        return entityVM;
-    }
+    //public async Task<ResponseHandlers<IEnumerable<string>>> GetAllCategories()
+    //{
+    //    ResponseHandlers<IEnumerable<string>> entityVM = null;
+    //    using (var response = await _httpClient.GetAsync(_request))
+    //    {
+    //        string apiResponse = await response.Content.ReadAsStringAsync();
+    //        entityVM = JsonConvert.DeserializeObject<ResponseHandlers<IEnumerable<string>>>(apiResponse);
+    //    }
+    //    return entityVM;
+    //}
 }

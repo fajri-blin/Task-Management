@@ -148,24 +148,6 @@ public class AssignmentController : Controller
         };
         ViewBag.Components = components;
 
-        // Retrieve all available categories from the repository
-        var allCategoriesResult = await _categoryRepository.GetAllCategories();
-        if (allCategoriesResult.Code == 200)
-        {
-            // Create a SelectList with all available categories
-            var allCategories = allCategoriesResult.Data.Select(category => new SelectListItem
-            {
-                Value = category,
-                Text = category
-            }).ToList();
-            ViewBag.AllCategories = new SelectList(allCategories, "Value", "Text");
-        }
-        else
-        {
-            // If the retrieval of categories fails, set ViewBag.AllCategories to an empty SelectList
-            ViewBag.AllCategories = new SelectList(new List<SelectListItem>());
-        }
-
         // Retrieve the assignment data
         var result = await _assignmentRepository.Get(guid);
         if (result.Data == null)
@@ -183,19 +165,15 @@ public class AssignmentController : Controller
             Category = result.Data.Category
         };
 
-        // Convert List<string> to List<SelectListItem> for the selected Categories property
-        var selectedCategories = updateAssignmentVM.Category.Select(category => new SelectListItem
+        // Create a SelectList for the selected categories
+        var selectedCategories = updateAssignmentVM.Category?.Select(category => new SelectListItem
         {
             Value = category,
             Text = category
         }).ToList();
 
-        // Use the SelectList constructor overload to set the selected categories
-        ViewBag.SelectedCategories = new SelectList(ViewBag.AllCategories.Items, "Value", "Text", selectedCategories.Select(sc => sc.Value));
-
         return View(updateAssignmentVM);
     }
-
 
     [HttpPost]
     public async Task<IActionResult> EditAssignment(UpdateAssignmentVM updateAssignmentVM)
@@ -205,7 +183,7 @@ public class AssignmentController : Controller
         if (result.Code == 200)
         {
             TempData["Success"] = "Data Berhasil Diupdate";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(GetAllAssignment));
         }
         else if (result.Code == 400)
         {
@@ -231,11 +209,7 @@ public class AssignmentController : Controller
             ModelState.AddModelError(string.Empty, result.Message);
         }
 
-        // Recreate the SelectList with selected categories
-        var selectedCategories = new SelectList(updateAssignmentVM.Category, "Value", "Text", updateAssignmentVM.Category);
-        ViewBag.SelectedCategories = selectedCategories;
-
-        return View("EditAssignment", updateAssignmentVM);
+        return View("GetAllAssignment");
     }
 
 }

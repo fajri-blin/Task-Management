@@ -2,8 +2,6 @@
 
 @{
     ViewData["Title"] = "EditAssignment";
-    // Get the ViewBag.AllCategories data and cast it to IEnumerable<SelectListItem>
-    var allCategories = ViewBag.AllCategories as IEnumerable<SelectListItem>;
 }
 
 <div class="content-wrapper">
@@ -24,19 +22,19 @@
                     </div>
                     <div class="form-group col-md-5">
                         <label asp-for="Category" class="control-label"></label>
-                        <select id="mySelect2Edit" name="Category" class="form-control" asp-for="Category" asp-items="@allCategories" multiple="multiple">
+                        <select id="mySelect2Edit" name="Category" class="form-control" asp-for="Category" multiple="multiple">
                             @{
-                                // Mark selected categories as "selected"
-                                foreach (var category in allCategories)
+                                // Loop through the selected categories in updateAssignmentVM.Category
+                                foreach (var category in Model.Category)
                                 {
-                                    <option value="@category.Value" selected="@Model.Category.Contains(category.Value)">@category.Text</option>
+                                    <option value="@category" selected>@category</option>
                                 }
                             }
                         </select>
-
-
                         <span asp-validation-for="Category" class="text-danger"></span>
                     </div>
+
+
                     <div class="form-group col-md-5">
                         <label asp-for="DueDate" class="control-label"></label>
                         <!-- Display only the date and time without milliseconds -->
