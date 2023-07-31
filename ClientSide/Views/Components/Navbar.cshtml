@@ -1,4 +1,7 @@
 ﻿@{
+    var guid = User.FindFirst("Guid")?.Value;
+    var photoPath = $"api/Account/Photo/{guid}";
+    var src = $"https://localhost:7113/{photoPath}" ?? "~/assets/img/avatars/user.png";
 }
 
 <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -13,18 +16,16 @@
     }
 
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-        <!-- Search -->
         <div class="navbar-nav align-items-center ms-auto">
             <p>Metrodata Task Management</p>
         </div>
-        <!-- /Search -->
 
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- User -->
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        <img src="../assets/img/avatars/1.png" alt="image.jpg" class="w-px-40 h-auto rounded-circle" />
+                        <img src="@src" alt="image.jpg" class="w-px-40 h-px-40 rounded-circle" />
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -33,7 +34,7 @@
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar avatar-online">
-                                        <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                        <img src="@src" alt="image.jpg" class="w-px-40 h-px-40 rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">

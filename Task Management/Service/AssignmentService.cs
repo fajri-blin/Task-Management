@@ -31,37 +31,7 @@ public class AssignmentService
         _accountRepository = accountRepository;
     }
 
-    public AssignmentRateDto? CountMonthManager(Guid guid)
-    {
-        var assignments = _assignmentRepository.GetByManager(guid);
 
-        DateTime startDate = new DateTime(DateTime.Now.Year, 1, 1);
-
-        DateTime endDate = startDate.AddYears(1);
-
-        assignments = assignments.Where(a => a.CreatedAt >= startDate && a.CreatedAt < endDate);
-
-        var months = new List<string>
-        {
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-        };
-
-        var monthlyTotals = months.GroupJoin(
-            assignments,
-            month => month,
-            assignment => assignment.CreatedAt.ToString("MMM"),
-            (month, assignmentMonth) => assignmentMonth.Count()
-            ).ToList();
-
-
-        var dto = new AssignmentRateDto
-        {
-            Month = months,
-            Count = monthlyTotals
-        };
-
-        return dto;
-    }
 
     public int DeleteDeepAssignment(Guid guid)
     {

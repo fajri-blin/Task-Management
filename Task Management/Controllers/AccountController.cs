@@ -190,6 +190,22 @@ public class AccountController : ControllerBase
         });
     }
 
+    [HttpGet("Photo/{guid}")]
+    public IActionResult GetPhoto(Guid guid)
+    {
+        var fileResult = _accountSevices.Photo(guid);
+        if (fileResult == null)
+        {
+            return NotFound(new ResponseHandlers<string>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Not Found"
+            });
+        }
+        return fileResult;
+    }
+
     //Basic CRUD
     [HttpGet]
     public IActionResult GetAll()
@@ -249,17 +265,17 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update(AccountDto entity)
+    public IActionResult Update([FromForm] UpdateAccountDto entity)
     {
         var updated = _accountSevices.Update(entity);
-        if (updated is -1) return NotFound(new ResponseHandlers<AccountDto>
+        if (updated is -1) return NotFound(new ResponseHandlers<UpdateAccountDto>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
 
-        return Ok(new ResponseHandlers<AccountDto>
+        return Ok(new ResponseHandlers<UpdateAccountDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),

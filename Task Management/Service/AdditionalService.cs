@@ -159,7 +159,7 @@ public class AdditionalService
                     Directory.CreateDirectory(filePath);
                 }
 
-                var exacPath = Path.Combine(Directory.GetCurrentDirectory(), "Files\\Additional", fileData);
+                var exacPath = Path.Combine(filePath, fileData);
                 using (var stream = new FileStream(exacPath, FileMode.Create))
                 {
                     file.CopyToAsync(stream);

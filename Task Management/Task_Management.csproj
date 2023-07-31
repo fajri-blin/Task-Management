@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Files\Additional\" />
+    <Folder Include="Photos\" />
   </ItemGroup>
 
 </Project>

@@ -51,6 +51,7 @@ builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProgressService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AdditionalService>();
+builder.Services.AddScoped<DashboardService>();
 
 // Register Fluent validation
 builder.Services.AddFluentValidationAutoValidation()

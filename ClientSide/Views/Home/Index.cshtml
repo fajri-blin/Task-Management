@@ -4,104 +4,99 @@
 }
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row">
-        <!-- Order Statistics -->
+        <!-- Category Statistics -->
         <div class="col-md-6 col-lg-6 order-0 mb-4">
             <div class="card h-100">
                 <div class="card-header d-flex align-items-center justify-content-between pb-0">
                     <div class="card-title mb-0">
-                        <h5 class="m-0 me-2">Order Statistics</h5>
-                        <small class="text-muted">42.82k Total Sales</small>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn p-0"
-                                type="button"
-                                id="orederStatistics"
-                                data-bs-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false">
-                            <i class="bx bx-dots-vertical-rounded"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orederStatistics">
-                            <a class="dropdown-item" href="javascript:void(0);">Select All</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Share</a>
-                        </div>
+                        <h5 class="m-0 me-2">Categories</h5>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex flex-column align-items-center gap-1">
-                            <h2 class="mb-2">8,258</h2>
-                            <span>Total Orders</span>
+                            <h2 class="mb-2">@Model.CountCategory.Sum()</h2>
+                            <span>Total Category</span>
                         </div>
-                        <div id="orderStatisticsChart"></div>
+                        <div id="categoryStatisticChart"></div>
                     </div>
                     <ul class="p-0 m-0">
-                        <li class="d-flex mb-4 pb-1">
-                            <div class="avatar flex-shrink-0 me-3">
-                                <span class="avatar-initial rounded bg-label-primary">
-                                    <i class="bx bx-mobile-alt"></i>
-                                </span>
-                            </div>
-                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                <div class="me-2">
-                                    <h6 class="mb-0">Electronic</h6>
-                                    <small class="text-muted">Mobile, Earbuds, TV</small>
+                        @if(Model.Category.Count >= 1){
+                            <li class="d-flex mb-4 pb-1">
+                                <div class="avatar flex-shrink-0 me-3">
+                                    <span class="avatar-initial rounded bg-label-primary">
+                                        <i class='bx bx-category'></i>
+                                    </span>
                                 </div>
-                                <div class="user-progress">
-                                    <small class="fw-semibold">82.5k</small>
+                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                    <div class="me-2">
+                                        <h6 class="mb-0">@Model.Category[0]</h6>    
+                                    </div>
+                                    <div class="user-progress">
+                                        <small class="fw-semibold">@Model.CountCategory[0]</small>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="d-flex mb-4 pb-1">
-                            <div class="avatar flex-shrink-0 me-3">
-                                <span class="avatar-initial rounded bg-label-success"><i class="bx bx-closet"></i></span>
-                            </div>
-                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                <div class="me-2">
-                                    <h6 class="mb-0">Fashion</h6>
-                                    <small class="text-muted">T-shirt, Jeans, Shoes</small>
+                            </li>
+                        }
+                        @if (Model.Category.Count >= 2)
+                        {
+                            <li class="d-flex mb-4 pb-1">
+                                <div class="avatar flex-shrink-0 me-3">
+                                    <span class="avatar-initial rounded bg-label-success">
+                                        <i class='bx bx-category'></i>
+                                    </span>
                                 </div>
-                                <div class="user-progress">
-                                    <small class="fw-semibold">23.8k</small>
+                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                    <div class="me-2">
+                                        <h6 class="mb-0">@Model.Category[1]</h6>
+                                    </div>
+                                    <div class="user-progress">
+                                        <small class="fw-semibold">@Model.CountCategory[1]</small>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="d-flex mb-4 pb-1">
-                            <div class="avatar flex-shrink-0 me-3">
-                                <span class="avatar-initial rounded bg-label-info"><i class="bx bx-home-alt"></i></span>
-                            </div>
-                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                <div class="me-2">
-                                    <h6 class="mb-0">Decor</h6>
-                                    <small class="text-muted">Fine Art, Dining</small>
+                            </li>
+                        }
+                        @if (Model.Category.Count >= 3)
+                        {
+                            <li class="d-flex mb-4 pb-1">
+                                <div class="avatar flex-shrink-0 me-3">
+                                    <span class="avatar-initial rounded bg-label-info">
+                                        <i class='bx bx-category'></i>
+                                    </span>
                                 </div>
-                                <div class="user-progress">
-                                    <small class="fw-semibold">849k</small>
+                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                    <div class="me-2">
+                                        <h6 class="mb-0">@Model.Category[2]</h6>
+                                    </div>
+                                    <div class="user-progress">
+                                        <small class="fw-semibold">@Model.CountCategory[2]</small>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="d-flex">
-                            <div class="avatar flex-shrink-0 me-3">
-                                <span class="avatar-initial rounded bg-label-secondary">
-                                    <i class="bx bx-football"></i>
-                                </span>
-                            </div>
-                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                <div class="me-2">
-                                    <h6 class="mb-0">Sports</h6>
-                                    <small class="text-muted">Football, Cricket Kit</small>
+                            </li>
+                        }
+                        @if (Model.Category.Count >= 4)
+                        {
+                            <li class="d-flex">
+                                <div class="avatar flex-shrink-0 me-3">
+                                    <span class="avatar-initial rounded bg-label-secondary">
+                                        <i class='bx bx-category'></i>
+                                    </span>
                                 </div>
-                                <div class="user-progress">
-                                    <small class="fw-semibold">99</small>
+                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                    <div class="me-2">
+                                        <h6 class="mb-0">@Model.Category[3]</h6>
+                                    </div>
+                                    <div class="user-progress">
+                                        <small class="fw-semibold">@Model.CountCategory[3]</small>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </div>
-        <!--/ Order Statistics -->
+        <!--/ Category Statistics -->
         <!-- Assignment -->
         <div class="col-md-6 col-lg-6 order-1 mb-4">
             <div class="card h-100">
@@ -156,25 +151,25 @@
 
             // Order Statistics Chart
             // --------------------------------------------------------------------
-            const chartOrderStatistics = document.querySelector('#orderStatisticsChart'),
+            const chartOrderStatistics = document.querySelector('#categoryStatisticChart'),
                 orderChartConfig = {
                     chart: {
                         height: 165,
                         width: 130,
-                        type: 'donut'
+                        type: 'pie'
                     },
-                    labels: ['Electronic', 'Sports', 'Decor', 'Fashion'],
-                    series: [85, 15, 50, 50],
+                    labels: @Html.Raw(Json.Serialize(Model.Category)),
+                    series: @Html.Raw(Json.Serialize(Model.CountCategory)),
                     colors: [config.colors.primary, config.colors.secondary, config.colors.info, config.colors.success],
                     stroke: {
-                        width: 5,
+                        width: 1,
                         colors: cardColor
                     },
                     dataLabels: {
-                        enabled: false,
+                        enabled: true,
                         formatter: function (val, opt) {
                             return parseInt(val) + '%';
-                        }
+                        },
                     },
                     legend: {
                         show: false
@@ -183,41 +178,10 @@
                         padding: {
                             top: 0,
                             bottom: 0,
-                            right: 15
+                            right: 12
                         }
                     },
-                    plotOptions: {
-                        pie: {
-                            donut: {
-                                size: '75%',
-                                labels: {
-                                    show: true,
-                                    value: {
-                                        fontSize: '1.5rem',
-                                        fontFamily: 'Public Sans',
-                                        color: headingColor,
-                                        offsetY: -15,
-                                        formatter: function (val) {
-                                            return parseInt(val) + '%';
-                                        }
-                                    },
-                                    name: {
-                                        offsetY: 20,
-                                        fontFamily: 'Public Sans'
-                                    },
-                                    total: {
-                                        show: true,
-                                        fontSize: '0.8125rem',
-                                        color: axisColor,
-                                        label: 'Weekly',
-                                        formatter: function (w) {
-                                            return '38%';
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    
                 };
             if (typeof chartOrderStatistics !== undefined && chartOrderStatistics !== null) {
                 const statisticsChart = new ApexCharts(chartOrderStatistics, orderChartConfig);
@@ -230,7 +194,7 @@
                 assignmentConfig = {
                     series: [
                         {
-                            data: ['@Model.totalAssignment', 0, 5, 6, 3, 9, 3, 13, 6, 4, 2, 1]
+                            data: ['@Model.Count[0]', '@Model.Count[1]', '@Model.Count[2]', '@Model.Count[3]', '@Model.Count[4]', '@Model.Count[5]', '@Model.Count[6]', '@Model.Count[7]', '@Model.Count[8]', '@Model.Count[9]', '@Model.Count[10]', '@Model.Count[11]']
                         }
                     ],
                     chart: {
@@ -294,7 +258,7 @@
                         }
                     },
                     xaxis: {
-                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                        categories: ['@Model.Mount[0]', '@Model.Mount[1]', '@Model.Mount[2]', '@Model.Mount[3]', '@Model.Mount[4]', '@Model.Mount[5]', '@Model.Mount[6]', '@Model.Mount[7]', '@Model.Mount[8]', '@Model.Mount[9]', '@Model.Mount[10]', '@Model.Mount[11]'],
                         axisBorder: {
                             show: false
                         },

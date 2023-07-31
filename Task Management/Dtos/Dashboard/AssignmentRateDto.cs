@@ -1,4 +1,4 @@
-﻿namespace Task_Management.Dtos.AssignmentDto
+﻿namespace Task_Management.Dtos.Dashboard
 {
     public class AssignmentRateDto
     {
