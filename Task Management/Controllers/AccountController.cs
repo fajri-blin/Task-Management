@@ -122,7 +122,7 @@ public class AccountController : ControllerBase
             return NotFound(new ResponseHandlers<AccountDto>
             {
                 Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
+                Status = HttpStatusCode.BadRequest.ToString(),
                 Message = "Otp doesn't match"
             });
         if (isUpdated == 1)
@@ -130,7 +130,7 @@ public class AccountController : ControllerBase
             return NotFound(new ResponseHandlers<ChangePasswordDto>
             {
                 Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
+                Status = HttpStatusCode.BadRequest.ToString(),
                 Message = "Otp alredy expired"
             });
         }

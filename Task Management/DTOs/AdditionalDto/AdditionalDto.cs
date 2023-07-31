@@ -7,8 +7,7 @@ public class AdditionalDto
     public Guid Guid { get; set; }
     public Guid? ProgressGuid { get; set; }
     public string FileName { get; set; }
-    public byte[] FileData { get; set; }
-    public string FileType { get; set; }
+    public string FileData { get; set; }
 
     public static explicit operator AdditionalDto(Additional additional)
     {
@@ -18,7 +17,6 @@ public class AdditionalDto
             ProgressGuid = additional.ProgressGuid,
             FileName = additional.FileName,
             FileData = additional.FileData,
-            FileType = additional.FileType,
         };
     }
 
@@ -30,7 +28,6 @@ public class AdditionalDto
             ProgressGuid = additionalDto.ProgressGuid,
             FileName = additionalDto.FileName,
             FileData = additionalDto.FileData,
-            FileType = additionalDto.FileType,
             CreatedAt = DateTime.MinValue,
             ModifiedAt = DateTime.MinValue,
         };

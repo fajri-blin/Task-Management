@@ -1,12 +1,13 @@
-﻿namespace ClientSide.ViewModels.Assignment;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class AssignmentVM
+namespace ClientSide.ViewModels.Assignment;
+
+public class UpdateAssignmentVM
 {
     public Guid Guid { get; set; }
-    public string? ManagerName { get; internal set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public DateTime DueDate { get; set; }
+    [Required(ErrorMessage = "The Category field is required.")]
     public List<string> Category { get; set; }
-    public double Progress { get; set; }
 }

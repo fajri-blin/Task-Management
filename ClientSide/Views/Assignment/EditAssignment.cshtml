@@ -1,47 +1,53 @@
-﻿@model ClientSide.ViewModels.Assignment.CreateAssignmentVM
+﻿@model ClientSide.ViewModels.Assignment.UpdateAssignmentVM
 
 @{
-    ViewData["Title"] = "AddAssignment";
+    ViewData["Title"] = "EditAssignment";
 }
 
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="fw-bold py-3 mb-4">
             <span class="text-muted fw-light">Assignment /</span>
-            Create Assigment
+            Edit Assignment
         </h4>
         <div class="row">
             <div class="col-md-12">
-                <form asp-action="AddAssignment" method="post">
+                <form asp-action="EditAssignment" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="Guid" class="form-control" hidden />
                     <div class="form-group col-md-5">
                         <label asp-for="Title" class="control-label"></label>
                         <input asp-for="Title" class="form-control" />
                         <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-5">
-                        <label asp-for="DueDate" class="control-label"></label>
-                        <input asp-for="DueDate" class="form-control" />
-                        <span asp-validation-for="DueDate" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-5">
                         <label asp-for="Category" class="control-label"></label>
-                        <!-- Add an ID to the select element -->
-                        <div>
-                            <select id="mySelect2" asp-for="Category" class="form-control" multiple="multiple"></select>
-                            <span asp-validation-for="Category" class="text-danger"></span>
-                        </div>
+                        <select id="mySelect2Edit" name="Category" class="form-control" asp-for="Category" multiple="multiple">
+                            @{
+                                // Loop through the selected categories in updateAssignmentVM.Category
+                                foreach (var category in Model.Category)
+                                {
+                                    <option value="@category" selected>@category</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="Category" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group col-md-5">
+                        <label asp-for="DueDate" class="control-label"></label>
+                        <!-- Display only the date and time without milliseconds -->
+                        <input asp-for="DueDate" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="DueDate" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Description" class="control-label"></label>
-                        <textarea asp-for="Description" class="form-control" ></textarea>
+                        <textarea asp-for="Description" class="form-control"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
-                    <input id="managerGuidInput" asp-for="ManagerGuid" class="form-control"  value="@ViewBag.ManagerGuid" hidden/>
-
-
                     <div class="form-group mt-3">
-                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <input type="submit" value="Save" class="btn btn-primary" />
                     </div>
                 </form>
             </div>
@@ -49,7 +55,7 @@
     </div>
 </div>
 
-@section Styles{
+@section Styles {
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 }
@@ -58,32 +64,19 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script>
-
-
     <script>
-        // Initialize Select2 with tagging and token separators
+        // Initialize CKEditor 4
+        CKEDITOR.replace('Description');
+
+        // Initialize Select2 for editing
         $(document).ready(function () {
-            $('#mySelect2').select2({
+            $('#mySelect2Edit').select2({
                 tags: true,
                 tokenSeparators: [',']
             });
-
-            // Handle tagging and splitting values by commas
-            $('#mySelect2').on('select2:select', function (e) {
-                var data = e.params.data;
-                if (data.element && data.element.value === data.id) {
-                    // New tag added, split the value by commas
-                    var values = data.id.split(',');
-                    $(this).val(values).trigger('change');
-                }
-            });
-
-            // Initialize CKEditor 4
-            CKEDITOR.replace('Description');
         });
     </script>
 }
