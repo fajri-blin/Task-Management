@@ -5,20 +5,24 @@
     var deleteUrl = Url.Action("DeepDeleteAssignments", "Assignment");
 }
 
-
 <!-- Test Design-->
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
-        <!--Navigations-->
+        <!-- Navigations -->
         <h4 class="fw-bold py-3 mb-4">
             <span class="text-muted fw-light">Assignment /</span>
             List Assignment
         </h4>
+        <div class="row mb-3">
+            <div class="col">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by title or category">
+            </div>
+        </div>
         <div class="row mb-5">
-        @foreach (var item in Model)
-        {
-            <!-- Card Each of Assigment -->
-            <div class="col-md-6 col-lg-4 mb-3">
+            @foreach (var item in Model)
+            {
+                <!-- Card Each of Assignment -->
+                <div class="col-md-6 col-lg-4 mb-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
@@ -38,26 +42,60 @@
                                 </div>
                             </div>
                             <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
-                            <h6 class="card-subtitle mb-2 text-muted"> @Html.DisplayFor(modelItem => item.Description) </h6>
+                            <h6 class="card-subtitle mb-2 text-muted description-truncate">@TruncateText(Html.Raw(item.Description).ToString(), 100)</h6>
+                            <!-- Inside the foreach loop for assignment cards -->
+                            <!-- Inside the foreach loop for assignment cards -->
                             <p class="card-text">
-                                <strong>Due Date: <span id="dueDate">@item.DueDate</span></strong><br />
-                                <strong>Category: @Html.DisplayFor(modelItem => item.Category)</strong><br />
+                                <strong>Due Date:</strong> <br />
+                                @if (item.DueDate != null)
+                                {
+                                    <!-- Append the Guid of the assignment to the id attribute -->
+                                    <span id="dueDate_@item.Guid">@item.DueDate.ToString("o")</span>
+                                    <br />
+                                }
+                                else
+                                {
+                                    <span id="dueDate_@item.Guid">No Due Date</span>
+                                    <br />
+                                }
+                                <strong>Category:</strong> <br />
+                                @foreach (var category in item.Category)
+                                {
+                                    <span class="badge rounded-pill bg-secondary">@category</span>
+                                }
+                                <br />
                             </p>
                             <p class="mb-0 pb-0">Progress : </p>
                             <div class="progress mb-5 mt-0 pt-0">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: @Html.DisplayFor(modelItem => item.Category)%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: @item.Progress%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                     </div>
-            </div>
-        }
+                </div>
+            }
         </div>
     </div>
 </div>
 
+@functions {
+    public static string TruncateText(string text, int maxLength)
+    {
+        // Remove HTML tags from the text
+        var plainText = System.Text.RegularExpressions.Regex.Replace(text, "<.*?>", string.Empty);
+
+        // Truncate the plain text to the specified maxLength
+        if (plainText.Length > maxLength)
+        {
+            plainText = plainText.Substring(0, maxLength) + "...";
+        }
+
+        return plainText;
+    }
+}
 
 @section Styles{
     <link rel="stylesheet" href="../css/deep.css" />
+    <link rel="stylesheet" href="../css/description.css"/>
 }
 
 @section Scripts {
@@ -65,13 +103,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
     <script>
-        // Format the DueDate using Moment.js and replace the content of the #dueDate element
-        // with the formatted date.
+        // Format the DueDate using Moment.js and replace the content of the #dueDate element for each assignment card
         document.addEventListener('DOMContentLoaded', function () {
-            const dueDateElement = document.getElementById('dueDate');
-            const dueDateValue = dueDateElement.textContent;
-            const formattedDueDate = moment(dueDateValue).format('D MMMM YYYY - h:mm A');
-            dueDateElement.textContent = formattedDueDate;
+            const dueDateElements = document.querySelectorAll('[id^="dueDate_"]');
+            dueDateElements.forEach(dueDateElement => {
+                const assignmentGuid = dueDateElement.id.replace('dueDate_', '');
+                const dueDateValue = dueDateElement.textContent;
+                const formattedDueDate = moment(dueDateValue).format('D MMMM YYYY - h:mm A');
+                dueDateElement.textContent = formattedDueDate;
+            });
+        });
+        // Handle search functionality
+        $(document).ready(function () {
+            $("#searchInput").on("keyup", function () {
+                const value = $(this).val().toLowerCase();
+                $(".card").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
         });
     </script>
 }
