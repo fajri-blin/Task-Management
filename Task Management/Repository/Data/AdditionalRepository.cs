@@ -12,6 +12,6 @@ public class AdditionalRepository : GeneralRepository<Additional>, IAdditionalRe
 
     public IEnumerable<Additional> GetByProgressForeignKey(Guid guid)
     {
-        return _bookingDbContext.Set<Additional>().Where(a => a.Guid == guid);
+        return _bookingDbContext.Set<Additional>().Where(a => a.ProgressGuid == guid);
     }
 }

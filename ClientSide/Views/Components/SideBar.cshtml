@@ -106,6 +106,13 @@
                     </a>
                 </li>
             </ul>
+            <ul class="menu-sub">
+                <li class="menu-item @(Context.Request.Path == "/Assignment/AddAssignment" ? "active" : "")">
+                    <a class="menu-link" asp-controller="Assignment" asp-action="AddAssignment">
+                        <div data-i18n="Basic">Create Asssignment</div>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Progress")) ? "active" : "")">
             <a href="javascript:void(0);" class="menu-link menu-toggle">

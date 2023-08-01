@@ -122,7 +122,7 @@ public class AccountController : ControllerBase
             return NotFound(new ResponseHandlers<AccountDto>
             {
                 Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
+                Status = HttpStatusCode.BadRequest.ToString(),
                 Message = "Otp doesn't match"
             });
         if (isUpdated == 1)
@@ -130,7 +130,7 @@ public class AccountController : ControllerBase
             return NotFound(new ResponseHandlers<ChangePasswordDto>
             {
                 Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
+                Status = HttpStatusCode.BadRequest.ToString(),
                 Message = "Otp alredy expired"
             });
         }
@@ -188,6 +188,22 @@ public class AccountController : ControllerBase
             Status = HttpStatusCode.OK.ToString(),
             Message = "Successfully updated"
         });
+    }
+
+    [HttpGet("Photo/{guid}")]
+    public IActionResult GetPhoto(Guid guid)
+    {
+        var fileResult = _accountSevices.Photo(guid);
+        if (fileResult == null)
+        {
+            return NotFound(new ResponseHandlers<string>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Not Found"
+            });
+        }
+        return fileResult;
     }
 
     //Basic CRUD
@@ -249,17 +265,17 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update(AccountDto entity)
+    public IActionResult Update([FromForm] UpdateAccountDto entity)
     {
         var updated = _accountSevices.Update(entity);
-        if (updated is -1) return NotFound(new ResponseHandlers<AccountDto>
+        if (updated is -1) return NotFound(new ResponseHandlers<UpdateAccountDto>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
 
-        return Ok(new ResponseHandlers<AccountDto>
+        return Ok(new ResponseHandlers<UpdateAccountDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),

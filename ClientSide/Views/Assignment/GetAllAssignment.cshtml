@@ -14,31 +14,41 @@
             <span class="text-muted fw-light">Assignment /</span>
             List Assignment
         </h4>
-
-        <div class="row row-cols-md-1 g-4">
+        <div class="row mb-5">
         @foreach (var item in Model)
         {
             <!-- Card Each of Assigment -->
-            <div class="card m-1">
-                <div class="card-body">
-                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
-                        <h6 class="card-subtitle mb-2 text-muted"> @Html.DisplayFor(modelItem => item.Description) </h6>
-                    <p class="card-text">
-                        <strong>Guid: @Html.DisplayFor(modelItem => item.Guid)</strong> <br />
-                            <strong>Manager Guid: @Html.DisplayFor(modelItem => item.ManagerGuid)</strong><br />
-                            <strong>Due Date: @Html.DisplayFor(modelItem => item.DueDate)</strong><br />
-                            <strong>Category: @Html.DisplayFor(modelItem => item.Category)</strong><br />
-                    </p>
-                    <p class="mb-0 pb-0">Progress : </p>
-                    <div class="progress mb-5 mt-0 pt-0">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: @Html.DisplayFor(modelItem => item.Category)%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <div class="btn-group">
-                        <a class="btn btn-primary" asp-action="Edit">Edit</a>
-                        <a class="btn btn-secondary" asp-action="Details">Details</a>
-                        <a class="btn btn-danger text-white" onclick="showDeleteConfirmation('@item.Guid')">Delete</a>
+            <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title d-flex align-items-start justify-content-between">
+                                <div class="avatar flex-shrink-0">
+                                    <i class='bx bxs-label'></i>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn p-0" type="button" id="cardOpt4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="bx bx-dots-vertical-rounded">
+                                        </i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
+                                        <a class="dropdown-item" asp-controller="Assignment" asp-action="EditAssignment" asp-route-guid="@item.Guid">Edit</a>
+                                        <button class="dropdown-item" asp-action="Details">Details</button>
+                                        <button class="dropdown-item text-danger" onclick="showDeleteConfirmation('@item.Guid')">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                            <h6 class="card-subtitle mb-2 text-muted"> @Html.DisplayFor(modelItem => item.Description) </h6>
+                            <p class="card-text">
+                                <strong>Due Date: <span id="dueDate">@item.DueDate</span></strong><br />
+                                <strong>Category: @Html.DisplayFor(modelItem => item.Category)</strong><br />
+                            </p>
+                            <p class="mb-0 pb-0">Progress : </p>
+                            <div class="progress mb-5 mt-0 pt-0">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: @Html.DisplayFor(modelItem => item.Category)%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
                         </div>
-                </div>
+                    </div>
             </div>
         }
         </div>
@@ -46,101 +56,22 @@
 </div>
 
 
-
-
-<!-- Card Version-->
-
-@*<div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach (var item in Model)
-    {
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title"> Ini Judul @Html.DisplayFor(modelItem => item.Title)</h5>
-                    <h6 class="card-subtitle mb-2 text-muted"> Ini Descriptions @Html.DisplayFor(modelItem => item.Description)</h6>
-                    <p class="card-text">
-                        <strong>Guid:</strong> @Html.DisplayFor(modelItem => item.Guid)<br />
-                        <strong>Manager Guid:</strong> @Html.DisplayFor(modelItem => item.ManagerGuid)<br />
-                        <strong>Due Date:</strong> @Html.DisplayFor(modelItem => item.DueDate)<br />
-                        <strong>Category:</strong> @Html.DisplayFor(modelItem => item.Category)<br />
-                        <strong>Progress:</strong> @Html.DisplayFor(modelItem => item.Progress)
-                    </p>
-                    <div class="btn-group">
-                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Guid">Edit</a>
-                        <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.Guid">Details</a>
-                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Guid">Delete</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-</div>*@
-
-@*<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Guid)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ManagerGuid)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DueDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Progress)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Guid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ManagerGuid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DueDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Progress)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>*@
-
-
 @section Styles{
     <link rel="stylesheet" href="../css/deep.css" />
+}
+
+@section Scripts {
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    <script>
+        // Format the DueDate using Moment.js and replace the content of the #dueDate element
+        // with the formatted date.
+        document.addEventListener('DOMContentLoaded', function () {
+            const dueDateElement = document.getElementById('dueDate');
+            const dueDateValue = dueDateElement.textContent;
+            const formattedDueDate = moment(dueDateValue).format('D MMMM YYYY - h:mm A');
+            dueDateElement.textContent = formattedDueDate;
+        });
+    </script>
 }

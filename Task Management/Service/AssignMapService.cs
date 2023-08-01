@@ -8,19 +8,17 @@ namespace Task_Management.Service;
 public class AssignMapService
 {
     private readonly IAssignMapRepository _assignMapRepository;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IAssignmentRepository _assignmentRepository;
     private readonly BookingDbContext _bookingContext;
 
-    public AssignMapService(IAssignMapRepository TaskCategoryMappingRepository, BookingDbContext bookingDbContext)
+    public AssignMapService(IAssignMapRepository TaskCategoryMappingRepository, BookingDbContext bookingDbContext, ICategoryRepository categoryRepository, IAssignmentRepository assignmentRepository)
     {
         _assignMapRepository = TaskCategoryMappingRepository;
         _bookingContext = bookingDbContext;
+        _categoryRepository = categoryRepository;
+        _assignmentRepository = assignmentRepository;
     }
-
-    /*public IEnumerable<AssignMapDto>? CountCategory(Guid guid)
-    {
-        var entities = _assignMapRepository.GetByAssignmentForeignKey(guid);
-
-    }*/
 
     // Basic CRUD ===================================================
     public IEnumerable<AssignMapDto>? Get()
