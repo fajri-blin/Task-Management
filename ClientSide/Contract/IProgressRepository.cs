@@ -10,6 +10,7 @@ namespace ClientSide.Contract
         Task<ResponseHandlers<IEnumerable<ProgressVM>>> GetAllProgress();
         Task<ResponseHandlers<ProgressVM>> CreateProgress(ProgressVM progress);
         Task<ResponseHandlers<ProgressVM>> UpdateProgress(ProgressVM progress);
-     /*   Task<ResponseHandlers<bool>> DeleteProgress(Guid guid);*/
+        Task<ResponseHandlers<Guid>> DeepDeleteProgress(Guid guid);
+        /*   Task<ResponseHandlers<Guid>> DeleteProgress(Guid guid);*/
     }
 }

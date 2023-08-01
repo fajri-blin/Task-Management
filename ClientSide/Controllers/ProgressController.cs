@@ -49,4 +49,23 @@ public class ProgressController : Controller
 
         return Json(new { success = false });
     }
+
+    [HttpPost]
+    public async Task<IActionResult> DeepDeleteProgress(Guid guid)
+    {
+        var result = await _progressRepository.DeepDeleteProgress(guid);
+
+        if (result.Code == 404)
+        {
+            return Json(new { code = 404, message = "Assignment not found" });
+        }
+        else if (result.Code == 200)
+        {
+            return Json(new { code = 200, message = "Assignment deleted successfully" });
+        }
+        else
+        {
+            return Json(new { code = result.Code, message = result.Message });
+        }
+    }
 }

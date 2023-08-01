@@ -19,7 +19,7 @@
   </div>*@
 
 <div class="row">
-    <div class="col-md p-2">
+    <div class="col-md pt-2">
         <div class="kanban-board">
                 <div class="column" data-status="NotStarted" ondragover="onDragOver(event)" ondrop="onDrop(event)">
         <h5>Not Started</h5>
@@ -38,8 +38,8 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
                                             <a class="dropdown-item" asp-action="Edit" asp-route-guid="@item.Guid">Edit</a>
-                                            <button class="dropdown-item detail-button" asp-action="Details" asp-route-guid="@item.Guid">Detail</button>
-                                            <button class="dropdown-item delete-button" asp-action="Delete" asp-route-guid="@item.Guid">Delete</button>
+                                            @*<button class="dropdown-item detail-button" asp-action="Details" asp-route-guid="@item.Guid">Detail</button>*@
+                                            <button class="dropdown-item delete-button" onclick="deleteProgress('@item.Guid')">Delete</button>
                                         </div>
                                     </div>
                                 </div>
@@ -54,7 +54,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md p-2">
+    <div class="col-md pt-2">
        <div class="kanban-board">
                 <div class="column" data-status="InProgress" ondragover="onDragOver(event)" ondrop="onDrop(event)">
         <h5>In Progress</h5>
@@ -74,7 +74,7 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
                             <a class="dropdown-item" asp-action="Edit" asp-route-guid="@item.Guid">Edit</a>
-                            <button class="dropdown-item detail-button" asp-action="Details" asp-route-guid="@item.Guid">Detail</button>
+                            @*<button class="dropdown-item detail-button" asp-action="Details" asp-route-guid="@item.Guid">Detail</button>*@
                             <button class="dropdown-item delete-button" asp-action="Delete" asp-route-guid="@item.Guid">Delete</button>
                             </div>
                             </div>
@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <div class="col-md p-2">
+    <div class="col-md pt-2">
         <div class="kanban-board">
             <div class="column" data-status="Checking" ondragover="onDragOver(event)" ondrop="onDrop(event)">
         <h5>Checking</h5>
@@ -109,7 +109,7 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
                                         <a class="dropdown-item" asp-action="Edit" asp-route-guid="@item.Guid">Edit</a>
-                                        <button class="dropdown-item detail-button" asp-action="Details" asp-route-guid="@item.Guid">Detail</button>
+                                        @*<button class="dropdown-item detail-button" asp-action="Details" asp-route-guid="@item.Guid">Detail</button>*@
                                         <button class="dropdown-item delete-button" asp-action="Delete" asp-route-guid="@item.Guid">Delete</button>
                                     </div>
                                 </div>
@@ -118,7 +118,6 @@
                             <h5 class="card-title" style="font-size: 12px;">@Html.DisplayFor(modelItem => item.Description)</h5>
                             <p class="card-text" style="font-size: 10px;">Status : @item.Status</p>
                             <p class="card-text" style="font-size: 10px;">Message Manager : @item.MessageManager</p>
-                   
                 </div>
             </div>
         }
@@ -126,19 +125,34 @@
         </div>
     </div>
 
-    <div class="col-md p-2">
+    <div class="col-md pt-2">
             <div class="kanban-board">
                 <div class="column">
                     <h5>Revision</h5>
                     @foreach (var item in Model.Where(x => x.Status == StatusEnum.Revision))
                     {
                         <div class="card mb-3" data-task-id="@item.Guid" draggable="true">
-                            <div class="card-body">
+                            <div class="card-kanban">
+                                <div class="card-title d-flex align-items-start justify-content-between">
+                                   <div class="avatar flex-shrink-0">
+                                      <i class='bx bxs-label'></i>
+                                   </div>
+                                   <div class="dropdown">
+                                     <button class="btn p-0" type="button" id="cardOpt4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="bx bx-dots-vertical-rounded">
+                                        </i>
+                                     </button>
+                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
+                                        <a class="dropdown-item" asp-action="Edit" asp-route-guid="@item.Guid">Edit</a>
+                                        <button class="dropdown-item detail-button" asp-action="Details" asp-route-guid="@item.Guid">Detail</button>
+                                        <button class="dropdown-item delete-button" asp-action="Delete" asp-route-guid="@item.Guid">Delete</button>
+                                     </div>
+                                   </div>
+                                </div>
+
                                 <h5 class="card-title">Description : @Html.DisplayFor(modelItem => item.Description)</h5>
                                 <p class="card-text">Status : @item.Status</p>
-                                <a href="@Url.Action("Edit", new { id = item.Guid })" class="btn btn-primary">Edit</a>
-                                <a href="@Url.Action("Details", new { id = item.Guid })" class="btn btn-info">Details</a>
-                                <a href="@Url.Action("Delete", new { id = item.Guid })" class="btn btn-danger">Delete</a>
+                                <p class="card-text" style="font-size: 10px;">Message Manager : @item.MessageManager</p> 
                             </div>
                         </div>
                     }
@@ -146,13 +160,13 @@
             </div>
     </div>
 
-    <div class="col-md p-2">
+    <div class="col-md pt-2">
        <div class="kanban-board">
            <div class="column">
         <h5>Done</h5>
         @foreach (var item in Model.Where(x => x.Status == StatusEnum.Done))
-        {
-            <div class="card mb-3" data-task-id="@item.Guid" draggable="true">
+         {
+             <div class="card mb-3" data-task-id="@item.Guid" draggable="true">
                 <div class="card-body">
                     <h5 class="card-title">@Html.DisplayFor(modelItem => item.Description)</h5>
                     <p class="card-text">Status: @item.Status</p>
@@ -160,15 +174,42 @@
                     <a href="@Url.Action("Details", new { id = item.Guid })" class="btn btn-info">Details</a>
                     <a href="@Url.Action("Delete", new { id = item.Guid })" class="btn btn-danger">Delete</a>
                 </div>
-            </div>
-        }
+             </div>
+         }
             </div>
         </div>
     </div>
 </div>
 
+@section Styles{
+    <link rel="stylesheet" href="~/css/kanban.css" />
+}
 
+@section Scripts {
 <!-- Script JavaScript -->
+    <script>
+        function deleteProgress(guid) {
+            if (confirm("Are you sure you want to delete this item?")) {
+                $.ajax({
+                    url: "https://localhost:7296/Progress/DeepDeleteProgress?guid=${guid}",
+                    type: "POST",
+                    data: { guid: guid },
+                    success: function (response) {
+                        if (response.code === 200) {
+                            console.log("Item berhasil dihapus");
+                            location.reload();
+                        } else {
+                            console.error("Terjadi kesalahan saat menghapus item:", response.message);
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Terjadi kesalahan saat menghapus item:", error);
+                    }
+                });
+            }
+        }
+    </script>
+
 <script>
     function onDragStart(event) {
         event.dataTransfer.setData("text", event.target.dataset.taskId);
@@ -195,7 +236,7 @@
             }
         });
     }
-
 </script>
+}
 
 
