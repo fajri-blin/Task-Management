@@ -50,7 +50,7 @@ public class AssignmentController : Controller
             return View();
         }
         TempData["Success"] = "Data Berhasil Masuk";
-        return View("GetAllAssignment");
+        return RedirectToAction(nameof(GetAllAssignment));
     }
     [HttpGet]
     public IActionResult AddAssignment()
