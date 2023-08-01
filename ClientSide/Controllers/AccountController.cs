@@ -20,6 +20,20 @@ public class AccountController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        var accounts = await _accountRepository.Get();
+        var components = new ComponentHandlers
+        {
+            Footer = false,
+            SideBar = true,
+            Navbar = true,
+        };
+        ViewBag.Components = components;
+        return View("Index", accounts);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> Profile()
     {
         var account = await _accountRepository.Get(Guid.Parse(HttpContext.User.FindFirstValue("Guid")));
