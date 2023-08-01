@@ -7,7 +7,7 @@
 <!-- ======= Header ======= -->
 <header id="header" class="fixed-top ">
     <div class="container d-flex align-items-center justify-content-between">
-        <h1 class="logo"><a href="index.html">MTM</a></h1>
+        <h1 class="logo"><a href="#">MTM</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html" class="logo"><img src="~/template/img/logo.png" alt="" class="img-fluid"></a>-->
 
@@ -18,7 +18,11 @@
                 <li><a class="nav-link scrollto" href="#feature">Feature</a></li>
                 <li><a class="nav-link scrollto" href="#contact">Contact Us</a></li>
                 <li>
-                    <a class="getstarted scrollto" href="/account/signin">Login</a>
+                    @if(!User.Identity.IsAuthenticated){
+                        <a class="getstarted scrollto" asp-controller="Account" asp-action="SignIn">Login</a>
+                    }else{
+                        <a class="nav-link scrollto" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                    }
                 </li>
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>

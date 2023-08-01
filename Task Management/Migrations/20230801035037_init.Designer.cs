@@ -12,8 +12,8 @@ using Task_Management.Data;
 namespace Task_Management.Migrations
 {
     [DbContext(typeof(BookingDbContext))]
-    [Migration("20230719050722_Adding_and_Fixing_Account_Progress")]
-    partial class Adding_and_Fixing_Account_Progress
+    [Migration("20230801035037_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,7 @@ namespace Task_Management.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Task_Management.Model.Account", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Account", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -66,6 +66,10 @@ namespace Task_Management.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("password");
 
+                    b.Property<Guid?>("RoleGuid")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("role_guid");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
@@ -73,13 +77,15 @@ namespace Task_Management.Migrations
 
                     b.HasKey("Guid");
 
+                    b.HasIndex("RoleGuid");
+
                     b.HasIndex("Email", "Username")
                         .IsUnique();
 
                     b.ToTable("tb_m_accounts");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.AccountProgress", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.AccountProgress", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -111,39 +117,43 @@ namespace Task_Management.Migrations
                     b.ToTable("tb_tr_account_progress");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.AccountRole", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Additional", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("guid");
 
-                    b.Property<Guid?>("AccountGuid")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("account_guid");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("created_at");
+
+                    b.Property<string>("FileData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("filedata");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("filename");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("modified_at");
 
-                    b.Property<Guid?>("RoleGuid")
+                    b.Property<Guid?>("ProgressGuid")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("role_guid");
+                        .HasColumnName("progress_guid");
 
                     b.HasKey("Guid");
 
-                    b.HasIndex("AccountGuid");
+                    b.HasIndex("ProgressGuid");
 
-                    b.HasIndex("RoleGuid");
-
-                    b.ToTable("tb_tr_account_roles");
+                    b.ToTable("tb_m_additional");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.AssignMap", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.AssignMap", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -175,7 +185,7 @@ namespace Task_Management.Migrations
                     b.ToTable("tb_tr_assign_maps");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Assignment", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Assignment", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -219,7 +229,7 @@ namespace Task_Management.Migrations
                     b.ToTable("tb_m_assignemts");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Category", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Category", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -244,7 +254,7 @@ namespace Task_Management.Migrations
                     b.ToTable("tb_m_categories");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Progress", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Progress", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -258,6 +268,10 @@ namespace Task_Management.Migrations
                     b.Property<Guid?>("AssignmentGuid")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("assignment_guid");
+
+                    b.Property<bool>("CheckMark")
+                        .HasColumnType("bit")
+                        .HasColumnName("check_mark");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -280,10 +294,6 @@ namespace Task_Management.Migrations
                         .HasColumnType("int")
                         .HasColumnName("status");
 
-                    b.Property<bool>("check_mark")
-                        .HasColumnType("bit")
-                        .HasColumnName("check_mark");
-
                     b.HasKey("Guid");
 
                     b.HasIndex("AssignmentGuid");
@@ -291,7 +301,7 @@ namespace Task_Management.Migrations
                     b.ToTable("tb_m_progresses");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Role", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Role", b =>
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
@@ -316,14 +326,24 @@ namespace Task_Management.Migrations
                     b.ToTable("tb_m_roles");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.AccountProgress", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Account", b =>
                 {
-                    b.HasOne("Task_Management.Model.Account", "Account")
+                    b.HasOne("Task_Management.Model.Data.Role", "Role")
+                        .WithMany("Accounts")
+                        .HasForeignKey("RoleGuid")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Task_Management.Model.Data.AccountProgress", b =>
+                {
+                    b.HasOne("Task_Management.Model.Data.Account", "Account")
                         .WithMany("AccountProgresses")
                         .HasForeignKey("AccountGuid")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("Task_Management.Model.Progress", "Progress")
+                    b.HasOne("Task_Management.Model.Data.Progress", "Progress")
                         .WithMany("AccountProgress")
                         .HasForeignKey("ProgressGuid")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -333,42 +353,36 @@ namespace Task_Management.Migrations
                     b.Navigation("Progress");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.AccountRole", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Additional", b =>
                 {
-                    b.HasOne("Task_Management.Model.Account", "Account")
-                        .WithMany("AccountRoles")
-                        .HasForeignKey("AccountGuid");
+                    b.HasOne("Task_Management.Model.Data.Progress", "Progress")
+                        .WithMany("Additionals")
+                        .HasForeignKey("ProgressGuid")
+                        .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("Task_Management.Model.Role", "Role")
-                        .WithMany("AccountRoles")
-                        .HasForeignKey("RoleGuid")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Role");
+                    b.Navigation("Progress");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.AssignMap", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.AssignMap", b =>
                 {
-                    b.HasOne("Task_Management.Model.Assignment", "Assignment")
+                    b.HasOne("Task_Management.Model.Data.Assignment", "Assignment")
                         .WithMany("AssignMaps")
                         .HasForeignKey("AssignmentGuid")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Task_Management.Model.Category", "Category")
+                    b.HasOne("Task_Management.Model.Data.Category", "Category")
                         .WithMany("AssignMaps")
                         .HasForeignKey("CategoryGuid")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Assignment");
 
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Assignment", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Assignment", b =>
                 {
-                    b.HasOne("Task_Management.Model.Account", "Account")
+                    b.HasOne("Task_Management.Model.Data.Account", "Account")
                         .WithMany("Assignments")
                         .HasForeignKey("ManagerGuid")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -376,9 +390,9 @@ namespace Task_Management.Migrations
                     b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Progress", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Progress", b =>
                 {
-                    b.HasOne("Task_Management.Model.Assignment", "Assignment")
+                    b.HasOne("Task_Management.Model.Data.Assignment", "Assignment")
                         .WithMany("Progresses")
                         .HasForeignKey("AssignmentGuid")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -386,35 +400,35 @@ namespace Task_Management.Migrations
                     b.Navigation("Assignment");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Account", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Account", b =>
                 {
                     b.Navigation("AccountProgresses");
-
-                    b.Navigation("AccountRoles");
 
                     b.Navigation("Assignments");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Assignment", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Assignment", b =>
                 {
                     b.Navigation("AssignMaps");
 
                     b.Navigation("Progresses");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Category", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Category", b =>
                 {
                     b.Navigation("AssignMaps");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Progress", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Progress", b =>
                 {
                     b.Navigation("AccountProgress");
+
+                    b.Navigation("Additionals");
                 });
 
-            modelBuilder.Entity("Task_Management.Model.Role", b =>
+            modelBuilder.Entity("Task_Management.Model.Data.Role", b =>
                 {
-                    b.Navigation("AccountRoles");
+                    b.Navigation("Accounts");
                 });
 #pragma warning restore 612, 618
         }

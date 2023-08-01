@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Task_Management.DTOs.AccountProgressDto;
-using Task_Management.DTOs.AccountRoleDto;
 using Task_Management.Service;
 using Task_Management.Utilities.Handler;
 
@@ -88,7 +87,7 @@ public class AccountProgressController : ControllerBase
     public IActionResult Get(Guid guid)
     {
         var entity = _accountProgressSevices.Get(guid);
-        if (entity == null) return NotFound(new ResponseHandlers<AccountRoleDto>
+        if (entity == null) return NotFound(new ResponseHandlers<AccountProgressDto>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),

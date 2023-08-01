@@ -9,12 +9,16 @@ namespace Task_Management.Utilities.Validation.Account
         private readonly IAccountRepository _accountRepository;
         public UpdateAccountValidation(IAccountRepository accountRepository)
         {
+            RuleFor(p => p.Guid)
+           .NotEmpty().WithMessage("Guid is required.")
+           .Must(GuidConvert).WithMessage("Guid is required");
+
             _accountRepository = accountRepository;
             RuleFor(p => p.Username)
-          .Must(BeUniqueProperty).WithMessage("'Username' already registered");
+          .Must((model, username) => BeUniqueProperty(username, Guid.Parse(model.Guid))).WithMessage("'Username' already registered");
 
             RuleFor(p => p.Email)
-          .Must(BeUniqueProperty).WithMessage("'Email' already registered")
+          .Must((model, email) => BeUniqueProperty(email, Guid.Parse(model.Guid))).WithMessage("'Email' already registered")
           .EmailAddress();
 
             RuleFor(p => p.Password)
@@ -34,8 +38,16 @@ namespace Task_Management.Utilities.Validation.Account
 
         }
 
-        private bool BeUniqueProperty(string property)
+        private bool BeUniqueProperty(string property, Guid guid)
         {
+            var account = _accountRepository.GetByGuid(guid);
+
+            // Check if the existing account has the same username or email
+            if (property == account.Username || property == account.Email)
+            {
+                return true; // The property is the same as the existing account's username or email
+            }
+
             return !_accountRepository.IsDuplicateValue(property);
         }
 
@@ -46,10 +58,15 @@ namespace Task_Management.Utilities.Validation.Account
                 return true;
             }
 
-            var allowedExtensions = new[] { ".jpg", ".jpeg" };
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
             var fileExtension = System.IO.Path.GetExtension(file.FileName).ToLowerInvariant();
 
             return allowedExtensions.Contains(fileExtension);
+        }
+
+        private bool GuidConvert(string guid)
+        {
+            return Guid.TryParse(guid, out _);
         }
     }
 }

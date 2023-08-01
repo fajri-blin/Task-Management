@@ -1,0 +1,96 @@
+﻿@model ClientSide.ViewModels.Profile.GetProfileVM
+@{
+    ViewData["Title"] = "Profile - Metrodata Task Management";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Account Settings /</span> Account</h4>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                 <h5 class="card-header text-center">Profile Details</h5>
+                <!-- Account -->
+                <form id="formAccountSettings" asp-action="Profile" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-4">
+                            <img src="https://localhost:7113/api/Account/Photo/@User.FindFirst("Guid")?.Value"
+                                 alt="user-avatar"
+                                 class="d-block rounded"
+                                 height="100"
+                                 width="100"
+                                 id="uploadedAvatar" />
+                            <div class="button-wrapper">
+                                <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                    <span class="d-none d-sm-block">Upload new photo</span>
+                                    <i class="bx bx-upload d-block d-sm-none"></i>
+                                    <input type="file"
+                                           id="upload"
+                                           class="account-file-input"
+                                           hidden
+                                           accept="image/png, image/jpeg" 
+                                           asp-for="ImageProfile"/>
+                                </label>
+                                <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
+                                    <i class="bx bx-reset d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Reset</span>
+                                </button>
+
+                                <p class="text-muted mb-0">Allowed JPG, jpeg or PNG.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-0" />
+                    <div class="card-body">
+                        <input asp-for="Guid" class="form-control" hidden />
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label asp-for="Name" class="form-label">Full Name</label>
+                                <input class="form-control"
+                                        type="text"
+                                        asp-for="Name" 
+                                        autofocus />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label asp-for="Email" class="form-label">E-mail</label>
+                                <input class="form-control"
+                                        type="text"
+                                        id="email"
+                                        asp-for="Email"
+                                        placeholder="john.doe@example.com" />
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label asp-for="Username" class="form-label">Username</label>
+                                <input type="text"
+                                        class="form-control"
+                                        asp-for="Username"/>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label asp-for="Password" class="form-label">Password</label>
+                                <input type="password"
+                                        class="form-control"
+                                        asp-for="Password"/>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                                <input type="password"
+                                        class="form-control"
+                                        asp-for="ConfirmPassword"/>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                            <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- /Account -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="../assets/js/pages-account-settings-account.js"></script>
+}

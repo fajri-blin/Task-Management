@@ -9,7 +9,6 @@ public class BookingDbContext : DbContext
     public BookingDbContext(DbContextOptions<BookingDbContext> options) : base(options) { }
 
     public DbSet<Account> Accounts { get; set; }
-    public DbSet<AccountRole> AccountRoles { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Progress> Progresses { get; set; }
     public DbSet<Role> Roles { get; set; }
@@ -31,12 +30,6 @@ public class BookingDbContext : DbContext
 
 
         //Set Relationship
-        //Role - AccountRole (One to Many)
-        modelBuilder.Entity<Role>()
-            .HasMany(role => role.AccountRoles)
-            .WithOne(acc_role => acc_role.Role)
-            .HasForeignKey(acc_role => acc_role.RoleGuid)
-            .OnDelete(DeleteBehavior.SetNull);
 
         //Category - AssignMap (One to Many)
         modelBuilder.Entity<Category>()
@@ -45,11 +38,11 @@ public class BookingDbContext : DbContext
             .HasForeignKey(assign_map => assign_map.CategoryGuid)
             .OnDelete(DeleteBehavior.SetNull);
 
-        //Account - AccountRole (One to Many)
+        //Role - Account (One to Many)
         modelBuilder.Entity<Account>()
-            .HasMany(acc => acc.AccountRoles)
-            .WithOne(acc_role => acc_role.Account)
-            .HasForeignKey(acc_role => acc_role.AccountGuid)
+            .HasOne(acc => acc.Role)
+            .WithMany(role => role.Accounts)
+            .HasForeignKey(acc => acc.RoleGuid)
             .OnDelete(DeleteBehavior.Cascade);
 
         //Assignment - AssignMap (One to Many)
@@ -63,7 +56,7 @@ public class BookingDbContext : DbContext
         modelBuilder.Entity<Account>()
             .HasMany(acc => acc.AccountProgresses)
             .WithOne(prog => prog.Account)
-            .HasForeignKey (prog => prog.AccountGuid)
+            .HasForeignKey(prog => prog.AccountGuid)
             .OnDelete(DeleteBehavior.SetNull);
 
         //Account - Assignment (One to Many)
@@ -92,6 +85,6 @@ public class BookingDbContext : DbContext
             .HasMany(prog => prog.Additionals)
             .WithOne(additional => additional.Progress)
             .HasForeignKey(additional => additional.ProgressGuid)
-            .OnDelete (DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
