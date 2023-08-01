@@ -10,6 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.19" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="22.2.5" />
+    <PackageReference Include="Syncfusion.Licensing" Version="22.2.5" />
   </ItemGroup>
 
   <ItemGroup>

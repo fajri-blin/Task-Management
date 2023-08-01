@@ -1,0 +1,28 @@
+﻿.kanban-board {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.column {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #dedddc;
+    height: 400px;
+}
+
+.column h3 {
+    margin: 0 0 10px;
+}
+
+.card-kanban {
+    max-width: 200px;
+    margin: 0 10px 10px;
+}
+/* Add some spacing between the cards in each column */
+.card:not(:last-child) {
+    margin-bottom: 10px;
+}

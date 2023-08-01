@@ -1,0 +1,201 @@
+﻿@model IEnumerable<ClientSide.ViewModels.Progress.ProgressVM>
+@using Task_Management.Utilities.Enum;
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@*<h1>Progress Task</h1>*@
+@*<div class="col-12">
+
+  <div class="card-body ps ps--active-x" id="horizontal-example">
+    <div class="ps__rail-x" style="">
+        <div class="ps__thumb-x" tabindex="0" style=""></div>
+    </div>
+    <div class="ps__rail-y" style="">
+        <div class="ps__thumb-y" tabindex="0" style=""></div>
+    </div>
+  </div>*@
+
+<div class="row">
+    <div class="col-md p-2">
+        <div class="kanban-board">
+                <div class="column" data-status="NotStarted" ondragover="onDragOver(event)" ondrop="onDrop(event)">
+        <h5>Not Started</h5>
+        @foreach (var item in Model.Where(x => x.Status == StatusEnum.NotStarted))
+        {
+                <div class="card mb-3 card-subtitle text-muted mb-3" data-task-id="@item.Guid" data-status="@item.Status" draggable="true" ondragstart="onDragStart(event)">
+                <div class="card-kanban">
+                                <div class="card-title d-flex align-items-start justify-content-between">
+                                    <div class="avatar flex-shrink-0">
+                                        <i class='bx bxs-label'></i>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn p-0" type="button" id="cardOpt4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded">
+                                            </i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
+                                            <a class="dropdown-item" asp-action="Edit" asp-route-guid="@item.Guid">Edit</a>
+                                            <button class="dropdown-item detail-button" asp-action="Details" asp-route-guid="@item.Guid">Detail</button>
+                                            <button class="dropdown-item delete-button" asp-action="Delete" asp-route-guid="@item.Guid">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <h5 class="card-title" style="font-size: 12px;">@Html.DisplayFor(modelItem => item.Description)</h5>
+                            <p class="card-text" style="font-size: 10px;">Status: @item.Status</p>
+                            <p class="card-text" style="font-size: 10px;">Message Manager : @item.MessageManager</p>
+                            <p class="card-text" style="font-size: 10px;">Additional : @item.Additional</p>
+
+                </div>
+            </div>
+        }
+            </div>
+        </div>
+    </div>
+    <div class="col-md p-2">
+       <div class="kanban-board">
+                <div class="column" data-status="InProgress" ondragover="onDragOver(event)" ondrop="onDrop(event)">
+        <h5>In Progress</h5>
+        @foreach (var item in Model.Where(x => x.Status == StatusEnum.InProgress))
+        {
+                    <div class="card mb-3 card-subtitle text-muted mb-3" data-task-id="@item.Guid" data-status="@item.Status" draggable="true" ondragstart="onDragStart(event)">
+                       <div class="card-kanban">
+            
+                          <div class="card-title d-flex align-items-start justify-content-between">
+                                <div class="avatar flex-shrink-0">
+                                    <i class='bx bxs-label'></i>
+                                </div>
+                            <div class="dropdown">
+                            <button class="btn p-0" type="button" id="cardOpt4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="bx bx-dots-vertical-rounded">
+                            </i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
+                            <a class="dropdown-item" asp-action="Edit" asp-route-guid="@item.Guid">Edit</a>
+                            <button class="dropdown-item detail-button" asp-action="Details" asp-route-guid="@item.Guid">Detail</button>
+                            <button class="dropdown-item delete-button" asp-action="Delete" asp-route-guid="@item.Guid">Delete</button>
+                            </div>
+                            </div>
+                          </div>
+                            <h5 class="card-title" style="font-size: 12px;">@Html.DisplayFor(modelItem => item.Description)</h5>
+                            <p class="card-text" style="font-size: 10px;">Status : @item.Status</p>
+                            <p class="card-text" style="font-size: 10px;">Message Manager : @item.MessageManager</p>
+                       </div>
+                    </div>
+        }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md p-2">
+        <div class="kanban-board">
+            <div class="column" data-status="Checking" ondragover="onDragOver(event)" ondrop="onDrop(event)">
+        <h5>Checking</h5>
+        @foreach (var item in Model.Where(x => x.Status == StatusEnum.Checking))
+        {
+            <div class="card mb-3 card-subtitle text-muted mb-3" data-task-id="@item.Guid" data-status="@item.Status" draggable="true" ondragstart="onDragStart(event)">
+                <div class="card-kanban">
+
+                            <div class="card-title d-flex align-items-start justify-content-between">
+                                <div class="avatar flex-shrink-0">
+                                    <i class='bx bxs-label'></i>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn p-0" type="button" id="cardOpt4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="bx bx-dots-vertical-rounded">
+                                        </i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
+                                        <a class="dropdown-item" asp-action="Edit" asp-route-guid="@item.Guid">Edit</a>
+                                        <button class="dropdown-item detail-button" asp-action="Details" asp-route-guid="@item.Guid">Detail</button>
+                                        <button class="dropdown-item delete-button" asp-action="Delete" asp-route-guid="@item.Guid">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5 class="card-title" style="font-size: 12px;">@Html.DisplayFor(modelItem => item.Description)</h5>
+                            <p class="card-text" style="font-size: 10px;">Status : @item.Status</p>
+                            <p class="card-text" style="font-size: 10px;">Message Manager : @item.MessageManager</p>
+                   
+                </div>
+            </div>
+        }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md p-2">
+            <div class="kanban-board">
+                <div class="column">
+                    <h5>Revision</h5>
+                    @foreach (var item in Model.Where(x => x.Status == StatusEnum.Revision))
+                    {
+                        <div class="card mb-3" data-task-id="@item.Guid" draggable="true">
+                            <div class="card-body">
+                                <h5 class="card-title">Description : @Html.DisplayFor(modelItem => item.Description)</h5>
+                                <p class="card-text">Status : @item.Status</p>
+                                <a href="@Url.Action("Edit", new { id = item.Guid })" class="btn btn-primary">Edit</a>
+                                <a href="@Url.Action("Details", new { id = item.Guid })" class="btn btn-info">Details</a>
+                                <a href="@Url.Action("Delete", new { id = item.Guid })" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+    </div>
+
+    <div class="col-md p-2">
+       <div class="kanban-board">
+           <div class="column">
+        <h5>Done</h5>
+        @foreach (var item in Model.Where(x => x.Status == StatusEnum.Done))
+        {
+            <div class="card mb-3" data-task-id="@item.Guid" draggable="true">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.Description)</h5>
+                    <p class="card-text">Status: @item.Status</p>
+                    <a href="@Url.Action("Edit", new { id = item.Guid })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("Details", new { id = item.Guid })" class="btn btn-info">Details</a>
+                    <a href="@Url.Action("Delete", new { id = item.Guid })" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Script JavaScript -->
+<script>
+    function onDragStart(event) {
+        event.dataTransfer.setData("text", event.target.dataset.taskId);
+    }
+
+    function onDragOver(event) {
+        event.preventDefault();
+    }
+
+    function onDrop(event) {
+        event.preventDefault();
+        const guid = event.dataTransfer.getData("text");
+        const status = event.target.closest('.column').dataset.status;
+        
+        $.ajax({
+            url: "https://localhost:7296/Progress/UpdateStatus",
+            type: "POST",
+            data: { guid: guid, newStatus: status },
+            success: function (response) {
+                console.log("Status task berhasil diperbarui");
+            },
+            error: function (error) {
+                console.error("Terjadi kesalahan saat memperbarui status task:", error);
+            }
+        });
+    }
+
+</script>
+
+
