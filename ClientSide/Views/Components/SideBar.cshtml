@@ -71,14 +71,20 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Menu</span>
         </li>
-        <li class="menu-item">
+        <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Account")) ? "active" : "")">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
                 <div data-i18n="Authentications">Authentications</div>
             </a>
             <ul class="menu-sub">
+                <li class="menu-item @(Context.Request.Path == "/Account" ? "active" : "")">
+                    <a class="menu-link" asp-controller="Account" asp-action="Index">
+                        <div data-i18n="Basic">Index</div>
+                    </a>
+                </li>
+            </ul><ul class="menu-sub">
                 <li class="menu-item">
-                    <a class="menu-link" target="_blank" asp-controller="Account" asp-action="SignUp">
+                    <a class="menu-link" asp-controller="Account" asp-action="SignUp">
                         <div data-i18n="Basic">Register</div>
                     </a>
                 </li>
