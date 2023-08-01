@@ -13,6 +13,11 @@
             <span class="text-muted fw-light">Assignment /</span>
             List Assignment
         </h4>
+        <div class="row mb-3">
+            <div class="col">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by title or category">
+            </div>
+        </div>
         <div class="row mb-5">
             @foreach (var item in Model)
             {
@@ -106,6 +111,15 @@
                 const dueDateValue = dueDateElement.textContent;
                 const formattedDueDate = moment(dueDateValue).format('D MMMM YYYY - h:mm A');
                 dueDateElement.textContent = formattedDueDate;
+            });
+        });
+        // Handle search functionality
+        $(document).ready(function () {
+            $("#searchInput").on("keyup", function () {
+                const value = $(this).val().toLowerCase();
+                $(".card").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
             });
         });
     </script>
