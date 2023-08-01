@@ -80,7 +80,7 @@ public class AccountController : Controller
         else if (result.Code == 200)
         {
             HttpContext.Session.SetString("JWToken", result.Data);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Dashboard");
         }
 
         return View();
