@@ -1,7 +1,9 @@
 ﻿using ClientSide.Contract;
 using ClientSide.ViewModels.Progress;
 using ClientSide.Utilities.Handlers;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace ClientSide.Repositories
 {
@@ -25,16 +27,31 @@ namespace ClientSide.Repositories
             return await Post(progress);
         }
 
-        public async Task<ResponseHandlers<ProgressVM>> UpdateProgress(ProgressVM progress)
+        public async Task<ResponseHandlers<UpdateProgressVM>> UpdateProgress(UpdateProgressVM updateProgress)
         {
-            return await Put(progress);
-        }
+            ResponseHandlers<UpdateProgressVM> entityVM = null;
 
-        /*public async Task<ResponseHandlers<Guid>> DeleteProgress(Guid guid)
-        {
-            return await Delete(guid);
-           
-        }*/
+            var requestPayload = new UpdateProgressVM
+            {
+                Guid = updateProgress.Guid,
+                AssignmentGuid = updateProgress.AssignmentGuid,
+                Description = updateProgress.Description,
+                Status = updateProgress.Status,
+                Additional = updateProgress.Additional,
+                MessageManager = updateProgress.MessageManager,
+                DueDate = updateProgress.DueDate,
+            };
+
+            StringContent content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
+
+            using (var response = await _httpClient.PutAsync(_request, content))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(apiResponse);
+                entityVM = JsonConvert.DeserializeObject<ResponseHandlers<UpdateProgressVM>>(apiResponse);
+            }
+            return entityVM;
+        }
         public async Task<ResponseHandlers<Guid>> DeepDeleteProgress(Guid guid)
         {
             ResponseHandlers<Guid> entityVM = null;
@@ -67,5 +84,15 @@ namespace ClientSide.Repositories
 
             return entityVM;
         }
+        /*public async Task<ResponseHandlers<ProgressVM>> UpdateProgress(UpdateProgressVM updateProgress)
+       {
+           return await Put(updateProgress);
+       }*/
+
+        /*public async Task<ResponseHandlers<Guid>> DeleteProgress(Guid guid)
+        {
+            return await Delete(guid);
+           
+        }*/
     }
 }

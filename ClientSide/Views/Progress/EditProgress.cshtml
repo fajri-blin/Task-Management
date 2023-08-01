@@ -1,0 +1,72 @@
+﻿@model ClientSide.ViewModels.Progress.UpdateProgressVM
+
+@{
+    ViewData["Title"] = "EditProgress";
+}
+
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Progress/</span>
+            Edit Progress
+        </h4>
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="EditProgress" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Guid" class="control-label"></label>
+                <input asp-for="Guid" class="form-control"  />
+                <span asp-validation-for="Guid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AssignmentGuid" class="control-label"></label>
+                <input asp-for="AssignmentGuid" class="form-control"/>
+                <span asp-validation-for="AssignmentGuid" class="text-danger"></span>
+            </div>
+                    <div class="form-group col-md-5">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+                    <div class="form-group col-md-5">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+                    <div class="form-group col-md-5">
+                <label asp-for="Additional" class="control-label"></label>
+                <input asp-for="Additional" class="form-control" />
+                <span asp-validation-for="Additional" class="text-danger"></span>
+            </div>
+                    <div class="form-group col-md-5">
+                <label asp-for="MessageManager" class="control-label"></label>
+                <input asp-for="MessageManager" class="form-control" />
+                <span asp-validation-for="MessageManager" class="text-danger"></span>
+            </div>
+                    <div class="form-group col-md-5">
+                <label asp-for="DueDate" class="control-label"></label>
+                <input asp-for="DueDate" class="form-control" />
+                <span asp-validation-for="DueDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Progress" class="control-label"></label>
+                <input asp-for="Progress" class="form-control" hidden/>
+                <span asp-validation-for="Progress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

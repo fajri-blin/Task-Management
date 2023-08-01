@@ -5,6 +5,7 @@ using ClientSide.Contract;
 using Task_Management.Utilities.Enum;
 using ClientSide.ViewModels.Progress;
 using Microsoft.EntityFrameworkCore;
+using ClientSide.ViewModels.Assignment;
 
 
 namespace ClientSide.Controllers;
@@ -68,4 +69,70 @@ public class ProgressController : Controller
             return Json(new { code = result.Code, message = result.Message });
         }
     }
+
+    [HttpGet]
+    public async Task<IActionResult> EditProgress(Guid guid)
+    {
+        var components = new ComponentHandlers
+        {
+            Footer = false,
+            SideBar = true,
+            Navbar = true,
+        };
+        ViewBag.Components = components;
+
+        var result = await _progressRepository.Get(guid);
+        if (result.Data == null)
+        {
+            return NotFound();
+        }
+
+        var updateProgressVM = new UpdateProgressVM
+        {
+            Guid = result.Data.Guid,
+            AssignmentGuid = result.Data.AssignmentGuid,
+            Description = result.Data.Description,
+            Status = result.Data.Status,
+            Additional = result.Data.Additional,
+            MessageManager = result.Data.MessageManager,
+            DueDate = result.Data.DueDate,
+        };
+
+        return View(updateProgressVM);
+    }
+    [HttpPost]
+    public async Task<IActionResult> EditProgress(UpdateProgressVM updateProgress)
+    {
+
+        var result = await _progressRepository.UpdateProgress(updateProgress);
+        if (result.Code == 200)
+        {
+            TempData["Success"] = "Data Berhasil Diupdate";
+            return RedirectToAction(nameof(Index));
+        }
+        else if (result.Code == 400)
+        {
+            if (result.Data != null && result.Data is IDictionary<string, string[]> validationErrors)
+            {
+                foreach (var error in validationErrors)
+                {
+                    foreach (var errorMessage in error.Value)
+                    {
+                        ModelState.AddModelError(error.Key, errorMessage);
+                    }
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, result.Message);
+            }
+        }
+        else if (result.Code == 409)
+        {
+            ModelState.AddModelError(string.Empty, result.Message);
+        }
+
+        return View("Index");
+    }
+
 }
