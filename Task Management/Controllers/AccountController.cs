@@ -58,7 +58,6 @@ public class AccountController : ControllerBase
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Login Failed"
                 });
-                break;
             case "-1":
                 return NotFound(new ResponseHandlers<AccountDto>
                 {
@@ -66,7 +65,6 @@ public class AccountController : ControllerBase
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Login Failed"
                 });
-                break;
             case "-2":
                 return NotFound(new ResponseHandlers<AccountDto>
                 {
@@ -74,7 +72,6 @@ public class AccountController : ControllerBase
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Login Failed"
                 });
-                break;
         }
         return Ok(new ResponseHandlers<string>
         {
@@ -143,7 +140,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut("changePassword")]
-    public IActionResult Update(ChangePasswordDto changePasswordDto)
+    public IActionResult ChangePassword(ChangePasswordDto changePasswordDto)
     {
         var update = _accountSevices.ChangePassword(changePasswordDto);
         if (update is -1)
@@ -244,35 +241,34 @@ public class AccountController : ControllerBase
         return Ok(entity);
     }
 
-    [HttpPost]
-    public IActionResult Create(NewAccountDto entity)
-    {
-        var created = _accountSevices.Create(entity);
-        if (created == null) return NotFound(new ResponseHandlers<AccountDto>
-        {
-            Code = StatusCodes.Status404NotFound,
-            Status = HttpStatusCode.NotFound.ToString(),
-            Message = "Data Not Found"
-        });
-
-        return Ok(new ResponseHandlers<AccountDto>
-        {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Data Successfully created",
-            Data = (AccountDto)created
-        });
-    }
-
     [HttpPut]
     public IActionResult Update([FromForm] UpdateAccountDto entity)
     {
         var updated = _accountSevices.Update(entity);
-        if (updated is -1) return NotFound(new ResponseHandlers<UpdateAccountDto>
+        if (updated is 0) return NotFound(new ResponseHandlers<UpdateAccountDto>
         {
-            Code = StatusCodes.Status404NotFound,
-            Status = HttpStatusCode.NotFound.ToString(),
-            Message = "Data Not Found"
+            Code = StatusCodes.Status400BadRequest,
+            Status = HttpStatusCode.BadRequest.ToString(),
+            Message = "Failed Update Account"
+        });
+
+        return Ok(new ResponseHandlers<UpdateAccountDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data has been Updated",
+        });
+    }
+
+    [HttpPut("Profile/Update")]
+    public IActionResult ProfileUpdate([FromForm] UpdateAccountDto entity)
+    {
+        var updated = _accountSevices.ProfileUpdate(entity);
+        if (updated is 0) return NotFound(new ResponseHandlers<UpdateAccountDto>
+        {
+            Code = StatusCodes.Status400BadRequest,
+            Status = HttpStatusCode.BadRequest.ToString(),
+            Message = "Failed Update Profile"
         });
 
         return Ok(new ResponseHandlers<UpdateAccountDto>

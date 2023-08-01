@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Task_Management.Model.Data;
 
@@ -28,9 +26,12 @@ public class Account : BaseEntity
     [Column("image_profile")]
     public string? ImageProfile { get; set; }
 
+    [Column("role_guid")]
+    public Guid? RoleGuid { get; set; }
+
     //Cardinality
-    public ICollection<AccountRole>? AccountRoles { get; set; }
-    public ICollection<AccountProgress> AccountProgresses { get; set; }
-    public ICollection<Assignment> Assignments { get; set; }
+    public Role? Role { get; set; }
+    public ICollection<AccountProgress>? AccountProgresses { get; set; }
+    public ICollection<Assignment>? Assignments { get; set; }
 
 }

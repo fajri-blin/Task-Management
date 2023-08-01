@@ -64,12 +64,18 @@ namespace Task_Management.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("password");
 
+                    b.Property<Guid?>("RoleGuid")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("role_guid");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("username");
 
                     b.HasKey("Guid");
+
+                    b.HasIndex("RoleGuid");
 
                     b.HasIndex("Email", "Username")
                         .IsUnique();
@@ -107,38 +113,6 @@ namespace Task_Management.Migrations
                     b.HasIndex("ProgressGuid");
 
                     b.ToTable("tb_tr_account_progress");
-                });
-
-            modelBuilder.Entity("Task_Management.Model.Data.AccountRole", b =>
-                {
-                    b.Property<Guid>("Guid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("guid");
-
-                    b.Property<Guid?>("AccountGuid")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("account_guid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("modified_at");
-
-                    b.Property<Guid?>("RoleGuid")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("role_guid");
-
-                    b.HasKey("Guid");
-
-                    b.HasIndex("AccountGuid");
-
-                    b.HasIndex("RoleGuid");
-
-                    b.ToTable("tb_tr_account_roles");
                 });
 
             modelBuilder.Entity("Task_Management.Model.Data.Additional", b =>
@@ -350,6 +324,16 @@ namespace Task_Management.Migrations
                     b.ToTable("tb_m_roles");
                 });
 
+            modelBuilder.Entity("Task_Management.Model.Data.Account", b =>
+                {
+                    b.HasOne("Task_Management.Model.Data.Role", "Role")
+                        .WithMany("Accounts")
+                        .HasForeignKey("RoleGuid")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("Task_Management.Model.Data.AccountProgress", b =>
                 {
                     b.HasOne("Task_Management.Model.Data.Account", "Account")
@@ -365,23 +349,6 @@ namespace Task_Management.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Progress");
-                });
-
-            modelBuilder.Entity("Task_Management.Model.Data.AccountRole", b =>
-                {
-                    b.HasOne("Task_Management.Model.Data.Account", "Account")
-                        .WithMany("AccountRoles")
-                        .HasForeignKey("AccountGuid")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Task_Management.Model.Data.Role", "Role")
-                        .WithMany("AccountRoles")
-                        .HasForeignKey("RoleGuid")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Task_Management.Model.Data.Additional", b =>
@@ -435,8 +402,6 @@ namespace Task_Management.Migrations
                 {
                     b.Navigation("AccountProgresses");
 
-                    b.Navigation("AccountRoles");
-
                     b.Navigation("Assignments");
                 });
 
@@ -461,7 +426,7 @@ namespace Task_Management.Migrations
 
             modelBuilder.Entity("Task_Management.Model.Data.Role", b =>
                 {
-                    b.Navigation("AccountRoles");
+                    b.Navigation("Accounts");
                 });
 #pragma warning restore 612, 618
         }
