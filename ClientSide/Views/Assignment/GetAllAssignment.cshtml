@@ -37,7 +37,7 @@
                                 </div>
                             </div>
                             <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">@Html.Raw(item.Description)</h6>
+                            <h6 class="card-subtitle mb-2 text-muted description-truncate">@TruncateText(Html.Raw(item.Description).ToString(), 100)</h6>
                             <!-- Inside the foreach loop for assignment cards -->
                             <!-- Inside the foreach loop for assignment cards -->
                             <p class="card-text">
@@ -72,8 +72,25 @@
     </div>
 </div>
 
+@functions {
+    public static string TruncateText(string text, int maxLength)
+    {
+        // Remove HTML tags from the text
+        var plainText = System.Text.RegularExpressions.Regex.Replace(text, "<.*?>", string.Empty);
+
+        // Truncate the plain text to the specified maxLength
+        if (plainText.Length > maxLength)
+        {
+            plainText = plainText.Substring(0, maxLength) + "...";
+        }
+
+        return plainText;
+    }
+}
+
 @section Styles{
     <link rel="stylesheet" href="../css/deep.css" />
+    <link rel="stylesheet" href="../css/description.css"/>
 }
 
 @section Scripts {
