@@ -5,7 +5,6 @@ using ClientSide.ViewModels.Profile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Task_Management.Dtos.AccountDto;
 
 namespace ClientSide.Controllers;
 
@@ -115,7 +114,7 @@ public class AccountController : Controller
         {
             return RedirectToAction("Error", "Index");
         }
-        return View();
+        return RedirectToAction("ChangeAccountPassword", new { email = checkOTPVM.Email });
     }
     [AllowAnonymous]
     [HttpGet]
@@ -144,10 +143,17 @@ public class AccountController : Controller
     }
     [AllowAnonymous]
     [HttpGet]
-    public IActionResult ChangeAccountPassword()
+    public IActionResult ChangeAccountPassword(string email)
     {
-        return View();
+        // Pass the email as a parameter to the view model.
+        var viewModel = new ChangePasswordVM
+        {
+            Email = email
+        };
+
+        return View(viewModel);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> SignUp(RegisterVM registerDto)
