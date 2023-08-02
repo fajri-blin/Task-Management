@@ -2,6 +2,8 @@
 
 public class CheckOTPVM
 {
+    
     public int OTP { get; set; }
+
     public string Email { get; set; }
 }
