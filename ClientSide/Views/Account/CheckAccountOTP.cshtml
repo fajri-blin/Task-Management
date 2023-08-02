@@ -4,46 +4,61 @@
     ViewData["Title"] = "CheckAccountOTP";
 }
 
-<h1>CheckAccountOTP</h1>
+<div class="container-xxl">
+    <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Logo -->
+                    <div class="app-brand justify-content-center">
+                        <a asp-action="Index" class="app-brand-link gap-2">
+                            <span class="app-brand-text demo text-body fw-bolder">MTM</span>
+                        </a>
+                    </div>
+                    <!-- /Logo -->
+                    <!-- Form -->
+                    <h4 class="mb-2">Enter OTP</h4>
+                    <p class="mb-4">Enter the OTP received on your email to verify your account.</p>
 
-<h4>CheckOTPVM</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CheckAccountOTP">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="OTP" class="control-label">Enter OTP</label>
-                <input asp-for="OTP" class="form-control" />
-                <span asp-validation-for="OTP" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label">Your Email</label>
-                <input asp-for="Email" class="form-control" readonly />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-primary" />
-            </div>
-        </form>
-        <p>
-            Enter the OTP received on your email to verify your account.
-        </p>
-        @{
-            var message = TempData["Message"] as string;
-            if (!string.IsNullOrEmpty(message))
-            {
-                <div class="alert alert-success">
-                    @message
+                    <form id="formAuthentications" class="mb-3" asp-action="CheckAccountOTP" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="OTP" class="control-label">Enter OTP</label>
+                            <input asp-for="OTP" class="form-control" />
+                            <span asp-validation-for="OTP" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label">Your Email</label>
+                            <input asp-for="Email" class="form-control" readonly />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="mt-2">
+                            <button class="btn btn-primary d-grid w-100" type="submit">Submit</button>
+                        </div>
+                    </form>
+                    <!-- /Form -->
+                    @{
+                        var message = TempData["Message"] as string;
+                        if (!string.IsNullOrEmpty(message))
+                        {
+                            <div class="alert alert-success mt-4">
+                                @message
+                            </div>
+                        }
+                    }
                 </div>
-            }
-        }
+            </div>
+        </div>
     </div>
 </div>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section Styles{
+    <link rel="stylesheet" href="../assets/vendor/css/pages/page-auth.css" />
+}
 
 @section Scripts {
     @{
