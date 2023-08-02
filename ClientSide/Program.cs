@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Text;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +16,7 @@ builder.Services.AddSession();
 // Add Repository
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+builder.Services.AddScoped<IProgressRepository, ProgressRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
@@ -28,6 +30,7 @@ builder.Services.AddCors(options =>
         policy.AllowAnyMethod();
     });
 });
+
 
 // Set Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
