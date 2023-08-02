@@ -80,7 +80,7 @@ public class AccountService
                 Password = Hashing.HashPassword(register.Password),
                 OTP = 0,
                 IsUsedOTP = false,
-                ImageProfile = register.ImageProfile,
+                ImageProfile = register.ImageProfile ?? "",
             };
 
             var roleName = Enum.GetName(typeof(RoleLevel), register.Role);
