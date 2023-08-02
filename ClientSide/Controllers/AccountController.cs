@@ -107,13 +107,18 @@ public class AccountController : Controller
     public async Task<IActionResult> CheckAccountOTP(CheckOTPVM checkOTPVM)
     {
         var result = await _accountRepository.CheckAccountOTP(checkOTPVM);
-        if(result.Code == 404)
-        {
-            return RedirectToAction("Error", "Index");
-        }else if (result is null)
+        if (result.Code == 404)
         {
             return RedirectToAction("Error", "Index");
         }
+        else if (result is null)
+        {
+            return RedirectToAction("Error", "Index");
+        }
+
+        // Store the OTP value in TempData to pass it to ChangeAccountPassword action
+        TempData["OTP"] = checkOTPVM.OTP; // Store the OTP value as int directly
+
         return RedirectToAction("ChangeAccountPassword", new { email = checkOTPVM.Email });
     }
     [AllowAnonymous]
@@ -145,14 +150,30 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult ChangeAccountPassword(string email)
     {
-        // Pass the email as a parameter to the view model.
-        var viewModel = new ChangePasswordVM
-        {
-            Email = email
-        };
+        // Retrieve the OTP value from TempData and convert it to int
+        var otp = TempData["OTP"];
 
-        return View(viewModel);
+        // Check if the OTP value is not null and can be parsed to int
+        if (otp != null && int.TryParse(otp.ToString(), out int otpValue))
+        {
+            // Pass the email and OTP as parameters to the view model.
+            var viewModel = new ChangePasswordVM
+            {
+                Email = email,
+                OTP = otpValue // Set the OTP value in the view model
+            };
+
+            return View(viewModel);
+        }
+        else
+        {
+            // Handle the case when OTP value is not available or cannot be parsed to int
+            // You can choose to redirect to an error page or take appropriate action.
+            return RedirectToAction("Error", "Index");
+        }
     }
+
+
 
 
     [HttpPost]
