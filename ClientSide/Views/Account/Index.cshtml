@@ -1,43 +1,63 @@
-﻿@{
+﻿@model IEnumerable<ClientSide.ViewModels.Account.AccountVM>
+@{
     ViewData["Title"] = "List Account - Metrodata Task Management";
+    var no = 1;
 }
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4">Accounts</h4>
-    <div class="card">
-        <h5 class="card-header">Striped rows</h5>
-        <div class="table-responsive text-nowrap">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="table-border-bottom-0">
+    <div class="card p-3">
+        <h4 class="fw-bold py-3 mb-4">Accounts</h4>
+        <table id="tableAccounts" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @foreach (var item in Model)
+                {
                     <tr>
                         <td>
-                            <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>Bootstrap Project</strong>
+                            @Html.DisplayFor(modelItem => no)
                         </td>
-                        <td>Jerry Milton</td>
-                        <td><span class="badge bg-label-warning me-1">Pending</span></td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Role)</td>
                         <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                    <i class="bx bx-dots-vertical-rounded"></i>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i> Edit</a>
-                                    <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>
+                            @if (item.Guid != Guid.Parse(User.FindFirst("Guid")?.Value))
+                            {
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" asp-action="Edit" asp-route-guid="@item.Guid"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                                        <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>
+                                    </div>
                                 </div>
-                            </div>
+                            }
                         </td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 
+@section Styles{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.5.0/css/searchBuilder.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.1/css/dataTables.dateTime.min.css">
+}
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/searchbuilder/1.5.0/js/dataTables.searchBuilder.min.js"></script>
+    <script src="https://cdn.datatables.net/searchbuilder/1.5.0/js/searchBuilder.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+    <script src="~/js/datatables_accounts.js" asp-append-version="true"></script>
+}

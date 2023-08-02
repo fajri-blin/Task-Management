@@ -1,4 +1,5 @@
 ﻿using ClientSide.Contract;
+using ClientSide.Utilities.Enum;
 using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Account;
 using ClientSide.ViewModels.Profile;
@@ -8,7 +9,7 @@ using System.Security.Claims;
 
 namespace ClientSide.Controllers;
 
-[Authorize]
+[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
 [Controller]
 public class AccountController : Controller
 {
@@ -22,13 +23,20 @@ public class AccountController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var accounts = await _accountRepository.Get();
+        var result = await _accountRepository.Get();
         var components = new ComponentHandlers
         {
             Footer = false,
             SideBar = true,
             Navbar = true,
         };
+
+        var accounts = result.Data.Select(entity => new AccountVM
+        {
+            Guid = entity.Guid,
+            Name = entity.Name,
+            Role = entity.Role,
+        }).ToList();
         ViewBag.Components = components;
         return View("Index", accounts);
     }
@@ -62,9 +70,9 @@ public class AccountController : Controller
         return RedirectToAction("Profile");
     }
 
-    /*[HttpPost]
+    [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Update(UpdateVM updateVM)
+    public async Task<IActionResult> UpdateAccount([FromForm] UpdateAccountVM updateVM)
     {
         if (ModelState.IsValid)
         {
@@ -75,12 +83,12 @@ public class AccountController : Controller
             }
             else if (result.Code == 404)
             {
-                return View("Index");
+                return RedirectToAction("Index");
             }
             return RedirectToAction("Index");
         }
         return View(updateVM);
-    }*/
+    }
 
     [AllowAnonymous]
     [HttpPost]
@@ -98,6 +106,7 @@ public class AccountController : Controller
         return View();
     }
 
+    [ValidateAntiForgeryToken]
     [HttpPost]
     public async Task<IActionResult> SignUp(RegisterVM registerDto)
     {
@@ -108,7 +117,7 @@ public class AccountController : Controller
         }
         else if (result.Code == 200)
         {
-            return View("Index");
+            return RedirectToAction("Index");
         }
         return View();
     }
@@ -161,6 +170,7 @@ public class AccountController : Controller
         return View();
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult LogOut()
     {
@@ -168,25 +178,20 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    /*    [HttpGet]
-        public async Task<IActionResult> Update(Guid guid)
+    [HttpGet]
+    public async Task<IActionResult> Edit(Guid guid)
+    {
+
+        var account = await _accountRepository.Get(guid);
+        var updateVM = new GetAccountVM
         {
+            Guid = account.Guid,
+            Username = account.Username,
+            Email = account.Email,
+            Name = account.Name,
+            Role = account.Role,
+        };
 
-            var account = await _accountRepository.Get(guid);
-            if (account == null)
-            {
-                return RedirectToAction("Error", "Index");
-            }
-
-            var updateVM = new UpdateVM
-            {
-                Guid = account.Guid,
-                Username = account.Username,
-                Email = account.Email,
-                Name = account.Name,
-                Role = account.Role,
-                ImageProfile = account.ImageProfile
-            };
-            return View(updateVM);
-        }*/
+        return View("Edit", updateVM);
+    }
 }

@@ -27,14 +27,14 @@ public class AccountController : ControllerBase
         var registerResult = _accountSevices.Register(registerDto);
         if (registerResult == null)
         {
-            return NotFound(new ResponseHandlers<RegisterDto>
+            return NotFound(new ResponseHandlers<DetailAccountDto>
             {
                 Code = StatusCodes.Status404NotFound,
                 Status = HttpStatusCode.NotFound.ToString(),
                 Message = "Register Failed"
             });
         }
-        return Ok(new ResponseHandlers<RegisterDto>
+        return Ok(new ResponseHandlers<DetailAccountDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),

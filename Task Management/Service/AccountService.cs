@@ -66,7 +66,7 @@ public class AccountService
         }
     }
 
-    public AccountDto? Register(RegisterDto register)
+    public DetailAccountDto? Register(RegisterDto register)
     {
         using var transactions = _bookingContext.Database.BeginTransaction();
         try
@@ -103,7 +103,8 @@ public class AccountService
             }
             var createAccount = _accountRepository.Create(accountSet);
             if (createAccount is null) return null;
-            var dto = (AccountDto)createAccount;
+            var dto = (DetailAccountDto)createAccount;
+            dto.Role = register.Role;
             transactions.Commit();
             return dto;
         }
@@ -164,6 +165,11 @@ public class AccountService
         {
             return 1;
         }
+
+        if (isExist.IsUsedOTP == true)
+        {
+            return 1;
+        }
         return 2;
     }
 
@@ -221,11 +227,24 @@ public class AccountService
     {
         var account = _accountRepository.GetByGuid(guid);
 
-        var filepath = Path.Combine(Directory.GetCurrentDirectory(), "Photos", account.ImageProfile);
+        var filepath = "";
 
-        if (!File.Exists(filepath))
+        if (account is null)
         {
             return null;
+        }
+
+        if (account.ImageProfile is null)
+        {
+            filepath = Path.Combine(Directory.GetCurrentDirectory(), "Photos", "user.png");
+        }
+        else
+        {
+            filepath = Path.Combine(Directory.GetCurrentDirectory(), "Photos", account.ImageProfile);
+            if (!File.Exists(filepath))
+            {
+                filepath = Path.Combine(Directory.GetCurrentDirectory(), "Photos", "user.png");
+            }
         }
 
         var provider = new FileExtensionContentTypeProvider();
@@ -234,6 +253,7 @@ public class AccountService
             contentType = "application/octet-stream";
         }
         var bytes = System.IO.File.ReadAllBytes(filepath);
+
         return new FileContentResult(bytes, contentType);
     }
 
@@ -242,21 +262,27 @@ public class AccountService
     {
         var entities = _accountRepository.GetAll();
         if (!entities.Any()) return null;
-        var listAccount = new List<AccountDto>();
 
-        foreach (var entity in entities)
-        {
-            listAccount.Add((AccountDto)entity);
-        }
-        return listAccount;
+        var dto = (from account in entities
+                   join role in _roleRepository.GetAll() on account.RoleGuid equals role.Guid
+                   select new AccountDto
+                   {
+                       Guid = account.Guid,
+                       Name = account.Name,
+                       Role = (RoleLevel?)Enum.Parse(typeof(RoleLevel), role.Name)
+                   }
+                   ).ToList();
+        return dto;
     }
 
-    public AccountDto? Get(Guid guid)
+    public DetailAccountDto? Get(Guid guid)
     {
         var entity = _accountRepository.GetByGuid(guid);
         if (entity is null) return null;
+        var role = _roleRepository.GetByGuid((Guid)entity.RoleGuid);
 
-        var Dto = (AccountDto)entity;
+        var Dto = (DetailAccountDto)entity;
+        Dto.Role = (RoleLevel?)Enum.Parse(typeof(RoleLevel), role.Name);
 
         return Dto;
     }
