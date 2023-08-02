@@ -12,6 +12,7 @@ public class AccountDto
     public bool IsUsedOTP { get; set; }
     public string? Password { get; set; }
     public string? ImageProfile { get; set; }
+    public Guid? RoleGuid { get; set; }
 
 
     public static explicit operator AccountDto(Account account)
@@ -26,6 +27,7 @@ public class AccountDto
             IsUsedOTP = account.IsUsedOTP,
             Password = account.Password,
             ImageProfile = account.ImageProfile,
+            RoleGuid = account.RoleGuid,
         };
     }
 
@@ -41,6 +43,7 @@ public class AccountDto
             IsUsedOTP = account.IsUsedOTP,
             Password = account.Password,
             ImageProfile = account.ImageProfile,
+            RoleGuid = account.RoleGuid,
             ModifiedAt = DateTime.MinValue,
             CreatedAt = DateTime.MinValue,
         };

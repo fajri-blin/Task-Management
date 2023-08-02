@@ -9,5 +9,11 @@ public class UpdateAssignmentVM
     public string Description { get; set; }
     public DateTime DueDate { get; set; }
     [Required(ErrorMessage = "The Category field is required.")]
-    public List<string> Category { get; set; }
+
+    private List<string> _category;
+    public List<string> Category
+    {
+        get => _category;
+        set => _category = value?.Select(c => c.ToUpper()).ToList();
+    }
 }

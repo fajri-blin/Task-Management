@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Task_Management.DTOs.AccountRoleDto;
 using Task_Management.DTOs.RoleDto;
 using Task_Management.Service;
-using Task_Management.Utilities.Enum;
 using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
@@ -45,7 +42,7 @@ public class RoleController : ControllerBase
     }
 
     [HttpGet("{guid}")]
-    public IActionResult Get(Guid guid) 
+    public IActionResult Get(Guid guid)
     {
         var entity = _roleServices.Get(guid);
         if (entity == null) return NotFound(new ResponseHandlers<RoleDto>
@@ -74,7 +71,7 @@ public class RoleController : ControllerBase
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
-        
+
         return Ok(new ResponseHandlers<RoleDto>
         {
             Code = StatusCodes.Status200OK,
@@ -85,10 +82,10 @@ public class RoleController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update(RoleDto entity) 
+    public IActionResult Update(RoleDto entity)
     {
         var updated = _roleServices.Update(entity);
-        if(updated is -1) return NotFound(new ResponseHandlers<RoleDto>
+        if (updated is -1) return NotFound(new ResponseHandlers<RoleDto>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),

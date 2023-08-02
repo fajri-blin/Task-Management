@@ -23,7 +23,6 @@ builder.Services.AddControllers();
 
 
 //Add Repositories
-builder.Services.AddScoped<IAccountRoleRepository, AccountRoleRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountProgressRepository, AccountProgressRepository>();
 builder.Services.AddScoped<IAssignMapRepository, AssignMapRepository>();
@@ -42,7 +41,6 @@ builder.Services.AddTransient<IEmailHandler, EmailHandler>(_ => new EmailHandler
 ));
 
 //Add Services
-builder.Services.AddScoped<AccountRoleService>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<AccountProgressService>();
 builder.Services.AddScoped<AssignMapService>();

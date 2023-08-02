@@ -15,21 +15,18 @@ namespace Task_Management.Service;
 public class AccountService
 {
     private readonly IAccountRepository _accountRepository;
-    private readonly IAccountRoleRepository _accountRoleRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly ITokenHandlers _tokenHandlers;
     private readonly IEmailHandler _emailHandler;
     private readonly BookingDbContext _bookingContext;
 
     public AccountService(IAccountRepository accountRepository,
-                          IAccountRoleRepository accountRoleRepository,
                           IRoleRepository roleRepository,
                           ITokenHandlers tokenHandlers,
                           BookingDbContext bookingDbContext,
                           IEmailHandler emailHandler)
     {
         _accountRepository = accountRepository;
-        _accountRoleRepository = accountRoleRepository;
         _roleRepository = roleRepository;
         _tokenHandlers = tokenHandlers;
         _bookingContext = bookingDbContext;
@@ -45,19 +42,19 @@ public class AccountService
 
         try
         {
+            var getRoleName = from ar in _accountRepository.GetAll()
+                              join r in _roleRepository.GetAll() on ar.RoleGuid equals r.Guid
+                              where ar.Guid == getAccount.Guid
+                              select r.Name;
             var claims = new List<Claim>
             {
                 new Claim("Guid", getAccount.Guid.ToString()),
                 new Claim("Username", getAccount.Username),
                 new Claim("Email", getAccount.Email),
                 new Claim(ClaimTypes.Name, getAccount.Name),
+                new Claim(ClaimTypes.Role, getRoleName.First())
             };
 
-            var getAccountRole = _accountRoleRepository.GetAccountRolesByAccountGuid(getAccount.Guid);
-            var getRoleNameByAccountRole = from ar in getAccountRole
-                                           join r in _roleRepository.GetAll() on ar.RoleGuid equals r.Guid
-                                           select r.Name;
-            claims.AddRange(getRoleNameByAccountRole.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var getToken = _tokenHandlers.GenerateToken(claims);
             return getToken;
@@ -83,10 +80,8 @@ public class AccountService
                 Password = Hashing.HashPassword(register.Password),
                 OTP = 0,
                 IsUsedOTP = false,
-                ImageProfile = register.ImageProfile
+                ImageProfile = register.ImageProfile,
             };
-            var createAccount = _accountRepository.Create(accountSet);
-            if (createAccount is null) return null;
 
             var roleName = Enum.GetName(typeof(RoleLevel), register.Role);
             var IsExist = _roleRepository.GetByName(roleName);
@@ -100,29 +95,14 @@ public class AccountService
 
                 var createRole = _roleRepository.Create(roleSet);
                 if (createRole is null) return null;
-
-                var accountRoleSetNew = new AccountRole
-                {
-                    Guid = Guid.NewGuid(),
-                    AccountGuid = createAccount.Guid,
-                    RoleGuid = createRole.Guid
-                };
-                var createNewAccountRole = _accountRoleRepository.Create(accountRoleSetNew);
-                if (createNewAccountRole is null) return null;
+                accountSet.RoleGuid = createRole.Guid;
             }
             else
             {
-                var accountRoleSet = new AccountRole
-                {
-                    Guid = Guid.NewGuid(),
-                    AccountGuid = createAccount.Guid,
-                    RoleGuid = IsExist.Guid
-                };
-
-                var createAccountRole = _accountRoleRepository.Create(accountRoleSet);
-                if (createAccountRole is null) return null;
-
+                accountSet.RoleGuid = IsExist.Guid;
             }
+            var createAccount = _accountRepository.Create(accountSet);
+            if (createAccount is null) return null;
             transactions.Commit();
             return register;
         }
@@ -155,6 +135,7 @@ public class AccountService
             OTP = otp,
             IsUsedOTP = false,
             ImageProfile = account.ImageProfile,
+            RoleGuid = account.RoleGuid,
             ModifiedAt = DateTime.Now,
             CreatedAt = account.CreatedAt,
         });
@@ -222,6 +203,7 @@ public class AccountService
             OTP = getAccount.OTP,
             IsUsedOTP = true,
             ImageProfile = getAccount.ImageProfile,
+            RoleGuid = getAccount.RoleGuid,
             ModifiedAt = DateTime.Now,
             CreatedAt = getAccount.CreatedAt,
         };
@@ -278,26 +260,10 @@ public class AccountService
         return Dto;
     }
 
-    public AccountDto? Create(NewAccountDto account)
-    {
-        var transaction = _bookingContext.Database.BeginTransaction();
-        try
-        {
-            var created = _accountRepository.Create(account);
-            transaction.Commit();
-            return (AccountDto)created;
-        }
-        catch
-        {
-            transaction.Rollback();
-            return null;
-        }
-    }
-
     public int Update(UpdateAccountDto updateAccountDto)
     {
 
-        var getEntity = _accountRepository.GetByGuid(updateAccountDto.Guid);
+        var getEntity = _accountRepository.GetByGuid(Guid.Parse(updateAccountDto.Guid));
         if (getEntity is null) return 0;
 
 
@@ -338,12 +304,105 @@ public class AccountService
 
             var account = new Account
             {
-                Guid = updateAccountDto.Guid,
+                Guid = Guid.Parse(updateAccountDto.Guid),
                 Email = updateAccountDto.Email ?? getEntity.Email,
                 Name = updateAccountDto.Name ?? getEntity.Name,
                 OTP = getEntity.OTP,
                 ImageProfile = fileData ?? getEntity.ImageProfile,
                 IsUsedOTP = getEntity.IsUsedOTP,
+                Password = password ?? getEntity.Password,
+                Username = updateAccountDto.Username ?? getEntity.Username,
+                CreatedAt = getEntity.CreatedAt,
+                ModifiedAt = DateTime.Now,
+            };
+            if (updateAccountDto.RoleGuid != null)
+            {
+                var roleName = Enum.GetName(typeof(RoleLevel), updateAccountDto.RoleGuid);
+                var IsExist = _roleRepository.GetByName(roleName);
+                if (IsExist is null)
+                {
+                    var roleSet = new Role
+                    {
+                        Guid = Guid.NewGuid(),
+                        Name = roleName
+                    };
+
+                    var createRole = _roleRepository.Create(roleSet);
+                    if (createRole is null) return 0;
+                    account.RoleGuid = createRole.Guid;
+                }
+                else
+                {
+                    account.RoleGuid = IsExist.Guid;
+                }
+            }
+            else
+            {
+                account.RoleGuid = getEntity.RoleGuid;
+            }
+
+            _accountRepository.Update(account);
+            transaction.Commit();
+            return 1;
+        }
+        catch
+        {
+            transaction.Rollback();
+            return 0;
+        }
+    }
+
+    public int ProfileUpdate(UpdateAccountDto updateAccountDto)
+    {
+
+        var getEntity = _accountRepository.GetByGuid(Guid.Parse(updateAccountDto.Guid));
+        if (getEntity is null) return 0;
+
+
+        var transaction = _bookingContext.Database.BeginTransaction();
+        try
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Photos");
+
+            string fileData = null;
+
+            string password = null;
+
+            if (updateAccountDto.Password != null)
+            {
+                Hashing.HashPassword(updateAccountDto.Password);
+            }
+
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+            if (updateAccountDto.ImageProfile != null && updateAccountDto.ImageProfile.Length != 0)
+            {
+                var oldPhoto = Path.Combine(filePath, getEntity.ImageProfile);
+                if (File.Exists(oldPhoto))
+                {
+                    File.Delete(oldPhoto);
+                }
+                var extension = "." + updateAccountDto.ImageProfile.FileName.Split('.')[updateAccountDto.ImageProfile.FileName.Split('.').Length - 1];
+                fileData = DateTime.Now.Ticks.ToString() + extension;
+
+                var newPhoto = Path.Combine(filePath, fileData);
+                using (var stream = new FileStream(newPhoto, FileMode.Create))
+                {
+                    updateAccountDto.ImageProfile.CopyToAsync(stream);
+                }
+            }
+
+            var account = new Account
+            {
+                Guid = Guid.Parse(updateAccountDto.Guid),
+                Email = updateAccountDto.Email ?? getEntity.Email,
+                Name = updateAccountDto.Name ?? getEntity.Name,
+                OTP = getEntity.OTP,
+                ImageProfile = fileData ?? getEntity.ImageProfile,
+                IsUsedOTP = getEntity.IsUsedOTP,
+                RoleGuid = getEntity.RoleGuid,
                 Password = password ?? getEntity.Password,
                 Username = updateAccountDto.Username ?? getEntity.Username,
                 CreatedAt = getEntity.CreatedAt,
