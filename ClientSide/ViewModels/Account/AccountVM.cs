@@ -9,5 +9,6 @@
         public bool IsUsedOTP { get; set; }
         public string? Password { get; set; }
         public string? ImageProfile { get; set; }
+        public Guid RoleGuid { get; set; }
     }
 }

@@ -66,7 +66,7 @@ public class AccountService
         }
     }
 
-    public RegisterDto? Register(RegisterDto register)
+    public AccountDto? Register(RegisterDto register)
     {
         using var transactions = _bookingContext.Database.BeginTransaction();
         try
@@ -103,8 +103,9 @@ public class AccountService
             }
             var createAccount = _accountRepository.Create(accountSet);
             if (createAccount is null) return null;
+            var dto = (AccountDto)createAccount;
             transactions.Commit();
-            return register;
+            return dto;
         }
         catch
         {
