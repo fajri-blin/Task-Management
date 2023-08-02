@@ -5,6 +5,7 @@ using ClientSide.ViewModels.Profile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Task_Management.Dtos.AccountDto;
 
 namespace ClientSide.Controllers;
 
@@ -87,14 +88,64 @@ public class AccountController : Controller
     public async Task<IActionResult> ForgotPass(ForgotPasswordVM forgotPasswordVM)
     {
         var result = await _accountRepository.ForgotPassword(forgotPasswordVM);
-        if (result == null)
+        if (result == null || result.Code != 200)
         {
             return RedirectToAction("Error", "Index");
         }
-        else if (result.Code == 404)
+
+        // If the request is successful, redirect to the CheckAccountOTP action
+        return RedirectToAction("CheckAccountOTP", new { email = forgotPasswordVM.Email });
+    }
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult ForgotPass()
+    {
+        return View();
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> CheckAccountOTP(CheckOTPVM checkOTPVM)
+    {
+        var result = await _accountRepository.CheckAccountOTP(checkOTPVM);
+        if(result.Code == 404)
         {
-            return View("Index");
+            return RedirectToAction("Error", "Index");
+        }else if (result is null)
+        {
+            return RedirectToAction("Error", "Index");
         }
+        return View();
+    }
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult CheckAccountOTP(string email)
+    {
+        var viewModel = new CheckOTPVM
+        {
+            Email = email
+        };
+
+        return View(viewModel);
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> ChangeAccountPassword(ChangePasswordVM changePasswordVM)
+    {
+        var result = await _accountRepository.ChangeAccountPassword(changePasswordVM);
+        if (result == null || result.Code != 200)
+        {
+            return RedirectToAction("Error", "Index");
+        }
+
+        // If the password change is successful, redirect to the login page or another appropriate page.
+        return RedirectToAction("SignIn");
+    }
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult ChangeAccountPassword()
+    {
         return View();
     }
 
@@ -154,12 +205,7 @@ public class AccountController : Controller
         return View();
     }
 
-    [AllowAnonymous]
-    [HttpGet]
-    public IActionResult ForgotPass()
-    {
-        return View();
-    }
+
 
     [HttpGet]
     public IActionResult LogOut()
