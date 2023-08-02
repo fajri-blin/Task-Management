@@ -1,0 +1,53 @@
+﻿.kanban-board {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.column {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    height: 400px;
+}
+
+.column h3 {
+    margin: 0 0 10px;
+}
+
+.card-kanban {
+    max-width: 200px;
+    margin: 0 10px 10px;
+}
+/* Add some spacing between the cards in each column */
+.card:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+/* Add other column styles as needed */
+.column[data-status="NotStarted"] {
+    background-color: #61bd4f;
+    color: #ffffff;
+}
+
+.column[data-status="InProgress"] {
+    background-color: #f2d600;
+    color: #333333;
+}
+
+.column[data-status="Checking"] {
+    background-color: #ffab4a;
+    color: #333333;
+}
+
+.column[data-status="Revision"] {
+    background-color: #eb5a46;
+    color: #ffffff;
+}
+.column[data-status="Done"] {
+    background-color: #5e6c84;
+    color: #ffffff;
+}

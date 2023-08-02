@@ -22,25 +22,57 @@ public class AccountRepository : GeneralRepository<AccountVM>, IAccountRepositor
         };
         this._request = request;
     }
-    public async Task<ResponseHandlers<UpdateVM>> Update(UpdateVM updateVM)
+    public async Task<ResponseHandlers<UpdateAccountVM>> Update([FromForm] UpdateAccountVM updateAccountVM)
     {
-        ResponseHandlers<UpdateVM> entityVM = null;
-        StringContent content = new StringContent(JsonConvert.SerializeObject(updateVM), Encoding.UTF8, "application/json");
-        using (var response = _httpClient.PutAsync(_request + "Update", content).Result)
+        ResponseHandlers<UpdateAccountVM> entityVM = null;
+
+        using (var formData = new MultipartFormDataContent())
         {
-            string apiResponse = await response.Content.ReadAsStringAsync();
-            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<UpdateVM>>(apiResponse);
+            // Tambahkan foto profile ke form data
+            if (updateAccountVM.ImageProfile != null)
+            {
+                var streamContent = new StreamContent(updateAccountVM.ImageProfile.OpenReadStream())
+                {
+                    Headers = { ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "ImageProfile", FileName = updateAccountVM.ImageProfile.FileName } }
+                };
+                formData.Add(streamContent, "ImageProfile", updateAccountVM.ImageProfile.FileName);
+            }
+
+            // Tambahkan data lainnya ke form data
+            formData.Add(new StringContent(updateAccountVM.Guid.ToString()), "Guid");
+            formData.Add(new StringContent(updateAccountVM.Name), "Name");
+            formData.Add(new StringContent(updateAccountVM.Username), "Username");
+            formData.Add(new StringContent(updateAccountVM.Email), "Email");
+            formData.Add(new StringContent(updateAccountVM.Role.ToString()), "RoleGuid");
+            if (!string.IsNullOrEmpty(updateAccountVM.Password))
+            {
+                formData.Add(new StringContent(updateAccountVM.Password), "Password");
+            }
+            if (!string.IsNullOrEmpty(updateAccountVM.ConfirmPassword))
+            {
+                formData.Add(new StringContent(updateAccountVM.ConfirmPassword), "ConfirmPassword");
+            }
+
+            // Tambahkan data lainnya sesuai kebutuhan
+
+            // Kirim request ke API
+            using (var response = await _httpClient.PutAsync(_request, formData))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                entityVM = JsonConvert.DeserializeObject<ResponseHandlers<UpdateAccountVM>>(apiResponse);
+            }
         }
+
         return entityVM;
     }
-    public async Task<UpdateVM> Get(Guid guid)
+    public async Task<GetAccountVM> Get(Guid guid)
     {
         using (var response = await _httpClient.GetAsync($"{_request}{guid}"))
         {
             if (response.IsSuccessStatusCode)
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                UpdateVM updateVM = JsonConvert.DeserializeObject<UpdateVM>(apiResponse);
+                GetAccountVM updateVM = JsonConvert.DeserializeObject<GetAccountVM>(apiResponse);
                 return updateVM;
             }
             else
@@ -110,34 +142,34 @@ public class AccountRepository : GeneralRepository<AccountVM>, IAccountRepositor
         return entityVM;
     }
 
-    public async Task<ResponseHandlers<GetProfileVM>> UpdateProfile([FromForm] GetProfileVM updateVM)
+    public async Task<ResponseHandlers<GetProfileVM>> UpdateProfile([FromForm] GetProfileVM getProfileVM)
     {
         ResponseHandlers<GetProfileVM> entityVM = null;
 
         using (var formData = new MultipartFormDataContent())
         {
             // Tambahkan foto profile ke form data
-            if (updateVM.ImageProfile != null)
+            if (getProfileVM.ImageProfile != null)
             {
-                var streamContent = new StreamContent(updateVM.ImageProfile.OpenReadStream())
+                var streamContent = new StreamContent(getProfileVM.ImageProfile.OpenReadStream())
                 {
-                    Headers = { ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "ImageProfile", FileName = updateVM.ImageProfile.FileName } }
+                    Headers = { ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "ImageProfile", FileName = getProfileVM.ImageProfile.FileName } }
                 };
-                formData.Add(streamContent, "ImageProfile", updateVM.ImageProfile.FileName);
+                formData.Add(streamContent, "ImageProfile", getProfileVM.ImageProfile.FileName);
             }
 
             // Tambahkan data lainnya ke form data
-            formData.Add(new StringContent(updateVM.Guid.ToString()), "Guid");
-            formData.Add(new StringContent(updateVM.Name), "Name");
-            formData.Add(new StringContent(updateVM.Username), "Username");
-            formData.Add(new StringContent(updateVM.Email), "Email");
-            if (!string.IsNullOrEmpty(updateVM.Password))
+            formData.Add(new StringContent(getProfileVM.Guid.ToString()), "Guid");
+            formData.Add(new StringContent(getProfileVM.Name), "Name");
+            formData.Add(new StringContent(getProfileVM.Username), "Username");
+            formData.Add(new StringContent(getProfileVM.Email), "Email");
+            if (!string.IsNullOrEmpty(getProfileVM.Password))
             {
-                formData.Add(new StringContent(updateVM.Password), "Password");
+                formData.Add(new StringContent(getProfileVM.Password), "Password");
             }
-            if (!string.IsNullOrEmpty(updateVM.ConfirmPassword))
+            if (!string.IsNullOrEmpty(getProfileVM.ConfirmPassword))
             {
-                formData.Add(new StringContent(updateVM.ConfirmPassword), "ConfirmPassword");
+                formData.Add(new StringContent(getProfileVM.ConfirmPassword), "ConfirmPassword");
             }
 
             // Tambahkan data lainnya sesuai kebutuhan

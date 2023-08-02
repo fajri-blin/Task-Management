@@ -1,7 +1,6 @@
-﻿@model ClientSide.ViewModels.Account.RegisterVM
-
+﻿@model ClientSide.ViewModels.Account.GetAccountVM
 @{
-    ViewData["Title"] = "Register - Metrodata Task Management";
+    ViewData["Title"] = "Edit Account - Metrodata Task Management";
 }
 
 <div class="container-xxl">
@@ -11,14 +10,43 @@
             <div class="card">
                 <div class="card-body">
                     <!-- Logo -->
-                    <a asp-controller="Dashboard" asp-action="Index">
+                    <a asp-controller="Account" asp-action="Index">
                         <i class='bx bx-arrow-back'></i>
                     </a>
                     <div class="app-brand justify-content-center">
-                        <span class="app-brand-text demo text-body fw-bolder">Create Account</span>
+                        <span class="app-brand-text demo text-body fw-bolder">Edit Account</span>
                     </div>
                     <!-- /Logo -->
-                    <form id="formAuthentication" class="mb-3" asp-action="SignUp">
+                    <form id="formAuthentication" class="mb-3" asp-action="UpdateAccount">
+                        <input asp-for="Guid" class="form-control" hidden />
+                        <div class="mb-3">
+                            <div class="d-flex align-items-start align-items-sm-center gap-4">
+                                <img src="https://localhost:7113/api/Account/Photo/@Model.Guid"
+                                     alt="user-avatar"
+                                     class="d-block rounded"
+                                     height="100"
+                                     width="100"
+                                     id="uploadedAvatar" />
+                                <div class="button-wrapper">
+                                    <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                        <span class="d-none d-sm-block">Upload new photo</span>
+                                        <i class="bx bx-upload d-block d-sm-none"></i>
+                                        <input type="file"
+                                               id="upload"
+                                               class="account-file-input"
+                                               hidden
+                                               accept="image/png, image/jpeg"
+                                               name="ImageProfile" />
+                                    </label>
+                                    <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
+                                        <i class="bx bx-reset d-block d-sm-none"></i>
+                                        <span class="d-none d-sm-block">Reset</span>
+                                    </button>
+
+                                    <p class="text-muted mb-0">Allowed JPG, jpeg or PNG.</p>
+                                </div>
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <label asp-for="Username" class="form-label">Username</label>
                             <input type="text"
@@ -38,7 +66,7 @@
                             <input type="text"
                                    class="form-control"
                                    asp-for="Name"
-                                   placeholder="Enter your full name"/>
+                                   placeholder="Enter your full name" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
@@ -75,15 +103,19 @@
                             </div>
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
-                        <button class="btn btn-primary d-grid w-100">Sign up</button>
+                        <button class="btn btn-primary d-grid w-100">Update</button>
                     </form>
                 </div>
             </div>
             <!-- Register -->
         </div>
     </div>
-</div>  
+</div>
 
 @section Styles{
     <link rel="stylesheet" href="../assets/vendor/css/pages/page-auth.css" />
+}
+
+@section Scripts{
+    <script src="../assets/js/pages-account-settings-account.js"></script>
 }
