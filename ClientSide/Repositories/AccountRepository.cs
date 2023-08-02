@@ -94,6 +94,30 @@ public class AccountRepository : GeneralRepository<AccountVM>, IAccountRepositor
         return entityVM;
     }
 
+    public async Task<ResponseHandlers<CheckOTPVM>> CheckAccountOTP(CheckOTPVM checkOTPVM)
+    {
+        ResponseHandlers<CheckOTPVM> entityVM = null;
+        StringContent content = new StringContent(JsonConvert.SerializeObject(checkOTPVM), Encoding.UTF8, "application/json");
+        using(var response = _httpClient.PostAsync(_request + "CheckOtp", content).Result)
+        {
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<CheckOTPVM>>(apiResponse);
+        }
+        return entityVM;
+    }
+
+    public async Task<ResponseHandlers<ChangePasswordVM>> ChangeAccountPassword(ChangePasswordVM changePasswordVM)
+    {
+        ResponseHandlers<ChangePasswordVM> entityVM = null;
+        StringContent content = new StringContent(JsonConvert.SerializeObject(changePasswordVM), Encoding.UTF8, "application/json");
+        using(var response = _httpClient.PutAsync(_request + "changePassword", content).Result)
+        {
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<ChangePasswordVM>>(apiResponse);
+        }
+        return entityVM;
+    }
+
     public async Task<ResponseHandlers<string>> Login(SignInVM signInDto)
     {
         ResponseHandlers<string> entityVM = null;

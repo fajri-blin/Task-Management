@@ -1,0 +1,63 @@
+﻿@model ClientSide.ViewModels.Account.CheckOTPVM
+
+@{
+    ViewData["Title"] = "CheckAccountOTP";
+}
+
+<div class="container-xxl">
+    <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Logo -->
+                    <div class="app-brand justify-content-center">
+                        <a asp-action="Index" class="app-brand-link gap-2">
+                            <span class="app-brand-text demo text-body fw-bolder">MTM</span>
+                        </a>
+                    </div>
+                    <!-- /Logo -->
+                    <!-- Form -->
+                    <h4 class="mb-2">Enter OTP</h4>
+                    <p class="mb-4">Enter the OTP received on your email to verify your account.</p>
+
+                    <form id="formAuthentications" class="mb-3" asp-action="CheckAccountOTP" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="OTP" class="control-label">Enter OTP</label>
+                            <input asp-for="OTP" class="form-control" placeholder="Insert OTP" />
+                            <span asp-validation-for="OTP" class="text-danger"></span>
+                        </div>
+                            <input asp-for="Email" class="form-control" hidden />
+                        <div class="mt-2">
+                            <button class="btn btn-primary d-grid w-100" type="submit">Submit</button>
+                        </div>
+                    </form>
+                    <!-- /Form -->
+                    @{
+                        var message = TempData["Message"] as string;
+                        if (!string.IsNullOrEmpty(message))
+                        {
+                            <div class="alert alert-success mt-4">
+                                @message
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Styles{
+    <link rel="stylesheet" href="../assets/vendor/css/pages/page-auth.css" />
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
