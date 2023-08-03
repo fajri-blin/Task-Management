@@ -27,22 +27,14 @@
                 <select asp-for="Status" class="form-control">
                     <option selected disabled value="">Choose</option>
                     <option value="1">NotStarted</option>
-                    <option value="2">InProgress</option>
-                    <option value="3">Checking</option>
-                    <option value="4">Revision</option>
-                    <option value="5">Done</option>
                 </select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Additional" class="control-label"></label>
-                <input asp-for="Additional" class="form-control" />
-                <span asp-validation-for="Additional" class="text-danger"></span>
+                <input asp-for="Additional" class="form-control" hidden/>
             </div>
             <div class="form-group">
-                <label asp-for="MessageManager" class="control-label"></label>
-                <input asp-for="MessageManager" class="form-control" />
-                <span asp-validation-for="MessageManager" class="text-danger"></span>
+                <input asp-for="MessageManager" class="form-control" hidden/>
             </div>
             <div class="form-group mt-3">
                 <a asp-action="Index" class="btn btn-secondary">Back</a>
