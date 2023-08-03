@@ -48,7 +48,7 @@ namespace ClientSide.Repositories
         {
             ResponseHandlers<CreateProgressVM> entityVM = null;
             StringContent content = new StringContent(JsonConvert.SerializeObject(createProgress), Encoding.UTF8, "application/json");
-            using (var response = _httpClient.PostAsync(_request + "CreateProgress", content).Result)
+            using (var response = _httpClient.PostAsync(_request, content).Result)
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 entityVM = JsonConvert.DeserializeObject<ResponseHandlers<CreateProgressVM>>(apiResponse);

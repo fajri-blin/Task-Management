@@ -36,7 +36,7 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
                                         <a class="dropdown-item" asp-controller="Assignment" asp-action="EditAssignment" asp-route-guid="@item.Guid">Edit</a>
-                                        <a class="dropdown-item" asp-controller="Progress" asp-action="CreateProgress" asp-route-guid="@item.Guid">Create Progress</a>
+                                        <a class="dropdown-item" asp-controller="Progress" asp-action="CreateProgress" asp-route-assignmentGuid="@item.Guid">Create Progress</a>
                                         <button class="dropdown-item" onclick="redirectToProgress('@item.Guid')">Details</button>
                                         <button class="dropdown-item text-danger" onclick="showDeleteConfirmation('@item.Guid')">Delete</button>
                                     </div>
