@@ -23,6 +23,17 @@ public class AssignmentRepository : GeneralRepository<AssignmentVM>, IAssignment
         return entityVM;
     }
 
+    public async Task<ResponseHandlers<IEnumerable<GetForStaffVM>>> GetProgressForStaff(Guid guid)
+    {
+        ResponseHandlers<IEnumerable<GetForStaffVM>> entityVM = null;
+        using (var response = await _httpClient.GetAsync(_request+ "GetForStaff/" + guid))
+        {
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<IEnumerable<GetForStaffVM>>>(apiResponse);
+        }
+        return entityVM;
+    }
+
     public async Task<ResponseHandlers<CreateAssignmentVM>> AddAssignment(CreateAssignmentVM createAssignmentVM)
     {
         ResponseHandlers<CreateAssignmentVM> entityVM = null;

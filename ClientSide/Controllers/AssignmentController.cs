@@ -1,4 +1,5 @@
 ﻿using ClientSide.Contract;
+using ClientSide.Utilities.Enum;
 using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Assignment;
 using Microsoft.AspNetCore.Authorization;
@@ -38,7 +39,24 @@ public class AssignmentController : Controller
         return null;
     }
 
-
+    [Authorize(Roles = $"{nameof(RoleLevel.Staff)}")]
+    [HttpGet]
+    public async Task<IActionResult> GetProgressForStaff(Guid accountId)
+    {
+        var components = new ComponentHandlers
+        {
+            Footer = false,
+            SideBar = true,
+            Navbar = true,
+        };
+        ViewBag.Components = components;
+        var result = await _assignmentRepository.GetProgressForStaff(accountId);
+        if(result.Code != 200)
+        {
+            return NotFound();
+        }
+        return View(result);
+    }
 
     [HttpPost]
     public async Task<IActionResult> AddAssignment(CreateAssignmentVM assignment)
