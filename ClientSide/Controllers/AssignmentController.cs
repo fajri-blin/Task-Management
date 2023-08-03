@@ -43,6 +43,13 @@ public class AssignmentController : Controller
     [HttpGet]
     public async Task<IActionResult> GetProgressForStaff(Guid accountId)
     {
+        var components = new ComponentHandlers
+        {
+            Footer = false,
+            SideBar = true,
+            Navbar = true,
+        };
+        ViewBag.Components = components;
         var result = await _assignmentRepository.GetProgressForStaff(accountId);
         if(result.Code != 200)
         {

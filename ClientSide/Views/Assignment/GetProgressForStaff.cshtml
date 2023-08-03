@@ -13,29 +13,39 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.AssignmentName)
+                Assignment Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ManagerName)
+                Manager Name
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AssignmentName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ManagerName)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssignmentName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ManagerName)
+                </td>
+                <td>
+                    @foreach (var progress in item.ListProgress)
+                    {
+                        <p>
+                            Guid: @progress.Guid
+                        </p>
+                        <p>
+                            Assignment Guid: @progress.AssignmentGuid
+                        </p>
+                        <p>
+                            Description: @progress.Description
+                        </p>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

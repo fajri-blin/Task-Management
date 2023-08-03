@@ -131,6 +131,13 @@
                         </a>
                     </li>
                 </ul>
+                <ul class="menu-sub">
+                    <li class="menu-item @(Context.Request.Path == "/Progress/Index" ? "active" : "")">
+                        <a class="menu-link" asp-controller="Assignment" asp-action="GetProgressForStaff">
+                            <div data-i18n="Basic">Progress Task</div>
+                        </a>
+                    </li>
+                </ul>
             </li>
         }
         <!-- /Menu -->
