@@ -40,6 +40,8 @@ public class AccountService
 
         if (!Hashing.ValidatePassword(loginDto.Password, getAccount!.Password)) return "-1";
 
+        if (getAccount.IsDeleted == true) return "0";
+
         try
         {
             var getRoleName = from ar in _accountRepository.GetAll()
@@ -257,6 +259,40 @@ public class AccountService
         return new FileContentResult(bytes, contentType);
     }
 
+    public int Activation(Guid guid)
+    {
+        var entity = _accountRepository.GetByGuid(guid);
+        if (entity == null) return -1;
+
+        var transaction = _bookingContext.Database.BeginTransaction();
+        try
+        {
+            var account = new Account
+            {
+                Guid = entity.Guid,
+                Email = entity.Email,
+                Name = entity.Name,
+                OTP = entity.OTP,
+                ImageProfile = entity.ImageProfile,
+                IsUsedOTP = entity.IsUsedOTP,
+                RoleGuid = entity.RoleGuid,
+                Password = entity.Password,
+                Username = entity.Username,
+                IsDeleted = false,
+                CreatedAt = entity.CreatedAt,
+                ModifiedAt = DateTime.Now,
+            };
+            _accountRepository.Update(account);
+            transaction.Commit();
+            return 1;
+        }
+        catch
+        {
+            transaction.Rollback();
+            return 0;
+        }
+    }
+
     // Basic CRUD ===================================================
     public IEnumerable<AccountDto>? Get()
     {
@@ -269,7 +305,8 @@ public class AccountService
                    {
                        Guid = account.Guid,
                        Name = account.Name,
-                       Role = (RoleLevel?)Enum.Parse(typeof(RoleLevel), role.Name)
+                       Role = (RoleLevel?)Enum.Parse(typeof(RoleLevel), role.Name),
+                       IsDeleted = account.IsDeleted,
                    }
                    ).ToList();
         return dto;
@@ -287,7 +324,7 @@ public class AccountService
         return Dto;
     }
 
-    public int Update(UpdateAccountDto updateAccountDto)
+    public async Task<int> Update(UpdateAccountDto updateAccountDto)
     {
 
         var getEntity = _accountRepository.GetByGuid(Guid.Parse(updateAccountDto.Guid));
@@ -325,7 +362,7 @@ public class AccountService
                 var newPhoto = Path.Combine(filePath, fileData);
                 using (var stream = new FileStream(newPhoto, FileMode.Create))
                 {
-                    updateAccountDto.ImageProfile.CopyToAsync(stream);
+                    await updateAccountDto.ImageProfile.CopyToAsync(stream);
                 }
             }
 
@@ -379,7 +416,7 @@ public class AccountService
         }
     }
 
-    public int ProfileUpdate(UpdateAccountDto updateAccountDto)
+    public async Task<int> ProfileUpdate(UpdateAccountDto updateAccountDto)
     {
 
         var getEntity = _accountRepository.GetByGuid(Guid.Parse(updateAccountDto.Guid));
@@ -417,7 +454,7 @@ public class AccountService
                 var newPhoto = Path.Combine(filePath, fileData);
                 using (var stream = new FileStream(newPhoto, FileMode.Create))
                 {
-                    updateAccountDto.ImageProfile.CopyToAsync(stream);
+                    await updateAccountDto.ImageProfile.CopyToAsync(stream);
                 }
             }
 
@@ -455,7 +492,22 @@ public class AccountService
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            _accountRepository.Delete(entity);
+            var account = new Account
+            {
+                Guid = entity.Guid,
+                Email = entity.Email,
+                Name = entity.Name,
+                OTP = entity.OTP,
+                ImageProfile = entity.ImageProfile,
+                IsUsedOTP = entity.IsUsedOTP,
+                RoleGuid = entity.RoleGuid,
+                Password = entity.Password,
+                Username = entity.Username,
+                IsDeleted = true,
+                CreatedAt = entity.CreatedAt,
+                ModifiedAt = DateTime.Now,
+            };
+            _accountRepository.Update(account);
             transaction.Commit();
             return 1;
         }

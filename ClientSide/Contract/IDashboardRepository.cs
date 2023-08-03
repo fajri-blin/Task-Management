@@ -8,5 +8,7 @@ namespace ClientSide.Contract
         Task<ResponseHandlers<DashboardMonthMangerVM>> CountMonth(Guid guid);
 
         Task<ResponseHandlers<DashboardCategoryManagerVM>> CountCategory(Guid guid);
+
+        Task<ResponseHandlers<DashboardRoleAdminVM>> CountRole();
     }
 }

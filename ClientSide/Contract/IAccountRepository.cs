@@ -15,4 +15,5 @@ public interface IAccountRepository : IGeneralRepository<AccountVM>
     Task<ResponseHandlers<UpdateAccountVM>> Update([FromForm] UpdateAccountVM updateVM);
     Task<ResponseHandlers<GetProfileVM>> UpdateProfile(GetProfileVM updateVM);
     Task<GetAccountVM> Get(Guid guid);
+    Task<ResponseHandlers<AccountVM>> SoftDelete(Guid guid);
 }

@@ -1,7 +1,5 @@
 @using ClientSide.Utilities.Enum;
 @{
-    // Get the user's role from the JWT token stored in the session
-    var userRole = Context.Request.HttpContext.Session.GetString("Role");
 }
 
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
@@ -96,7 +94,7 @@
                 </ul>
             </li>
         }
-        @if (userRole == nameof(RoleLevel.ProjectManager))
+        @if (User.IsInRole(nameof(RoleLevel.ProjectManager)))
         {
             <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Assignment")) ? "active" : "")">
                 <a href="javascript:void(0);" class="menu-link menu-toggle active">
@@ -119,7 +117,7 @@
                 </ul>
             </li>
         }
-        @if(userRole == nameof(RoleLevel.Staff))
+        @if (User.IsInRole(nameof(RoleLevel.Staff)))
         {    
             <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Progress")) ? "active" : "")">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">

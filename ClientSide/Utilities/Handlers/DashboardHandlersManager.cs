@@ -1,6 +1,6 @@
 ﻿namespace ClientSide.Utilities.Handlers
 {
-    public class DashboardHandlers
+    public class DashboardHandlersManager
     {
         public int totalAssignment { get; set; }
         public List<int>? Count { get; set; }

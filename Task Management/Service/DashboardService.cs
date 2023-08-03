@@ -8,12 +8,16 @@ namespace Task_Management.Service
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IAssignMapRepository _assignMapRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IRoleRepository _roleRepository;
 
-        public DashboardService(IAssignmentRepository assignmentRepository, IAssignMapRepository assignMapRepository, ICategoryRepository categoryRepository)
+        public DashboardService(IAssignmentRepository assignmentRepository, IAssignMapRepository assignMapRepository, ICategoryRepository categoryRepository, IAccountRepository accountRepository, IRoleRepository roleRepository)
         {
             _assignmentRepository = assignmentRepository;
             _assignMapRepository = assignMapRepository;
             _categoryRepository = categoryRepository;
+            _accountRepository = accountRepository;
+            _roleRepository = roleRepository;
         }
 
         public AssignmentRateDto? CountMonthManager(Guid guid)
@@ -78,6 +82,38 @@ namespace Task_Management.Service
                 dto.CategoryName.Add("Other");
                 dto.Count.Add(totalOtherCount);
             }
+
+            return dto;
+        }
+
+        public CountAccountsDto? CountAccount()
+        {
+            var accounts = _accountRepository.GetAll();
+            var roles = _roleRepository.GetAll();
+
+            var roleAccount = new List<string>
+            {
+                "Staff", "ProjectManager", "Admin"
+            };
+
+
+            var entity = (
+                            from account in accounts
+                            join role in roles on account.RoleGuid equals role.Guid
+                            where roleAccount.Contains(role.Name)
+                            group account by role.Name into accountRole
+                            select new
+                            {
+                                Role = accountRole.Key,
+                                Count = accountRole.Count()
+                            }
+                        ).ToList();
+
+            var dto = new CountAccountsDto
+            {
+                Role = roleAccount.ToList(),
+                Count = roleAccount.Select(role => entity.FirstOrDefault(x => x.Role == role)?.Count ?? 0).ToList(),
+            };
 
             return dto;
         }

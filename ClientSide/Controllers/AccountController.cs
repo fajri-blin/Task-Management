@@ -9,7 +9,6 @@ using System.Security.Claims;
 
 namespace ClientSide.Controllers;
 
-[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
 [Controller]
 public class AccountController : Controller
 {
@@ -20,6 +19,7 @@ public class AccountController : Controller
         _accountRepository = accountRepository;
     }
 
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     [HttpGet]
     public async Task<IActionResult> Index()
     {
@@ -36,11 +36,13 @@ public class AccountController : Controller
             Guid = entity.Guid,
             Name = entity.Name,
             Role = entity.Role,
+            IsDeleted = entity.IsDeleted,
         }).ToList();
         ViewBag.Components = components;
         return View("Index", accounts);
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Profile()
     {
@@ -62,6 +64,15 @@ public class AccountController : Controller
         return View("Profile", profile);
     }
 
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
+    [HttpPost]
+    public async Task<IActionResult> Delete(Guid guid)
+    {
+        var result = await _accountRepository.SoftDelete(guid);
+        return RedirectToAction("Index");
+    }
+
+    [Authorize]
     [ValidateAntiForgeryToken]
     [HttpPost]
     public async Task<IActionResult> Profile([FromForm] GetProfileVM updateProfileVM)
@@ -70,6 +81,7 @@ public class AccountController : Controller
         return RedirectToAction("Profile");
     }
 
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateAccount([FromForm] UpdateAccountVM updateVM)
@@ -183,7 +195,7 @@ public class AccountController : Controller
 
 
 
-
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     [ValidateAntiForgeryToken]
     [HttpPost]
     public async Task<IActionResult> SignUp(RegisterVM registerDto)
@@ -199,13 +211,14 @@ public class AccountController : Controller
         }
         return View();
     }
-	[HttpGet]
-	public IActionResult SignUp()
-	{
-		return View();
-	}
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
+    [HttpGet]
+    public IActionResult SignUp()
+    {
+        return View();
+    }
 
-	[AllowAnonymous]
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> SignIn(SignInVM signInDto)
     {
@@ -227,17 +240,17 @@ public class AccountController : Controller
 
         return View();
     }
-	[AllowAnonymous]
-	[HttpGet]
-	public IActionResult SignIn()
-	{
-		if (User.Identity.IsAuthenticated)
-		{
-			return RedirectToAction("Index", "Dashboard");
-		}
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult SignIn()
+    {
+        if (User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Index", "Dashboard");
+        }
 
-		return View();
-	}
+        return View();
+    }
 
     [AllowAnonymous]
     [HttpGet]
@@ -252,7 +265,7 @@ public class AccountController : Controller
     {
 
         var account = await _accountRepository.Get(guid);
-        var updateVM = new GetAccountVM
+        var updateVM = new UpdateAccountVM
         {
             Guid = account.Guid,
             Username = account.Username,
