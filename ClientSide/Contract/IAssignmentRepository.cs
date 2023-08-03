@@ -9,4 +9,5 @@ public interface IAssignmentRepository : IGeneralRepository<AssignmentVM>
     Task<ResponseHandlers<CreateAssignmentVM>> AddAssignment(CreateAssignmentVM createAssignmentVM);
     Task<ResponseHandlers<Guid>> DeepDeleteAssignment(Guid guid);
     Task<ResponseHandlers<UpdateAssignmentVM>> Update(UpdateAssignmentVM updateAssignmentVM);
+    Task<ResponseHandlers<IEnumerable<GetForStaffVM>>> GetProgressForStaff(Guid guid);
 }

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ClientSide.ViewModels.Assignment.GetForStaffVM>
+
+@{
+    ViewData["Title"] = "GetProgressForStaff";
+}
+
+<h1>GetProgressForStaff</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Assignment Name
+            </th>
+            <th>
+                Manager Name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssignmentName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ManagerName)
+                </td>
+                <td>
+                    @foreach (var progress in item.ListProgress)
+                    {
+                        <p>
+                            Guid: @progress.Guid
+                        </p>
+                        <p>
+                            Assignment Guid: @progress.AssignmentGuid
+                        </p>
+                        <p>
+                            Description: @progress.Description
+                        </p>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -393,10 +393,6 @@ public class AssignmentService
                 Guid = progress.Guid,
                 AssignmentGuid = progress.AssignmentGuid,
                 Description = progress.Description,
-                Status = progress.Status,
-                Additional = progress.Additional,
-                CheckMark = progress.CheckMark,
-                MessageManager = progress.MessageManager
             };
 
             getForStaffDto.ListProgress.Add(getProgressDto);

@@ -4,7 +4,7 @@ namespace ClientSide.ViewModels.Assignment;
 
 public class GetForStaffVM
 {
-    public List<ProgressVM> ListProgress { get; set; }
+    public List<GetProgressVM> ListProgress { get; set; }
     public string AssignmentName { get; set; }
     public string ManagerName { get; set; }
 }
