@@ -6,7 +6,9 @@ using Task_Management.Utilities.Enum;
 using ClientSide.ViewModels.Progress;
 using Microsoft.EntityFrameworkCore;
 using ClientSide.ViewModels.Assignment;
-
+using System;
+using ClientSide.ViewModels.Profile;
+using Syncfusion.EJ2.Grids;
 
 namespace ClientSide.Controllers;
 
@@ -14,10 +16,12 @@ namespace ClientSide.Controllers;
 public class ProgressController : Controller
 {
     private readonly IProgressRepository _progressRepository;
+    private readonly IAssignmentRepository _assignmentRepository;
 
-    public ProgressController(IProgressRepository progressRepository)
+    public ProgressController(IProgressRepository progressRepository, IAssignmentRepository assignmentRepository)
     {
         _progressRepository = progressRepository;
+        _assignmentRepository = assignmentRepository;
     }
 
     public async Task<IActionResult> Index()
@@ -31,25 +35,94 @@ public class ProgressController : Controller
         ViewBag.Components = components;
 
         var response = await _progressRepository.GetAllProgress();
-        var tasks = response.Data.ToList();
-        return View(tasks);
+        if (response.Data != null)
+        {
+            var tasks = response.Data.ToList();
+            return View(tasks);
+        }
+        else
+        {
+            var emptyList = new List<ProgressVM>();
+            return View(emptyList);
+        }
     }
 
-    [HttpPost]
-    [Route("Progress/UpdateStatus")]
-    public async Task<IActionResult> UpdateStatus(Guid guid, string newStatus)
+    [HttpGet]
+    public IActionResult CreateProgress(Guid assignmentGuid)
     {
-        var response = await _progressRepository.GetProgressById(guid);
-        var progress = response.Data;
-
-        if (progress != null)
+        var components = new ComponentHandlers
         {
-            progress.Status = Enum.Parse<StatusEnum>(newStatus);
-            return Json(new { success = true });
+            Footer = false,
+            SideBar = true,
+            Navbar = true,
+        };
+        ViewBag.Components = components;
+        var createProgressVM = new CreateProgressVM
+        {
+            AssignmentGuid = assignmentGuid
+        };
+        return View( "CreateProgress", createProgressVM);
+    }
+    [HttpPost]
+    public async Task<IActionResult> CreateProgress(CreateProgressVM createProgress)
+    {
+        if (ModelState.IsValid)
+        {
+            var created = await _progressRepository.CreateProgress(createProgress);
+            if (created.Code == 404)
+            {
+                ModelState.AddModelError(string.Empty, created.Message);
+                return View();
+            }
+            TempData["Success"] = "Data Berhasil Masuk";
+            return RedirectToAction(nameof(Index));
         }
 
-        return Json(new { success = false });
+        return View(createProgress);
     }
+    /*[HttpPost]
+    public async Task<IActionResult> CreateProgress(CreateProgressVM createProgress)
+    {
+        var created = await _progressRepository.CreateProgress(createProgress);
+        if (created.Code == 404)
+        {
+            ModelState.AddModelError(string.Empty, created.Message);
+            return View();
+        }
+        TempData["Success"] = "Data Berhasil Masuk";
+        return RedirectToAction(nameof(Index));
+    }*/
+
+    /* [HttpPost]
+     public async Task<IActionResult> CreateProgress(CreateProgressVM createProgress)
+     {
+         if (ModelState.IsValid)
+         {
+
+             var assignmentGuid = HttpContext.Session.GetString("AssignmentGuid");
+
+             if (string.IsNullOrEmpty(assignmentGuid))
+             {
+                 return RedirectToAction("Index");
+             }
+
+             createProgress.AssignmentGuid = new Guid(assignmentGuid);
+
+             var created = await _progressRepository.CreateProgress(createProgress);
+
+             if (created.Code == 404)
+             {
+                 ModelState.AddModelError(string.Empty, created.Message);
+                 return View();
+             }
+             HttpContext.Session.Remove("AssignmentGuid");
+
+             TempData["Success"] = "Data Berhasil Masuk";
+             return RedirectToAction(nameof(Index));
+         }
+
+         return View(createProgress);
+     }*/
 
     [HttpPost]
     public async Task<IActionResult> DeepDeleteProgress(Guid guid)
