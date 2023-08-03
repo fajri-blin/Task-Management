@@ -99,9 +99,9 @@ public class AdditionalController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create([FromForm] NewAdditionalDto entity)
+    public async Task<IActionResult> Create([FromForm] NewAdditionalDto entity)
     {
-        var created = _additionalSevices.Create(entity);
+        var created = await _additionalSevices.Create(entity);
         if (created == null) return NotFound(new ResponseHandlers<NewAdditionalDto>
         {
             Code = StatusCodes.Status404NotFound,
@@ -119,9 +119,9 @@ public class AdditionalController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update([FromForm] NewAdditionalDto entity)
+    public async Task<IActionResult> Update([FromForm] NewAdditionalDto entity)
     {
-        var updated = _additionalSevices.Update(entity);
+        var updated = await _additionalSevices.Update(entity);
         if (updated is 0) return NotFound(new ResponseHandlers<int>
         {
             Code = StatusCodes.Status404NotFound,

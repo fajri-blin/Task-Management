@@ -40,6 +40,8 @@ public class AccountService
 
         if (!Hashing.ValidatePassword(loginDto.Password, getAccount!.Password)) return "-1";
 
+        if (getAccount.IsDeleted == true) return "0";
+
         try
         {
             var getRoleName = from ar in _accountRepository.GetAll()
@@ -66,7 +68,7 @@ public class AccountService
         }
     }
 
-    public RegisterDto? Register(RegisterDto register)
+    public DetailAccountDto? Register(RegisterDto register)
     {
         using var transactions = _bookingContext.Database.BeginTransaction();
         try
@@ -80,7 +82,7 @@ public class AccountService
                 Password = Hashing.HashPassword(register.Password),
                 OTP = 0,
                 IsUsedOTP = false,
-                ImageProfile = register.ImageProfile,
+                ImageProfile = register.ImageProfile ?? "",
             };
 
             var roleName = Enum.GetName(typeof(RoleLevel), register.Role);
@@ -103,8 +105,10 @@ public class AccountService
             }
             var createAccount = _accountRepository.Create(accountSet);
             if (createAccount is null) return null;
+            var dto = (DetailAccountDto)createAccount;
+            dto.Role = register.Role;
             transactions.Commit();
-            return register;
+            return dto;
         }
         catch
         {
@@ -160,6 +164,11 @@ public class AccountService
         double minutesDifference = timeDifference.TotalMinutes;
 
         if (minutesDifference >= 3)
+        {
+            return 1;
+        }
+
+        if (isExist.IsUsedOTP == true)
         {
             return 1;
         }
@@ -220,11 +229,24 @@ public class AccountService
     {
         var account = _accountRepository.GetByGuid(guid);
 
-        var filepath = Path.Combine(Directory.GetCurrentDirectory(), "Photos", account.ImageProfile);
+        var filepath = "";
 
-        if (!File.Exists(filepath))
+        if (account is null)
         {
             return null;
+        }
+
+        if (account.ImageProfile is null)
+        {
+            filepath = Path.Combine(Directory.GetCurrentDirectory(), "Photos", "user.png");
+        }
+        else
+        {
+            filepath = Path.Combine(Directory.GetCurrentDirectory(), "Photos", account.ImageProfile);
+            if (!File.Exists(filepath))
+            {
+                filepath = Path.Combine(Directory.GetCurrentDirectory(), "Photos", "user.png");
+            }
         }
 
         var provider = new FileExtensionContentTypeProvider();
@@ -233,7 +255,42 @@ public class AccountService
             contentType = "application/octet-stream";
         }
         var bytes = System.IO.File.ReadAllBytes(filepath);
+
         return new FileContentResult(bytes, contentType);
+    }
+
+    public int Activation(Guid guid)
+    {
+        var entity = _accountRepository.GetByGuid(guid);
+        if (entity == null) return -1;
+
+        var transaction = _bookingContext.Database.BeginTransaction();
+        try
+        {
+            var account = new Account
+            {
+                Guid = entity.Guid,
+                Email = entity.Email,
+                Name = entity.Name,
+                OTP = entity.OTP,
+                ImageProfile = entity.ImageProfile,
+                IsUsedOTP = entity.IsUsedOTP,
+                RoleGuid = entity.RoleGuid,
+                Password = entity.Password,
+                Username = entity.Username,
+                IsDeleted = false,
+                CreatedAt = entity.CreatedAt,
+                ModifiedAt = DateTime.Now,
+            };
+            _accountRepository.Update(account);
+            transaction.Commit();
+            return 1;
+        }
+        catch
+        {
+            transaction.Rollback();
+            return 0;
+        }
     }
 
     // Basic CRUD ===================================================
@@ -241,26 +298,33 @@ public class AccountService
     {
         var entities = _accountRepository.GetAll();
         if (!entities.Any()) return null;
-        var listAccount = new List<AccountDto>();
 
-        foreach (var entity in entities)
-        {
-            listAccount.Add((AccountDto)entity);
-        }
-        return listAccount;
+        var dto = (from account in entities
+                   join role in _roleRepository.GetAll() on account.RoleGuid equals role.Guid
+                   select new AccountDto
+                   {
+                       Guid = account.Guid,
+                       Name = account.Name,
+                       Role = (RoleLevel?)Enum.Parse(typeof(RoleLevel), role.Name),
+                       IsDeleted = account.IsDeleted,
+                   }
+                   ).ToList();
+        return dto;
     }
 
-    public AccountDto? Get(Guid guid)
+    public DetailAccountDto? Get(Guid guid)
     {
         var entity = _accountRepository.GetByGuid(guid);
         if (entity is null) return null;
+        var role = _roleRepository.GetByGuid((Guid)entity.RoleGuid);
 
-        var Dto = (AccountDto)entity;
+        var Dto = (DetailAccountDto)entity;
+        Dto.Role = (RoleLevel?)Enum.Parse(typeof(RoleLevel), role.Name);
 
         return Dto;
     }
 
-    public int Update(UpdateAccountDto updateAccountDto)
+    public async Task<int> Update(UpdateAccountDto updateAccountDto)
     {
 
         var getEntity = _accountRepository.GetByGuid(Guid.Parse(updateAccountDto.Guid));
@@ -298,7 +362,7 @@ public class AccountService
                 var newPhoto = Path.Combine(filePath, fileData);
                 using (var stream = new FileStream(newPhoto, FileMode.Create))
                 {
-                    updateAccountDto.ImageProfile.CopyToAsync(stream);
+                    await updateAccountDto.ImageProfile.CopyToAsync(stream);
                 }
             }
 
@@ -352,7 +416,7 @@ public class AccountService
         }
     }
 
-    public int ProfileUpdate(UpdateAccountDto updateAccountDto)
+    public async Task<int> ProfileUpdate(UpdateAccountDto updateAccountDto)
     {
 
         var getEntity = _accountRepository.GetByGuid(Guid.Parse(updateAccountDto.Guid));
@@ -390,7 +454,7 @@ public class AccountService
                 var newPhoto = Path.Combine(filePath, fileData);
                 using (var stream = new FileStream(newPhoto, FileMode.Create))
                 {
-                    updateAccountDto.ImageProfile.CopyToAsync(stream);
+                    await updateAccountDto.ImageProfile.CopyToAsync(stream);
                 }
             }
 
@@ -428,7 +492,22 @@ public class AccountService
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            _accountRepository.Delete(entity);
+            var account = new Account
+            {
+                Guid = entity.Guid,
+                Email = entity.Email,
+                Name = entity.Name,
+                OTP = entity.OTP,
+                ImageProfile = entity.ImageProfile,
+                IsUsedOTP = entity.IsUsedOTP,
+                RoleGuid = entity.RoleGuid,
+                Password = entity.Password,
+                Username = entity.Username,
+                IsDeleted = true,
+                CreatedAt = entity.CreatedAt,
+                ModifiedAt = DateTime.Now,
+            };
+            _accountRepository.Update(account);
             transaction.Commit();
             return 1;
         }

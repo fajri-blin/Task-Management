@@ -19,6 +19,26 @@ public class AssignmentController : ControllerBase
         _assignmentServices = accountSevices;
     }
 
+    [HttpGet("GetForStaff/{guid}")]
+    public IActionResult GetForStaff(Guid guid)
+    {
+        var entity = _assignmentServices.GetForStaff(guid);
+        if (entity == null) return NotFound(new ResponseHandlers<GetForStaffDto>
+        {
+            Code = StatusCodes.Status404NotFound,
+            Status = HttpStatusCode.NotFound.ToString(),
+            Message = "Data Not Found"
+        });
+
+        return Ok(new ResponseHandlers<IEnumerable<GetForStaffDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = entity
+        });
+    }
+
     [HttpDelete("DeepDelete/{guid}")]
     public IActionResult DeepDelete(Guid guid)
     {

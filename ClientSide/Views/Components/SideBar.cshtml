@@ -1,3 +1,4 @@
+@using ClientSide.Utilities.Enum;
 @{
 }
 
@@ -71,58 +72,67 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Menu</span>
         </li>
-        <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Account")) ? "active" : "")">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-                <div data-i18n="Authentications">Authentications</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item @(Context.Request.Path == "/Account" ? "active" : "")">
-                    <a class="menu-link" asp-controller="Account" asp-action="Index">
-                        <div data-i18n="Basic">Index</div>
-                    </a>
-                </li>
-            </ul><ul class="menu-sub">
-                <li class="menu-item">
-                    <a class="menu-link" asp-controller="Account" asp-action="SignUp">
-                        <div data-i18n="Basic">Register</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Assignment")) ? "active" : "")">
-            <a href="javascript:void(0);" class="menu-link menu-toggle active">
-                <i class='menu-icon bx bxs-book'></i>
-                <div data-i18n="Authentications">Assignment</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item @(Context.Request.Path == "/Assignment/GetAllAssignment" ? "active" : "")">
-                    <a class="menu-link" asp-controller="Assignment" asp-action="GetAllAssignment">
-                        <div data-i18n="Basic">Asssignment</div>
-                    </a>
-                </li>
-            </ul>
-            <ul class="menu-sub">
-                <li class="menu-item @(Context.Request.Path == "/Assignment/AddAssignment" ? "active" : "")">
-                    <a class="menu-link" asp-controller="Assignment" asp-action="AddAssignment">
-                        <div data-i18n="Basic">Create Asssignment</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-       @* <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Progress")) ? "active" : "")">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-task"></i>
-                <div data-i18n="Progress">Progress</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item @(Context.Request.Path == "/Progress/Index" ? "active" : "")">
-                    <a class="menu-link" asp-controller="Progress" asp-action="Index">
-                        <div data-i18n="Basic">Progress Task</div>
-                    </a>
-                </li>
-            </ul>
-        </li>*@
+        @if (User.IsInRole(nameof(RoleLevel.Admin)))
+        {
+            <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Account")) ? "active" : "")">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
+                    <div data-i18n="Authentications">Authentications</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item @(Context.Request.Path == "/Account" ? "active" : "")">
+                        <a class="menu-link" asp-controller="Account" asp-action="Index">
+                            <div data-i18n="Basic">List Account</div>
+                        </a>
+                    </li>
+                </ul><ul class="menu-sub">
+                    <li class="menu-item">
+                        <a class="menu-link" asp-controller="Account" asp-action="SignUp">
+                            <div data-i18n="Basic">Create Account</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        }
+        @if (User.IsInRole(nameof(RoleLevel.ProjectManager)))
+        {
+            <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Assignment")) ? "active" : "")">
+                <a href="javascript:void(0);" class="menu-link menu-toggle active">
+                    <i class='menu-icon bx bxs-book'></i>
+                    <div data-i18n="Authentications">Assignment</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item @(Context.Request.Path == "/Assignment/GetAllAssignment" ? "active" : "")">
+                        <a class="menu-link" asp-controller="Assignment" asp-action="GetAllAssignment">
+                            <div data-i18n="Basic">Asssignment</div>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="menu-sub">
+                    <li class="menu-item @(Context.Request.Path == "/Assignment/AddAssignment" ? "active" : "")">
+                        <a class="menu-link" asp-controller="Assignment" asp-action="AddAssignment">
+                            <div data-i18n="Basic">Create Asssignment</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        }
+        @if (User.IsInRole(nameof(RoleLevel.Staff)))
+        {    
+            <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Progress")) ? "active" : "")">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-task"></i>
+                    <div data-i18n="Progress">Progress</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item @(Context.Request.Path == "/Progress/Index" ? "active" : "")">
+                        <a class="menu-link" asp-controller="Progress" asp-action="Index">
+                            <div data-i18n="Basic">Progress Task</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        }
         <!-- /Menu -->
     </ul>
 </aside>

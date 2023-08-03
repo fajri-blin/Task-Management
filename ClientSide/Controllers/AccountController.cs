@@ -1,4 +1,5 @@
-﻿using ClientSide.Contract;
+using ClientSide.Contract;
+using ClientSide.Utilities.Enum;
 using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Account;
 using ClientSide.ViewModels.Profile;
@@ -8,7 +9,6 @@ using System.Security.Claims;
 
 namespace ClientSide.Controllers;
 
-[Authorize]
 [Controller]
 public class AccountController : Controller
 {
@@ -19,20 +19,30 @@ public class AccountController : Controller
         _accountRepository = accountRepository;
     }
 
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var accounts = await _accountRepository.Get();
+        var result = await _accountRepository.Get();
         var components = new ComponentHandlers
         {
             Footer = false,
             SideBar = true,
             Navbar = true,
         };
+
+        var accounts = result.Data.Select(entity => new AccountVM
+        {
+            Guid = entity.Guid,
+            Name = entity.Name,
+            Role = entity.Role,
+            IsDeleted = entity.IsDeleted,
+        }).ToList();
         ViewBag.Components = components;
         return View("Index", accounts);
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Profile()
     {
@@ -54,6 +64,15 @@ public class AccountController : Controller
         return View("Profile", profile);
     }
 
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
+    [HttpPost]
+    public async Task<IActionResult> Delete(Guid guid)
+    {
+        var result = await _accountRepository.SoftDelete(guid);
+        return RedirectToAction("Index");
+    }
+
+    [Authorize]
     [ValidateAntiForgeryToken]
     [HttpPost]
     public async Task<IActionResult> Profile([FromForm] GetProfileVM updateProfileVM)
@@ -62,9 +81,10 @@ public class AccountController : Controller
         return RedirectToAction("Profile");
     }
 
-    /*[HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
+    [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Update(UpdateVM updateVM)
+    public async Task<IActionResult> UpdateAccount([FromForm] UpdateAccountVM updateVM)
     {
         if (ModelState.IsValid)
         {
@@ -75,29 +95,108 @@ public class AccountController : Controller
             }
             else if (result.Code == 404)
             {
-                return View("Index");
+                return RedirectToAction("Index");
             }
             return RedirectToAction("Index");
         }
         return View(updateVM);
-    }*/
+    }
 
     [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> ForgotPass(ForgotPasswordVM forgotPasswordVM)
     {
         var result = await _accountRepository.ForgotPassword(forgotPasswordVM);
-        if (result == null)
+        if (result == null || result.Code != 200)
         {
             return RedirectToAction("Error", "Index");
         }
-        else if (result.Code == 404)
-        {
-            return View("Index");
-        }
+
+        // If the request is successful, redirect to the CheckAccountOTP action
+        return RedirectToAction("CheckAccountOTP", new { email = forgotPasswordVM.Email });
+    }
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult ForgotPass()
+    {
         return View();
     }
 
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> CheckAccountOTP(CheckOTPVM checkOTPVM)
+    {
+        var result = await _accountRepository.CheckAccountOTP(checkOTPVM);
+        if (result.Code == 404)
+        {
+            return RedirectToAction("Error", "Index");
+        }
+        else if (result is null)
+        {
+            return RedirectToAction("Error", "Index");
+        }
+
+        // Store the OTP value in TempData to pass it to ChangeAccountPassword action
+        TempData["OTP"] = checkOTPVM.OTP; // Store the OTP value as int directly
+
+        return RedirectToAction("ChangeAccountPassword", new { email = checkOTPVM.Email });
+    }
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult CheckAccountOTP(string email)
+    {
+        var viewModel = new CheckOTPVM
+        {
+            Email = email
+        };
+
+        return View(viewModel);
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> ChangeAccountPassword(ChangePasswordVM changePasswordVM)
+    {
+        var result = await _accountRepository.ChangeAccountPassword(changePasswordVM);
+        if (result == null || result.Code != 200)
+        {
+            return RedirectToAction("Error", "Index");
+        }
+
+        // If the password change is successful, redirect to the login page or another appropriate page.
+        return RedirectToAction("SignIn");
+    }
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult ChangeAccountPassword(string email)
+    {
+        // Retrieve the OTP value from TempData and convert it to int
+        var otp = TempData["OTP"];
+
+        // Check if the OTP value is not null and can be parsed to int
+        if (otp != null && int.TryParse(otp.ToString(), out int otpValue))
+        {
+            // Pass the email and OTP as parameters to the view model.
+            var viewModel = new ChangePasswordVM
+            {
+                Email = email,
+                OTP = otpValue // Set the OTP value in the view model
+            };
+
+            return View(viewModel);
+        }
+        else
+        {
+            // Handle the case when OTP value is not available or cannot be parsed to int
+            // You can choose to redirect to an error page or take appropriate action.
+            return RedirectToAction("Error", "Index");
+        }
+    }
+
+
+
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
+    [ValidateAntiForgeryToken]
     [HttpPost]
     public async Task<IActionResult> SignUp(RegisterVM registerDto)
     {
@@ -108,8 +207,14 @@ public class AccountController : Controller
         }
         else if (result.Code == 200)
         {
-            return View("Index");
+            return RedirectToAction("Index");
         }
+        return View();
+    }
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
+    [HttpGet]
+    public IActionResult SignUp()
+    {
         return View();
     }
 
@@ -135,13 +240,6 @@ public class AccountController : Controller
 
         return View();
     }
-
-    [HttpGet]
-    public IActionResult SignUp()
-    {
-        return View();
-    }
-
     [AllowAnonymous]
     [HttpGet]
     public IActionResult SignIn()
@@ -156,37 +254,26 @@ public class AccountController : Controller
 
     [AllowAnonymous]
     [HttpGet]
-    public IActionResult ForgotPass()
-    {
-        return View();
-    }
-
-    [HttpGet]
     public IActionResult LogOut()
     {
         HttpContext.Session.Clear();
         return RedirectToAction("Index", "Home");
     }
 
-    /*    [HttpGet]
-        public async Task<IActionResult> Update(Guid guid)
+    [HttpGet]
+    public async Task<IActionResult> Edit(Guid guid)
+    {
+
+        var account = await _accountRepository.Get(guid);
+        var updateVM = new UpdateAccountVM
         {
+            Guid = account.Guid,
+            Username = account.Username,
+            Email = account.Email,
+            Name = account.Name,
+            Role = account.Role,
+        };
 
-            var account = await _accountRepository.Get(guid);
-            if (account == null)
-            {
-                return RedirectToAction("Error", "Index");
-            }
-
-            var updateVM = new UpdateVM
-            {
-                Guid = account.Guid,
-                Username = account.Username,
-                Email = account.Email,
-                Name = account.Name,
-                Role = account.Role,
-                ImageProfile = account.ImageProfile
-            };
-            return View(updateVM);
-        }*/
+        return View("Edit", updateVM);
+    }
 }

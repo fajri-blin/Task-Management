@@ -1,4 +1,5 @@
-﻿@model ClientSide.Utilities.Handlers.DashboardHandlers
+﻿@using ClientSide.Utilities.Enum;
+@model ClientSide.Utilities.Handlers.DashboardHandlersManager
 @{
     ViewData["Title"] = "Dashboard - Metrodata Task Management";
 }
@@ -21,7 +22,8 @@
                         <div id="categoryStatisticChart"></div>
                     </div>
                     <ul class="p-0 m-0">
-                        @if(Model.Category.Count >= 1){
+                        @if (Model.Category.Count >= 1)
+                        {
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
                                     <span class="avatar-initial rounded bg-label-primary">
@@ -148,7 +150,7 @@
             axisColor = config.colors.axisColor;
             borderColor = config.colors.borderColor;
 
-
+            
             // Order Statistics Chart
             // --------------------------------------------------------------------
             const chartOrderStatistics = document.querySelector('#categoryStatisticChart'),

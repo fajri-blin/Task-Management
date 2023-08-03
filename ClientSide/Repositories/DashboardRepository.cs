@@ -39,5 +39,16 @@ namespace ClientSide.Repositories
             }
             return entityVM;
         }
+
+        public async Task<ResponseHandlers<DashboardRoleAdminVM>> CountRole()
+        {
+            ResponseHandlers<DashboardRoleAdminVM> entityVM = null;
+            using (var response = await _httpClient.GetAsync(_request + "Admin/CountAccount"))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                entityVM = JsonConvert.DeserializeObject<ResponseHandlers<DashboardRoleAdminVM>>(apiResponse);
+            }
+            return entityVM;
+        }
     }
 }
