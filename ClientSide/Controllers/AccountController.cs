@@ -69,7 +69,37 @@ public class AccountController : Controller
     public async Task<IActionResult> Delete(Guid guid)
     {
         var result = await _accountRepository.SoftDelete(guid);
-        return RedirectToAction("Index");
+        if (result.Code == 404)
+        {
+            return Json(new { code = 404, message = "Account not found" });
+        }
+        else if (result.Code == 200)
+        {
+            return Json(new { code = 200, message = "Account deleted successfully" });
+        }
+        else
+        {
+            return Json(new { code = result.Code, message = result.Message });
+        }
+    }
+
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
+    [HttpPost]
+    public async Task<IActionResult> Activate(Guid guid)
+    {
+        var result = await _accountRepository.Activation(guid);
+        if (result.Code == 404)
+        {
+            return Json(new { code = 404, message = "Account not found" });
+        }
+        else if (result.Code == 200)
+        {
+            return Json(new { code = 200, message = "Account activated successfully" });
+        }
+        else
+        {
+            return Json(new { code = result.Code, message = result.Message });
+        }
     }
 
     [Authorize]
@@ -166,6 +196,7 @@ public class AccountController : Controller
         // If the password change is successful, redirect to the login page or another appropriate page.
         return RedirectToAction("SignIn");
     }
+
     [AllowAnonymous]
     [HttpGet]
     public IActionResult ChangeAccountPassword(string email)

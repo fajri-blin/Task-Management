@@ -197,9 +197,9 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut("Activation")]
-    public IActionResult Activation(Guid guid)
+    public IActionResult Activation(GetGuidDto guid)
     {
-        var activate = _accountSevices.Activation(guid);
+        var activate = _accountSevices.Activation(guid.Guid);
         if (activate is -1) return NotFound(new ResponseHandlers<AccountDto>
         {
             Code = StatusCodes.Status404NotFound,
@@ -291,9 +291,9 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut("SoftDelete")]
-    public IActionResult Delete(Guid guid)
+    public IActionResult Delete(GetGuidDto guid)
     {
-        var delete = _accountSevices.Delete(guid);
+        var delete = _accountSevices.Delete(guid.Guid);
         if (delete is -1) return NotFound(new ResponseHandlers<AccountDto>
         {
             Code = StatusCodes.Status404NotFound,
