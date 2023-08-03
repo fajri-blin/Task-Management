@@ -4,6 +4,7 @@ using Task_Management.Dtos.AssignmentDto;
 using Task_Management.DTOs.AssignMapDto;
 using Task_Management.DTOs.AssignmentDto;
 using Task_Management.DTOs.CategoryDto;
+using Task_Management.DTOs.ProgressDto;
 using Task_Management.Model.Data;
 using Task_Management.Utilities.Enum;
 
@@ -362,5 +363,48 @@ public class AssignmentService
         }
     }
     // End Basic CRUD =========================================
+    //AssignmentRepository.cs
+    public IEnumerable<GetForStaffDto> GetForStaff(Guid accountGuid)
+    {
+        var getListAccountProgress = _accountProgressRepository.GetByAccountGuid(accountGuid);
+        if (getListAccountProgress is null)
+        {
+            return null;
+        }
+
+        var staffViewDataList = new List<GetForStaffDto>();
+
+        foreach (var accountProgress in getListAccountProgress)
+        {
+            var progress = _progressRepository.GetByGuid((Guid)accountProgress.ProgressGuid);
+            var assignment = _assignmentRepository.GetByGuid(progress.AssignmentGuid.Value);
+            var manager = _accountRepository.GetByGuid((Guid)assignment.ManagerGuid);
+
+            var getForStaffDto = new GetForStaffDto
+            {
+                AssignmentName = assignment.Title,
+                ManagerName = manager.Name,
+                ListProgress = new List<GetProgressDto>()
+            };
+
+            // Here, progress is a single object of type 'Progress', not a collection
+            var getProgressDto = new GetProgressDto
+            {
+                Guid = progress.Guid,
+                AssignmentGuid = progress.AssignmentGuid,
+                Description = progress.Description,
+                Status = progress.Status,
+                Additional = progress.Additional,
+                CheckMark = progress.CheckMark,
+                MessageManager = progress.MessageManager
+            };
+
+            getForStaffDto.ListProgress.Add(getProgressDto);
+
+            staffViewDataList.Add(getForStaffDto);
+        }
+
+        return staffViewDataList;
+    }
 
 }

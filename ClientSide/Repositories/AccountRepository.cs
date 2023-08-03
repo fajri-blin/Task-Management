@@ -23,6 +23,19 @@ public class AccountRepository : GeneralRepository<AccountVM>, IAccountRepositor
         };
         this._request = request;
     }
+
+    public async Task<ResponseHandlers<GetForStaffVM>> GetAssignmentForStaff(Guid guid)
+    {
+        ResponseHandlers<GetForStaffVM> entityVM = null;
+        using (var response = _httpClient.GetAsync(_request + "GetForStaff" + guid).Result)
+        {
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<GetForStaffVM>>(apiResponse);
+        }
+        return entityVM;
+    }
+
+
     public async Task<ResponseHandlers<UpdateAccountVM>> Update([FromForm] UpdateAccountVM updateAccountVM)
     {
         ResponseHandlers<UpdateAccountVM> entityVM = null;
