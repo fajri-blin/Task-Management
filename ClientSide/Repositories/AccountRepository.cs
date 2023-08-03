@@ -1,6 +1,7 @@
 ﻿using ClientSide.Contract;
 using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Account;
+using ClientSide.ViewModels.Assignment;
 using ClientSide.ViewModels.Profile;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -98,7 +99,7 @@ public class AccountRepository : GeneralRepository<AccountVM>, IAccountRepositor
     {
         ResponseHandlers<CheckOTPVM> entityVM = null;
         StringContent content = new StringContent(JsonConvert.SerializeObject(checkOTPVM), Encoding.UTF8, "application/json");
-        using(var response = _httpClient.PostAsync(_request + "CheckOtp", content).Result)
+        using (var response = _httpClient.PostAsync(_request + "CheckOtp", content).Result)
         {
             string apiResponse = await response.Content.ReadAsStringAsync();
             entityVM = JsonConvert.DeserializeObject<ResponseHandlers<CheckOTPVM>>(apiResponse);
@@ -110,7 +111,7 @@ public class AccountRepository : GeneralRepository<AccountVM>, IAccountRepositor
     {
         ResponseHandlers<ChangePasswordVM> entityVM = null;
         StringContent content = new StringContent(JsonConvert.SerializeObject(changePasswordVM), Encoding.UTF8, "application/json");
-        using(var response = _httpClient.PutAsync(_request + "changePassword", content).Result)
+        using (var response = _httpClient.PutAsync(_request + "changePassword", content).Result)
         {
             string apiResponse = await response.Content.ReadAsStringAsync();
             entityVM = JsonConvert.DeserializeObject<ResponseHandlers<ChangePasswordVM>>(apiResponse);
@@ -184,4 +185,26 @@ public class AccountRepository : GeneralRepository<AccountVM>, IAccountRepositor
 
         return entityVM;
     }
+
+    public async Task<ResponseHandlers<AccountVM>> SoftDelete(Guid guid)
+    {
+        ResponseHandlers<AccountVM> entityVM = null;
+
+        var requestPayload = new UpdateAssignmentVM
+        {
+            Guid = guid,
+        };
+
+        StringContent content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
+
+        using (var response = await _httpClient.PutAsync(_request + "SoftDelete", content))
+        {
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(apiResponse); // Add this line for logging
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<AccountVM>>(apiResponse);
+        }
+
+        return entityVM;
+    }
+
 }

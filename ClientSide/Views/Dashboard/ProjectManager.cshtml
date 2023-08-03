@@ -1,139 +1,131 @@
 ﻿@using ClientSide.Utilities.Enum;
-@model ClientSide.Utilities.Handlers.DashboardHandlers
+@model ClientSide.Utilities.Handlers.DashboardHandlersManager
 @{
     ViewData["Title"] = "Dashboard - Metrodata Task Management";
-    // Get the user's role from the JWT token stored in the session
-    var userRole = Context.Request.HttpContext.Session.GetString("Role");
 }
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row">
-        @if (userRole == nameof(RoleLevel.ProjectManager))
-        {
-            <!-- Category Statistics -->
-            <div class="col-md-6 col-lg-6 order-0 mb-4">
-                <div class="card h-100">
-                    <div class="card-header d-flex align-items-center justify-content-between pb-0">
-                        <div class="card-title mb-0">
-                            <h5 class="m-0 me-2">Categories</h5>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div class="d-flex flex-column align-items-center gap-1">
-                                <h2 class="mb-2">@Model.CountCategory.Sum()</h2>
-                                <span>Total Category</span>
-                            </div>
-                            <div id="categoryStatisticChart"></div>
-                        </div>
-                        <ul class="p-0 m-0">
-                            @if (Model.Category.Count >= 1)
-                            {
-                                <li class="d-flex mb-4 pb-1">
-                                    <div class="avatar flex-shrink-0 me-3">
-                                        <span class="avatar-initial rounded bg-label-primary">
-                                            <i class='bx bx-category'></i>
-                                        </span>
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">@Model.Category[0]</h6>    
-                                        </div>
-                                        <div class="user-progress">
-                                            <small class="fw-semibold">@Model.CountCategory[0]</small>
-                                        </div>
-                                    </div>
-                                </li>
-                            }
-                            @if (Model.Category.Count >= 2)
-                            {
-                                <li class="d-flex mb-4 pb-1">
-                                    <div class="avatar flex-shrink-0 me-3">
-                                        <span class="avatar-initial rounded bg-label-success">
-                                            <i class='bx bx-category'></i>
-                                        </span>
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">@Model.Category[1]</h6>
-                                        </div>
-                                        <div class="user-progress">
-                                            <small class="fw-semibold">@Model.CountCategory[1]</small>
-                                        </div>
-                                    </div>
-                                </li>
-                            }
-                            @if (Model.Category.Count >= 3)
-                            {
-                                <li class="d-flex mb-4 pb-1">
-                                    <div class="avatar flex-shrink-0 me-3">
-                                        <span class="avatar-initial rounded bg-label-info">
-                                            <i class='bx bx-category'></i>
-                                        </span>
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">@Model.Category[2]</h6>
-                                        </div>
-                                        <div class="user-progress">
-                                            <small class="fw-semibold">@Model.CountCategory[2]</small>
-                                        </div>
-                                    </div>
-                                </li>
-                            }
-                            @if (Model.Category.Count >= 4)
-                            {
-                                <li class="d-flex">
-                                    <div class="avatar flex-shrink-0 me-3">
-                                        <span class="avatar-initial rounded bg-label-secondary">
-                                            <i class='bx bx-category'></i>
-                                        </span>
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">@Model.Category[3]</h6>
-                                        </div>
-                                        <div class="user-progress">
-                                            <small class="fw-semibold">@Model.CountCategory[3]</small>
-                                        </div>
-                                    </div>
-                                </li>
-                            }
-                        </ul>
+        <!-- Category Statistics -->
+        <div class="col-md-6 col-lg-6 order-0 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center justify-content-between pb-0">
+                    <div class="card-title mb-0">
+                        <h5 class="m-0 me-2">Categories</h5>
                     </div>
                 </div>
-            </div>
-            <!--/ Category Statistics -->
-        }
-        @if (userRole == nameof(RoleLevel.ProjectManager))
-        {
-            <!-- Assignment -->
-            <div class="col-md-6 col-lg-6 order-1 mb-4">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="card-title m-0 me-2">Assignments</h5>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            <h2 class="mb-2">@Model.CountCategory.Sum()</h2>
+                            <span>Total Category</span>
+                        </div>
+                        <div id="categoryStatisticChart"></div>
                     </div>
-                    <div class="card-body px-0">
-                        <div class="tab-content p-0">
-                            <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
-                                <div class="d-flex p-4 pt-3">
-                                    <div class="avatar flex-shrink-0 me-3">
-                                        <i class='bx bx-task bx-md'></i>
+                    <ul class="p-0 m-0">
+                        @if (Model.Category.Count >= 1)
+                        {
+                            <li class="d-flex mb-4 pb-1">
+                                <div class="avatar flex-shrink-0 me-3">
+                                    <span class="avatar-initial rounded bg-label-primary">
+                                        <i class='bx bx-category'></i>
+                                    </span>
+                                </div>
+                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                    <div class="me-2">
+                                        <h6 class="mb-0">@Model.Category[0]</h6>    
                                     </div>
-                                    <div>
-                                        <small class="text-muted d-block">Total Assignments</small>
-                                        <div class="d-flex align-items-center">
-                                            <h6 class="mb-0 me-1">@Html.DisplayFor(modelItem => modelItem.totalAssignment)</h6>
-                                        </div>
+                                    <div class="user-progress">
+                                        <small class="fw-semibold">@Model.CountCategory[0]</small>
                                     </div>
                                 </div>
-                                <div id="assignment"></div>
+                            </li>
+                        }
+                        @if (Model.Category.Count >= 2)
+                        {
+                            <li class="d-flex mb-4 pb-1">
+                                <div class="avatar flex-shrink-0 me-3">
+                                    <span class="avatar-initial rounded bg-label-success">
+                                        <i class='bx bx-category'></i>
+                                    </span>
+                                </div>
+                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                    <div class="me-2">
+                                        <h6 class="mb-0">@Model.Category[1]</h6>
+                                    </div>
+                                    <div class="user-progress">
+                                        <small class="fw-semibold">@Model.CountCategory[1]</small>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                        @if (Model.Category.Count >= 3)
+                        {
+                            <li class="d-flex mb-4 pb-1">
+                                <div class="avatar flex-shrink-0 me-3">
+                                    <span class="avatar-initial rounded bg-label-info">
+                                        <i class='bx bx-category'></i>
+                                    </span>
+                                </div>
+                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                    <div class="me-2">
+                                        <h6 class="mb-0">@Model.Category[2]</h6>
+                                    </div>
+                                    <div class="user-progress">
+                                        <small class="fw-semibold">@Model.CountCategory[2]</small>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                        @if (Model.Category.Count >= 4)
+                        {
+                            <li class="d-flex">
+                                <div class="avatar flex-shrink-0 me-3">
+                                    <span class="avatar-initial rounded bg-label-secondary">
+                                        <i class='bx bx-category'></i>
+                                    </span>
+                                </div>
+                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                    <div class="me-2">
+                                        <h6 class="mb-0">@Model.Category[3]</h6>
+                                    </div>
+                                    <div class="user-progress">
+                                        <small class="fw-semibold">@Model.CountCategory[3]</small>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--/ Category Statistics -->
+        <!-- Assignment -->
+        <div class="col-md-6 col-lg-6 order-1 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title m-0 me-2">Assignments</h5>
+                </div>
+                <div class="card-body px-0">
+                    <div class="tab-content p-0">
+                        <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
+                            <div class="d-flex p-4 pt-3">
+                                <div class="avatar flex-shrink-0 me-3">
+                                    <i class='bx bx-task bx-md'></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Total Assignments</small>
+                                    <div class="d-flex align-items-center">
+                                        <h6 class="mb-0 me-1">@Html.DisplayFor(modelItem => modelItem.totalAssignment)</h6>
+                                    </div>
+                                </div>
                             </div>
+                            <div id="assignment"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!--/ Assignment -->
-        }
+        </div>
+        <!--/ Assignment -->
     </div>
 </div>
 
@@ -158,7 +150,7 @@
             axisColor = config.colors.axisColor;
             borderColor = config.colors.borderColor;
 
-
+            
             // Order Statistics Chart
             // --------------------------------------------------------------------
             const chartOrderStatistics = document.querySelector('#categoryStatisticChart'),

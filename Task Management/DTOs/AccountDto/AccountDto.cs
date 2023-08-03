@@ -8,6 +8,7 @@ public class AccountDto
     public Guid Guid { get; set; }
     public string Name { get; set; }
     public RoleLevel? Role { get; set; }
+    public bool IsDeleted { get; set; }
 
 
     public static explicit operator AccountDto(Account account)
@@ -16,6 +17,7 @@ public class AccountDto
         {
             Guid = account.Guid,
             Name = account.Name,
+            IsDeleted = account.IsDeleted,
         };
     }
 }

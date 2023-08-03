@@ -2,7 +2,7 @@
 {
     public enum RoleLevel
     {
-        Staff =1 ,
+        Staff = 1,
         ProjectManager = 2,
         Admin = 3
     }

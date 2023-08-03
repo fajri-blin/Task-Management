@@ -29,6 +29,9 @@ public class Account : BaseEntity
     [Column("role_guid")]
     public Guid? RoleGuid { get; set; }
 
+    [Column("is_deleted")]
+    public bool IsDeleted { get; set; }
+
     //Cardinality
     public Role? Role { get; set; }
     public ICollection<AccountProgress>? AccountProgresses { get; set; }

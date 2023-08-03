@@ -13,6 +13,7 @@
                     <th>No</th>
                     <th>Name</th>
                     <th>Role</th>
+                    <th>Activation</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -25,6 +26,7 @@
                         </td>
                         <td>@Html.DisplayFor(modelItem => item.Name)</td>
                         <td>@Html.DisplayFor(modelItem => item.Role)</td>
+                        <td>@(item.IsDeleted ? "Deactived" : "Actived")</td>
                         <td>
                             @if (item.Guid != Guid.Parse(User.FindFirst("Guid")?.Value))
                             {
@@ -34,12 +36,17 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" asp-action="Edit" asp-route-guid="@item.Guid"><i class="bx bx-edit-alt me-1"></i> Edit</a>
-                                        <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>
+                                        @if(item.IsDeleted == false){
+                                            <a class="dropdown-item" onclick="showDeleteAccount('@item.Guid')"><i class="bx bx-trash me-1"></i> Delete</a>
+                                        }else{
+                                            <a class="dropdown-item" asp-action="Activate" asp-route-guid="@item.Guid"><i class="bx bx-user-check me-1"></i> Activate</a>
+                                        }
                                     </div>
                                 </div>
                             }
                         </td>
                     </tr>
+                    no++;
                 }
             </tbody>
         </table>

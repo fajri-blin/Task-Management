@@ -1,4 +1,4 @@
-﻿@model ClientSide.ViewModels.Account.GetAccountVM
+﻿@model ClientSide.ViewModels.Account.UpdateAccountVM
 @{
     ViewData["Title"] = "Edit Account - Metrodata Task Management";
 }
@@ -17,7 +17,7 @@
                         <span class="app-brand-text demo text-body fw-bolder">Edit Account</span>
                     </div>
                     <!-- /Logo -->
-                    <form id="formAuthentication" class="mb-3" asp-action="UpdateAccount">
+                    <form id="formAuthentication" class="mb-3" asp-action="UpdateAccount" enctype="multipart/form-data">
                         <input asp-for="Guid" class="form-control" hidden />
                         <div class="mb-3">
                             <div class="d-flex align-items-start align-items-sm-center gap-4">
@@ -36,7 +36,7 @@
                                                class="account-file-input"
                                                hidden
                                                accept="image/png, image/jpeg"
-                                               name="ImageProfile" />
+                                               asp-for="ImageProfile" />
                                     </label>
                                     <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
                                         <i class="bx bx-reset d-block d-sm-none"></i>
@@ -74,9 +74,9 @@
                             <div class="input-group">
                                 <label class="input-group-text" asp-for="Role">Options</label>
                                 <select class="form-select" asp-for="Role">
-                                    <option value="0" selected>Staff</option>
-                                    <option value="1">Project Manager</option>
-                                    <option value="2">Admin</option>
+                                    <option value="1" selected>Staff</option>
+                                    <option value="2">Project Manager</option>
+                                    <option value="3">Admin</option>
                                 </select>
                             </div>
                             <span asp-validation-for="Role" class="text-danger"></span>

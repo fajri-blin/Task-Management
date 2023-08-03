@@ -58,5 +58,25 @@ namespace Task_Management.Controllers
                 Data = entity
             });
         }
+
+        [HttpGet("Admin/CountAccount")]
+        public IActionResult CountAccount()
+        {
+            var entity = _dashboardService.CountAccount();
+            if (entity == null) return NotFound(new ResponseHandlers<CountAccountsDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Not Found"
+            });
+
+            return Ok(new ResponseHandlers<CountAccountsDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Data Found",
+                Data = entity
+            });
+        }
     }
 }

@@ -79,7 +79,7 @@ public class AdditionalService
         return Dto;
     }
 
-    public IEnumerable<AdditionalDto> Create(NewAdditionalDto newAdditionalDto)
+    public async Task<IEnumerable<AdditionalDto>> Create(NewAdditionalDto newAdditionalDto)
     {
         var transaction = _bookingContext.Database.BeginTransaction();
         try
@@ -100,7 +100,7 @@ public class AdditionalService
                 var exacPath = Path.Combine(Directory.GetCurrentDirectory(), "Files\\Additional", fileData);
                 using (var stream = new FileStream(exacPath, FileMode.Create))
                 {
-                    file.CopyToAsync(stream);
+                    await file.CopyToAsync(stream);
                 }
 
                 var additonal = new Additional
@@ -127,7 +127,7 @@ public class AdditionalService
         }
     }
 
-    public int Update(NewAdditionalDto additionaldto)
+    public async Task<int> Update(NewAdditionalDto additionaldto)
     {
         var additionals = _additionalRepository.GetByProgressForeignKey((Guid)additionaldto.ProgressGuid);
         if (additionals is null) return 0;
@@ -162,7 +162,7 @@ public class AdditionalService
                 var exacPath = Path.Combine(filePath, fileData);
                 using (var stream = new FileStream(exacPath, FileMode.Create))
                 {
-                    file.CopyToAsync(stream);
+                    await file.CopyToAsync(stream);
                 }
 
                 var additonal = new Additional

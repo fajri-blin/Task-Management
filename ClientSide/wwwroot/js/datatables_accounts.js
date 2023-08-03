@@ -2,7 +2,7 @@ $(document).ready(function () {
     var table = $('#tableAccounts').DataTable({
         searchBuilder: true,
         searchBuilder: {
-            columns: [1, 2],
+            columns: [1, 2, 3],
             conditions: {
                 string: {
                     'starts': null,
