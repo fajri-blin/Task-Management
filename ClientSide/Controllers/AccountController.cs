@@ -199,8 +199,13 @@ public class AccountController : Controller
         }
         return View();
     }
+	[HttpGet]
+	public IActionResult SignUp()
+	{
+		return View();
+	}
 
-    [AllowAnonymous]
+	[AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> SignIn(SignInVM signInDto)
     {
@@ -222,26 +227,17 @@ public class AccountController : Controller
 
         return View();
     }
+	[AllowAnonymous]
+	[HttpGet]
+	public IActionResult SignIn()
+	{
+		if (User.Identity.IsAuthenticated)
+		{
+			return RedirectToAction("Index", "Dashboard");
+		}
 
-    [HttpGet]
-    public IActionResult SignUp()
-    {
-        return View();
-    }
-
-    [AllowAnonymous]
-    [HttpGet]
-    public IActionResult SignIn()
-    {
-        if (User.Identity.IsAuthenticated)
-        {
-            return RedirectToAction("Index", "Dashboard");
-        }
-
-        return View();
-    }
-
-
+		return View();
+	}
 
     [AllowAnonymous]
     [HttpGet]
