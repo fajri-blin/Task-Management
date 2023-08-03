@@ -63,66 +63,23 @@ public class ProgressController : Controller
         };
         return View( "CreateProgress", createProgressVM);
     }
+
     [HttpPost]
     public async Task<IActionResult> CreateProgress(CreateProgressVM createProgress)
     {
         if (ModelState.IsValid)
         {
-            var created = await _progressRepository.CreateProgress(createProgress);
-            if (created.Code == 404)
+            var createdProgress = await _progressRepository.CreateProgress(createProgress);
+            if (createdProgress != null)
             {
-                ModelState.AddModelError(string.Empty, created.Message);
-                return View();
+                TempData["Success"] = "Data Berhasil Masuk";
+                return RedirectToAction(nameof(Index));
             }
-            TempData["Success"] = "Data Berhasil Masuk";
-            return RedirectToAction(nameof(Index));
+            ModelState.AddModelError(string.Empty, "Failed to create progress.");
         }
-
         return View(createProgress);
     }
-    /*[HttpPost]
-    public async Task<IActionResult> CreateProgress(CreateProgressVM createProgress)
-    {
-        var created = await _progressRepository.CreateProgress(createProgress);
-        if (created.Code == 404)
-        {
-            ModelState.AddModelError(string.Empty, created.Message);
-            return View();
-        }
-        TempData["Success"] = "Data Berhasil Masuk";
-        return RedirectToAction(nameof(Index));
-    }*/
 
-    /* [HttpPost]
-     public async Task<IActionResult> CreateProgress(CreateProgressVM createProgress)
-     {
-         if (ModelState.IsValid)
-         {
-
-             var assignmentGuid = HttpContext.Session.GetString("AssignmentGuid");
-
-             if (string.IsNullOrEmpty(assignmentGuid))
-             {
-                 return RedirectToAction("Index");
-             }
-
-             createProgress.AssignmentGuid = new Guid(assignmentGuid);
-
-             var created = await _progressRepository.CreateProgress(createProgress);
-
-             if (created.Code == 404)
-             {
-                 ModelState.AddModelError(string.Empty, created.Message);
-                 return View();
-             }
-             HttpContext.Session.Remove("AssignmentGuid");
-
-             TempData["Success"] = "Data Berhasil Masuk";
-             return RedirectToAction(nameof(Index));
-         }
-
-         return View(createProgress);
-     }*/
 
     [HttpPost]
     public async Task<IActionResult> DeepDeleteProgress(Guid guid)

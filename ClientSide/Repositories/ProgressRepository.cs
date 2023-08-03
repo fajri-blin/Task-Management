@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 using ClientSide.ViewModels.Account;
 using ClientSide.ViewModels.Assignment;
+using Task_Management.DTOs.AccountDto;
 
 
 namespace ClientSide.Repositories
@@ -46,39 +47,35 @@ namespace ClientSide.Repositories
         public async Task<ResponseHandlers<CreateProgressVM>> CreateProgress(CreateProgressVM createProgress)
         {
             ResponseHandlers<CreateProgressVM> entityVM = null;
-
-            var request = new CreateProgressVM
-            {
-                AssignmentGuid = createProgress.AssignmentGuid,
-            };
-
-            StringContent content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-
-            using (var response = await _httpClient.PostAsync(_request, content))
+            StringContent content = new StringContent(JsonConvert.SerializeObject(createProgress), Encoding.UTF8, "application/json");
+            using (var response = _httpClient.PostAsync(_request + "CreateProgress", content).Result)
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(apiResponse); 
                 entityVM = JsonConvert.DeserializeObject<ResponseHandlers<CreateProgressVM>>(apiResponse);
             }
-
             return entityVM;
         }
 
+        /* public async Task<ResponseHandlers<CreateProgressVM>> CreateProgress(CreateProgressVM createProgress)
+         {
+             ResponseHandlers<CreateProgressVM> entityVM = null;
 
-        /*public async Task<ResponseHandlers<ProgressVM>> CreateProgress(ProgressVM progress)
-        {
-            return await Post(progress);
+             var request = new CreateProgressVM
+             {
+                 AssignmentGuid = createProgress.AssignmentGuid,
+             };
 
-            ResponseHandlers<CreateProgressVM> entityVM = null;
-            StringContent content = new StringContent(JsonConvert.SerializeObject(createProgress), Encoding.UTF8, "application/json");
-            using (var response = _httpClient.PostAsync(_request, content).Result)
-            {
-                string responseApi = await response.Content.ReadAsStringAsync();
-                entityVM = JsonConvert.DeserializeObject<ResponseHandlers<CreateProgressVM>>(responseApi);
-            }
-            return entityVM;
-        }*/
+             StringContent content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
 
+             using (var response = await _httpClient.PutAsync(_request, content))
+             {
+                 string apiResponse = await response.Content.ReadAsStringAsync();
+                 Console.WriteLine(apiResponse);
+                 entityVM = JsonConvert.DeserializeObject<ResponseHandlers<CreateProgressVM>>(apiResponse);
+             }
+
+             return entityVM;
+         }*/
         public async Task<ResponseHandlers<UpdateProgressVM>> UpdateProgress(UpdateProgressVM updateProgress)
         {
             ResponseHandlers<UpdateProgressVM> entityVM = null;
@@ -136,66 +133,5 @@ namespace ClientSide.Repositories
 
             return entityVM;
         }
-       /* public async Task<ResponseHandlers<IEnumerable<ProgressVM>>> GetAllProgressByAssignmentGuid(Guid assignmentGuid)
-        {
-            try
-            {
-                // Get all progress items from the repository
-                var allProgress = await Get();
-
-                // Filter progress items based on the provided assignmentGuid
-                var filteredProgress = allProgress.Data.Where(p => p.AssignmentGuid == assignmentGuid).ToList();
-
-                // Create a new ResponseHandlers instance with the filtered progress items
-                var response = new ResponseHandlers<IEnumerable<ProgressVM>>
-                {
-                    Code = 200, // Set the appropriate status code for success (200 for OK)
-                    Status = "Success",
-                    Data = filteredProgress
-                };
-
-                // Return the ResponseHandlers object
-                return response;
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions that may occur during data retrieval
-                var response = new ResponseHandlers<IEnumerable<ProgressVM>>
-                {
-                    Code = 500,
-                    Status = "Error",
-                    Message = ex.Message
-                };
-
-                return response;
-            }
-        }*/
-
-        /*public async Task<ResponseHandlers<ProgressVM>> UpdateProgress(UpdateProgressVM updateProgress)
-       {
-           return await Put(updateProgress);
-       }*/
-
-        /*public async Task<ResponseHandlers<Guid>> DeleteProgress(Guid guid)
-        {
-            return await Delete(guid);
-           
-        }*/
-        /* public async Task<ProgressVM> GetProgressByAssignmentGuid(Guid guid)
-        {
-            using (var response = await _httpClient.GetAsync($"{_request}{guid}"))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    ProgressVM progress = JsonConvert.DeserializeObject<ProgressVM>(apiResponse);
-                    return progress;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }*/
     }
 }
