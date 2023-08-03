@@ -2,9 +2,9 @@
 
 public enum StatusEnum
 {
-    NotStarted,
-    InProgress,
-    Checking,
-    Revision,
-    Done
+    NotStarted = 1,
+    InProgress = 2,
+    Checking = 3,
+    Revision = 4,
+    Done = 5
 }

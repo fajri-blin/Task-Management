@@ -6,7 +6,9 @@ using Task_Management.Utilities.Enum;
 using ClientSide.ViewModels.Progress;
 using Microsoft.EntityFrameworkCore;
 using ClientSide.ViewModels.Assignment;
-
+using System;
+using ClientSide.ViewModels.Profile;
+using Syncfusion.EJ2.Grids;
 
 namespace ClientSide.Controllers;
 
@@ -14,10 +16,12 @@ namespace ClientSide.Controllers;
 public class ProgressController : Controller
 {
     private readonly IProgressRepository _progressRepository;
+    private readonly IAssignmentRepository _assignmentRepository;
 
-    public ProgressController(IProgressRepository progressRepository)
+    public ProgressController(IProgressRepository progressRepository, IAssignmentRepository assignmentRepository)
     {
         _progressRepository = progressRepository;
+        _assignmentRepository = assignmentRepository;
     }
 
     public async Task<IActionResult> Index()
@@ -31,25 +35,51 @@ public class ProgressController : Controller
         ViewBag.Components = components;
 
         var response = await _progressRepository.GetAllProgress();
-        var tasks = response.Data.ToList();
-        return View(tasks);
+        if (response.Data != null)
+        {
+            var tasks = response.Data.ToList();
+            return View(tasks);
+        }
+        else
+        {
+            var emptyList = new List<ProgressVM>();
+            return View(emptyList);
+        }
+    }
+
+    [HttpGet]
+    public IActionResult CreateProgress(Guid assignmentGuid)
+    {
+        var components = new ComponentHandlers
+        {
+            Footer = false,
+            SideBar = true,
+            Navbar = true,
+        };
+        ViewBag.Components = components;
+        var createProgressVM = new CreateProgressVM
+        {
+            AssignmentGuid = assignmentGuid
+        };
+        return View( "CreateProgress", createProgressVM);
     }
 
     [HttpPost]
-    [Route("Progress/UpdateStatus")]
-    public async Task<IActionResult> UpdateStatus(Guid guid, string newStatus)
+    public async Task<IActionResult> CreateProgress(CreateProgressVM createProgress)
     {
-        var response = await _progressRepository.GetProgressById(guid);
-        var progress = response.Data;
-
-        if (progress != null)
+        if (ModelState.IsValid)
         {
-            progress.Status = Enum.Parse<StatusEnum>(newStatus);
-            return Json(new { success = true });
+            var createdProgress = await _progressRepository.CreateProgress(createProgress);
+            if (createdProgress != null)
+            {
+                TempData["Success"] = "Data Berhasil Masuk";
+                return RedirectToAction(nameof(Index));
+            }
+            ModelState.AddModelError(string.Empty, "Failed to create progress.");
         }
-
-        return Json(new { success = false });
+        return View(createProgress);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> DeepDeleteProgress(Guid guid)

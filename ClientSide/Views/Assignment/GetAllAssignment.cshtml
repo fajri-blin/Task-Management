@@ -36,7 +36,8 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
                                         <a class="dropdown-item" asp-controller="Assignment" asp-action="EditAssignment" asp-route-guid="@item.Guid">Edit</a>
-                                        <button class="dropdown-item" asp-action="Details">Details</button>
+                                        <a class="dropdown-item" asp-controller="Progress" asp-action="CreateProgress" asp-route-guid="@item.Guid">Create Progress</a>
+                                        <button class="dropdown-item" onclick="redirectToProgress('@item.Guid')">Details</button>
                                         <button class="dropdown-item text-danger" onclick="showDeleteConfirmation('@item.Guid')">Delete</button>
                                     </div>
                                 </div>
@@ -123,4 +124,10 @@
             });
         });
     </script>
+    <script>
+        function redirectToProgress(guid) {
+            window.location.href = `https://localhost:7296/Progress?guid=${guid}`;
+        }
+    </script>
+
 }

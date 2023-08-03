@@ -220,4 +220,25 @@ public class AccountRepository : GeneralRepository<AccountVM>, IAccountRepositor
         return entityVM;
     }
 
+    public async Task<ResponseHandlers<AccountVM>> Activation(Guid guid)
+    {
+        ResponseHandlers<AccountVM> entityVM = null;
+
+        var requestPayload = new UpdateAssignmentVM
+        {
+            Guid = guid,
+        };
+
+        StringContent content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
+
+        using (var response = await _httpClient.PutAsync(_request + "Activation", content))
+        {
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(apiResponse); // Add this line for logging
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<AccountVM>>(apiResponse);
+        }
+
+        return entityVM;
+    }
+
 }

@@ -37,9 +37,9 @@
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" asp-action="Edit" asp-route-guid="@item.Guid"><i class="bx bx-edit-alt me-1"></i> Edit</a>
                                         @if(item.IsDeleted == false){
-                                            <a class="dropdown-item" onclick="showDeleteAccount('@item.Guid')"><i class="bx bx-trash me-1"></i> Delete</a>
+                                            <button class="dropdown-item" onclick="showDeleteAccount('@item.Guid')"><i class="bx bx-trash me-1"></i> Delete</button>
                                         }else{
-                                            <a class="dropdown-item" asp-action="Activate" asp-route-guid="@item.Guid"><i class="bx bx-user-check me-1"></i> Activate</a>
+                                            <button class="dropdown-item" onclick="showActivateAccount('@item.Guid')"><i class="bx bx-user-check me-1"></i> Activate</button>
                                         }
                                     </div>
                                 </div>
@@ -57,6 +57,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.5.0/css/searchBuilder.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.1/css/dataTables.dateTime.min.css">
+    <link rel="stylesheet" href="../css/deep.css" />
 }
 
 @section Scripts{
