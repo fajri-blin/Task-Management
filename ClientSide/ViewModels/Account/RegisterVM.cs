@@ -4,6 +4,7 @@ namespace ClientSide.ViewModels.Account
 {
     public class RegisterVM
     {
+
         public string Username { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
