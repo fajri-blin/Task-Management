@@ -13,7 +13,6 @@
     flex-wrap: nowrap;
 }
 
-
 .column {
     display: inline-block;
     vertical-align: top;
@@ -34,25 +33,48 @@
 
 /* Add other column styles as needed */
 .column[data-status="NotStarted"] {
-    background-color: #61bd4f;
+    background-color: #d6d6d6;
     color: #ffffff;
+}
+.column[data-status="NotStarted"] h5 {
+        text-align: center;
+        margin-bottom: 20px;
+        color:black;
 }
 
 .column[data-status="InProgress"] {
-    background-color: #f2d600;
+    background-color: #edf556;
     color: #333333;
 }
-
+    .column[data-status="InProgress"] h5 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: black;
+    }
 .column[data-status="Checking"] {
-    background-color: #ffab4a;
+    background-color: #f7b148;
     color: #333333;
 }
-
+    .column[data-status="Checking"] h5 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: black;
+    }
 .column[data-status="Revision"] {
-    background-color: #eb5a46;
+    background-color: #eb5250;
     color: #ffffff;
 }
+    .column[data-status="Revision"] h5 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: black;
+    }
 .column[data-status="Done"] {
-    background-color: #ccd5e3;
+    background-color: #6cf05d;
     color: #ffffff;
 }
+    .column[data-status="Done"] h5 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: black;
+    }

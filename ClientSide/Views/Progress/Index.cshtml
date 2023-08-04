@@ -40,11 +40,11 @@
                                             <button class="dropdown-item delete-button" onclick="deleteProgress('@item.Guid')">Delete</button>
                                         </div>
                                     </div>
-                                </div>
+                                </div>  
                                     <p claass="bx bxs-notepad" style="font-size: 15px;">
-                                        <strong>Description :</strong>
+                                        <strong>Description</strong>
                                     </p>
-                                    <h5 class="card-title" style="font-size: 15px;">@Html.DisplayFor(modelItem => item.Description)</h5>
+                                    <p class="card-title" style="font-size: 15px;">@Html.DisplayFor(modelItem => item.Description)</p>
                                     <p style="font-size: 12px;">
                                         <strong>Message Manager :</strong>
                                     </p>
@@ -52,7 +52,9 @@
                                     <p style="font-size: 12px;">
                                         <strong>Message Staff :</strong>
                                     </p>
-                                    <p class="card-text" style="font-size: 12px;">@item.Additional</p>
+                                    <p class="card-text" style="font-size: 12px;">
+                                       @item.Additional
+                                    </p>
                                     
                             </div>
                         </div>
