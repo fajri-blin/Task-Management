@@ -10,6 +10,10 @@
         <div class="col-md-12">
             <div class="card mb-4">
                  <h5 class="card-header text-center">Profile Details</h5>
+                @if (TempData["Error"] != null)
+                {
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                }
                 <!-- Account -->
                 <form id="formAccountSettings" asp-action="Profile" enctype="multipart/form-data">
                     <div class="card-body">
@@ -39,6 +43,7 @@
                                 <p class="text-muted mb-0">Allowed JPG, jpeg or PNG.</p>
                             </div>
                         </div>
+                        <span asp-validation-for="ImageProfile" class="text-danger"></span>
                     </div>
                     <hr class="my-0" />
                     <div class="card-body">
@@ -65,18 +70,21 @@
                                 <input type="text"
                                         class="form-control"
                                         asp-for="Username"/>
+                                <span asp-validation-for="Username" class="text-danger"></span>
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label asp-for="Password" class="form-label">Password</label>
                                 <input type="password"
                                         class="form-control"
                                         asp-for="Password"/>
+                                <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
                                 <input type="password"
                                         class="form-control"
                                         asp-for="ConfirmPassword"/>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mt-2">

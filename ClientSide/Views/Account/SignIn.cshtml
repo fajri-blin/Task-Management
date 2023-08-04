@@ -16,6 +16,13 @@
                             <span class="app-brand-text demo text-body fw-bolder">MTM</span>
                         </a>
                     </div>
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
                     <!-- /Logo -->
                     <h4 class="mb-2">Welcome to Metrodata Task Management! 👋</h4>
                     <p class="mb-4">Please sign-in to your account and start the adventure</p>
@@ -58,6 +65,5 @@
 @section Scripts {
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.1/jquery.validate.unobtrusive.js"></script>
-    <script src="../assets/js/ui-toasts.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
