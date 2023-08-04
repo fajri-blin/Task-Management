@@ -13,7 +13,10 @@ public class ProgressRepository : GeneralRepository<Progress>, IProgressReposito
 
     public IEnumerable<Progress>? GetByAssignmentForeignKey(Guid guid)
     {
-        var progresses = _bookingDbContext.Progresses.Where(p => p.AssignmentGuid == guid);
+        var progresses = _bookingDbContext.Progresses
+          .Include(p => p.AccountProgress) // Include the AccountProgress navigation property
+          .Where(p => p.AssignmentGuid == guid);
+
         return progresses.Any() ? progresses : Enumerable.Empty<Progress>();
     }
 }
