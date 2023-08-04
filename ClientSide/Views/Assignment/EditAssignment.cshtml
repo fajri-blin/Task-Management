@@ -10,48 +10,53 @@
             <span class="text-muted fw-light">Assignment /</span>
             Edit Assignment
         </h4>
-        <div class="row">
-            <div class="col-md-12">
-                <form asp-action="EditAssignment" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input asp-for="Guid" class="form-control" hidden />
-                    <div class="form-group col-md-5">
-                        <label asp-for="Title" class="control-label"></label>
-                        <input asp-for="Title" class="form-control" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-5">
-                        <label asp-for="Category" class="control-label"></label>
-                        <select id="mySelect2Edit" name="Category" class="form-control" asp-for="Category" multiple="multiple">
-                            @{
-                                // Loop through the selected categories in updateAssignmentVM.Category
-                                foreach (var category in Model.Category)
-                                {
-                                    <option value="@category" selected>@category</option>
-                                }
-                            }
-                        </select>
-                        <span asp-validation-for="Category" class="text-danger"></span>
-                    </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form asp-action="EditAssignment" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input asp-for="Guid" class="form-control" hidden />
+                            <div class="form-group col-md-5">
+                                <label asp-for="Title" class="control-label"></label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-5">
+                                <label asp-for="Category" class="control-label"></label>
+                                <select id="mySelect2Edit" name="Category" class="form-control" asp-for="Category" multiple="multiple">
+                                    @{
+                                        // Loop through the selected categories in updateAssignmentVM.Category
+                                        foreach (var category in Model.Category)
+                                        {
+                                            <option value="@category" selected>@category</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="Category" class="text-danger"></span>
+                            </div>
 
 
-                    <div class="form-group col-md-5">
-                        <label asp-for="DueDate" class="control-label"></label>
-                        <!-- Display only the date and time without milliseconds -->
-                        <input asp-for="DueDate" class="form-control" type="datetime-local" />
-                        <span asp-validation-for="DueDate" class="text-danger"></span>
+                            <div class="form-group col-md-5">
+                                <label asp-for="DueDate" class="control-label"></label>
+                                <!-- Display only the date and time without milliseconds -->
+                                <input asp-for="DueDate" class="form-control" type="datetime-local" />
+                                <span asp-validation-for="DueDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Description" class="control-label"></label>
+                                <textarea asp-for="Description" class="form-control"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mt-3">
+                                <input type="submit" value="Save" class="btn btn-primary" />
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Description" class="control-label"></label>
-                        <textarea asp-for="Description" class="form-control"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-                    <div class="form-group mt-3">
-                        <input type="submit" value="Save" class="btn btn-primary" />
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
+
     </div>
 </div>
 
