@@ -366,20 +366,23 @@ public class AssignmentService
     //AssignmentRepository.cs
     public IEnumerable<GetForStaffDto> GetForStaff(Guid accountGuid)
     {
-        var getListAccountProgress = _accountProgressRepository.GetByAccountGuid(accountGuid);
-        if (getListAccountProgress is null)
-        {
-            return null;
-        }
+        var getListAccountProgress = _accountProgressRepository.GetByAccountGuid(accountGuid)?.ToList();
+        if (getListAccountProgress is null) return null;
 
         var staffViewDataList = new List<GetForStaffDto>();
 
-        foreach (var accountProgress in getListAccountProgress)
+        foreach (var item in getListAccountProgress)
         {
-            var progress = _progressRepository.GetByGuid((Guid)accountProgress.ProgressGuid);
-            var assignment = _assignmentRepository.GetByGuid(progress.AssignmentGuid.Value);
-            var manager = _accountRepository.GetByGuid((Guid)assignment.ManagerGuid);
+            var progress = _progressRepository.GetByGuid((Guid)item.ProgressGuid);
+            if (progress is null) continue;
 
+            var assignment = _assignmentRepository.GetByGuid((Guid)progress.AssignmentGuid);
+            if (assignment is null) continue;
+
+            var manager = _accountRepository.GetByGuid((Guid)assignment.ManagerGuid);
+            if (manager is null) continue;
+
+            // Create GetForStaffDto object and populate its properties
             var getForStaffDto = new GetForStaffDto
             {
                 AssignmentName = assignment.Title,
@@ -387,7 +390,7 @@ public class AssignmentService
                 ListProgress = new List<GetProgressDto>()
             };
 
-            // Here, progress is a single object of type 'Progress', not a collection
+            // Create GetProgressDto object and populate its properties
             var getProgressDto = new GetProgressDto
             {
                 Guid = progress.Guid,
@@ -395,12 +398,15 @@ public class AssignmentService
                 Description = progress.Description,
             };
 
+            // Add the GetProgressDto object to ListProgress in GetForStaffDto
             getForStaffDto.ListProgress.Add(getProgressDto);
 
+            // Add the GetForStaffDto object to the staffViewDataList
             staffViewDataList.Add(getForStaffDto);
         }
 
         return staffViewDataList;
     }
+
 
 }
