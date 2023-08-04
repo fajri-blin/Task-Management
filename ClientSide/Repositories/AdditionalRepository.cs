@@ -15,9 +15,9 @@ namespace ClientSide.Repositories
 
         }
 
-        public async Task<ResponseHandlers<AdditionalVM>> PostAdditional([FromForm] CreateAdditionalVM createAdditionalVM)
+        public async Task<ResponseHandlers<IEnumerable<AdditionalVM>>> PostAdditional([FromForm] CreateAdditionalVM createAdditionalVM)
         {
-            ResponseHandlers<AdditionalVM> entityVM = null;
+            ResponseHandlers<IEnumerable<AdditionalVM>> entityVM = null;
 
             using (var formData = new MultipartFormDataContent())
             {
@@ -44,7 +44,7 @@ namespace ClientSide.Repositories
                 using (var response = await _httpClient.PostAsync(_request, formData))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    entityVM = JsonConvert.DeserializeObject<ResponseHandlers<AdditionalVM>>(apiResponse);
+                    entityVM = JsonConvert.DeserializeObject<ResponseHandlers<IEnumerable<AdditionalVM>>>(apiResponse);
                 }
             }
 

@@ -1,12 +1,7 @@
 using ClientSide.Contract;
 using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Progress;
-using Microsoft.EntityFrameworkCore;
-using ClientSide.ViewModels.Assignment;
-using System;
-using ClientSide.ViewModels.Profile;
-using Syncfusion.EJ2.Grids;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ClientSide.Controllers;
 
@@ -24,7 +19,7 @@ public class ProgressController : Controller
         _accountRepository = accountRepository;
     }
     [HttpGet]
-    public async Task<IActionResult> Index(Guid assignmentGuid)
+    public async Task<IActionResult> Index(Guid guid)
     {
         var components = new ComponentHandlers
         {
@@ -34,7 +29,7 @@ public class ProgressController : Controller
         };
         ViewBag.Components = components;
 
-        var response = await _progressRepository.GetAllProgress(assignmentGuid);
+        var response = await _progressRepository.GetAllProgress(guid);
         if (response.Data != null)
         {
             var tasks = response.Data.ToList();
@@ -46,7 +41,7 @@ public class ProgressController : Controller
             return View(emptyList);
         }
     }
-    
+
     [HttpGet]
     public IActionResult CreateProgress(Guid assignmentGuid)
     {
@@ -176,13 +171,13 @@ public class ProgressController : Controller
         };
         ViewBag.Components = components;
         var response = await _accountRepository.Get();
-            var staffList = response.Data.Select(staff => new AddStaffVM
-            {
-                Guid = staff.Guid,
-                Name = staff.Name
-            }).ToList();
-            ViewBag.ProgressGuid = guid;
-            return View("AddStaff", staffList); 
+        var staffList = response.Data.Select(staff => new AddStaffVM
+        {
+            Guid = staff.Guid,
+            Name = staff.Name
+        }).ToList();
+        ViewBag.ProgressGuid = guid;
+        return View("AddStaff", staffList);
     }
 
     [HttpPost]

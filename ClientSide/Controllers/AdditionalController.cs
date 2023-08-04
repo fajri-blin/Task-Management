@@ -40,7 +40,7 @@ namespace ClientSide.Controllers
         }
 
         [HttpGet]
-        public ActionResult Create(Guid guid)
+        public IActionResult AddAdditional(Guid guid)
         {
             var additional = new CreateAdditionalVM
             {
@@ -55,6 +55,14 @@ namespace ClientSide.Controllers
             };
             ViewBag.Components = components;
             return View("Create", additional);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddAdditional([FromForm] CreateAdditionalVM createAdditionalVM)
+        {
+            var additional = await _additionalRepository.PostAdditional(createAdditionalVM);
+
+            return RedirectToAction("Index", new { guid = createAdditionalVM.ProgressGuid });
         }
     }
 }

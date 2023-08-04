@@ -6,7 +6,7 @@ namespace ClientSide.Contract
 {
     public interface IAdditionalRepository : IGeneralRepository<AdditionalVM>
     {
-        Task<ResponseHandlers<AdditionalVM>> PostAdditional([FromForm] CreateAdditionalVM createAdditionalVM);
+        Task<ResponseHandlers<IEnumerable<AdditionalVM>>> PostAdditional([FromForm] CreateAdditionalVM createAdditionalVM);
         Task<ResponseHandlers<AdditionalVM>> PutAdditional([FromForm] CreateAdditionalVM createAdditionalVM);
         Task<ResponseHandlers<IEnumerable<AdditionalVM>>> GetAdditional(Guid guid);
     }

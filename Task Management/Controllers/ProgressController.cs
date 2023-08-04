@@ -19,7 +19,7 @@ public class ProgressController : ControllerBase
         _progressServices = accountSevices;
     }
 
-    [HttpGet("GetByAssigmentKey/{guid}")]
+    [HttpGet("GetByAssignmentKey/{guid}")]
     public IActionResult GetByAssigmentKey(Guid guid)
     {
         var entities = _progressServices.GetByAssignmentGuid(guid);
