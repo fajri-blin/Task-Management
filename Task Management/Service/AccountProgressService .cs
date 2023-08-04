@@ -83,8 +83,9 @@ public class AccountProgressService
         {
             var accountStaff = _accountRepository.GetByGuid(AccountProgress.AccountGuid);
             var progress = _progressRepository.GetByGuid((Guid)AccountProgress.ProgressGuid);
-            var assignment = _assignmentRepository.GetByGuid((Guid)progress.AssignmentGuid);
-            var manager = _accountRepository.GetByGuid((Guid)assignment.ManagerGuid);
+            var assignment = _assignmentRepository.GetByGuid((Guid)progress?.AssignmentGuid);
+            var manager = _accountRepository.GetByGuid((Guid)assignment?.ManagerGuid);
+
             if (progress is null || assignment is null || manager is null)
             {
                 return null;

@@ -116,8 +116,8 @@ public class AccountProgressController : ControllerBase
 
         return Ok(new ResponseHandlers<AccountProgressDto>
         {
-            Code = StatusCodes.Status404NotFound,
-            Status = HttpStatusCode.NotFound.ToString(),
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
             Message = "Data Successfully created",
             Data = created
         });
@@ -154,8 +154,8 @@ public class AccountProgressController : ControllerBase
         });
         return Ok(new ResponseHandlers<int>
         {
-            Code = StatusCodes.Status404NotFound,
-            Status = HttpStatusCode.NotFound.ToString(),
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
             Message = "Data failed to deleted"
         });
     }

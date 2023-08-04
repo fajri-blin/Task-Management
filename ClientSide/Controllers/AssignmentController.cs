@@ -39,10 +39,17 @@ public class AssignmentController : Controller
         return null;
     }
 
-    [Authorize(Roles = $"{nameof(RoleLevel.Staff)}")]
+    [Authorize(Roles = nameof(RoleLevel.Staff))]
     [HttpGet]
-    public async Task<IActionResult> GetProgressForStaff(Guid accountId)
+    public async Task<IActionResult> GetProgressForStaff()
     {
+        var accountIdClaim = User.FindFirstValue("Guid");
+        if (!Guid.TryParse(accountIdClaim, out var accountId))
+        {
+            // Handle the case where the accountId is missing or invalid
+            return BadRequest("Invalid accountId");
+        }
+
         var components = new ComponentHandlers
         {
             Footer = false,
@@ -50,13 +57,19 @@ public class AssignmentController : Controller
             Navbar = true,
         };
         ViewBag.Components = components;
-        var result = await _assignmentRepository.GetProgressForStaff(accountId);
-        if(result.Code != 200)
+
+        var response = await _assignmentRepository.GetProgressForStaff(accountId);
+        if (response.Code != 200)
         {
             return NotFound();
         }
-        return View(result);
+
+        // Assuming the data property in the response is of type IEnumerable<GetForStaffVM>
+        var getForStaffVMList = response.Data;
+
+        return View(getForStaffVMList);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> AddAssignment(CreateAssignmentVM assignment)
