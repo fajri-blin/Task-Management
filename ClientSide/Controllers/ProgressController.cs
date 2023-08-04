@@ -7,6 +7,7 @@ using System;
 using ClientSide.ViewModels.Profile;
 using Syncfusion.EJ2.Grids;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ClientSide.Controllers;
 
@@ -24,7 +25,7 @@ public class ProgressController : Controller
         _accountRepository = accountRepository;
     }
     [HttpGet]
-    public async Task<IActionResult> Index(Guid assignmentGuid)
+    public async Task<IActionResult> Index(Guid guid)
     {
         var components = new ComponentHandlers
         {
@@ -34,7 +35,7 @@ public class ProgressController : Controller
         };
         ViewBag.Components = components;
 
-        var response = await _progressRepository.GetAllProgress(assignmentGuid);
+        var response = await _progressRepository.GetAllProgress(guid);
         if (response.Data != null)
         {
             var tasks = response.Data.ToList();
