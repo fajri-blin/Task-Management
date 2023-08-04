@@ -3,13 +3,6 @@ using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Progress;
 using Newtonsoft.Json;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
-using ClientSide.ViewModels.Account;
-using ClientSide.ViewModels.Assignment;
-using Task_Management.DTOs.AccountDto;
-using System;
-using Syncfusion.EJ2.Grids;
 
 
 

@@ -47,7 +47,7 @@ public class ProgressController : Controller
             return View(emptyList);
         }
     }
-    
+
     [HttpGet]
     public IActionResult CreateProgress(Guid assignmentGuid)
     {
@@ -179,13 +179,13 @@ public class ProgressController : Controller
         };
         ViewBag.Components = components;
         var response = await _accountRepository.Get();
-            var staffList = response.Data.Select(staff => new AddStaffVM
-            {
-                Guid = staff.Guid,
-                Name = staff.Name
-            }).ToList();
-            ViewBag.ProgressGuid = guid;
-            return View("AddStaff", staffList); 
+        var staffList = response.Data.Select(staff => new AddStaffVM
+        {
+            Guid = staff.Guid,
+            Name = staff.Name
+        }).ToList();
+        ViewBag.ProgressGuid = guid;
+        return View("AddStaff", staffList);
     }
 
     [HttpPost]
