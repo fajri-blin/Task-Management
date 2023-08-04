@@ -1,4 +1,5 @@
-﻿using Task_Management.Contract.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Task_Management.Contract.Data;
 using Task_Management.Data;
 using Task_Management.Model.Data;
 
@@ -10,8 +11,9 @@ public class ProgressRepository : GeneralRepository<Progress>, IProgressReposito
     {
     }
 
-    public IEnumerable<Progress> GetByAssignmentForeignKey(Guid guid)
+    public IEnumerable<Progress>? GetByAssignmentForeignKey(Guid guid)
     {
-        return _bookingDbContext.Set<Progress>().Where(prog => prog.AssignmentGuid == guid);
+        var progresses = _bookingDbContext.Progresses.Where(p => p.AssignmentGuid == guid);
+        return progresses.Any() ? progresses : Enumerable.Empty<Progress>();
     }
 }

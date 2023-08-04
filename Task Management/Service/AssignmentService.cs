@@ -33,49 +33,61 @@ public class AssignmentService
     }
 
 
-
     public int DeleteDeepAssignment(Guid guid)
     {
-        var transaction = _bookingContext.Database.BeginTransaction();
-        try
+        using (var transaction = _bookingContext.Database.BeginTransaction())
         {
-            var getAssignment = _assignmentRepository.GetByGuid(guid);
-            if (getAssignment == null) return -1;
-
-            var getListProgress = _progressRepository.GetByAssignmentForeignKey(getAssignment.Guid);
-            if (getListProgress != null)
+            try
             {
-                foreach (var progress in getListProgress)
+                var getAssignment = _assignmentRepository.GetByGuid(guid);
+                if (getAssignment == null)
                 {
-                    var getListAccountProgress = _accountProgressRepository.GetByProgressForeignKey(progress.Guid);
-                    if (getListAccountProgress != null)
-                    {
-                        foreach (var accountProgress in getListAccountProgress)
-                        {
-                            _accountProgressRepository.Delete(accountProgress);
-                        }
-                    }
-                    var getListAdditional = _additionalRepository.GetByProgressForeignKey(progress.Guid);
-                    if (getListAdditional != null)
-                    {
-                        foreach (var additional in getListAdditional)
-                        {
-                            _additionalRepository.Delete(additional);
-                        }
-                    }
-                    _progressRepository.Delete(progress);
+                    Console.WriteLine("Assignment not found.");
+                    return -1;
                 }
+
+                var progresses = _progressRepository.GetByAssignmentForeignKey(getAssignment.Guid);
+
+                if (progresses != null)
+                {
+                    foreach (var progress in progresses.ToList())
+                    {
+                        if (progress.AccountProgress != null)
+                        {
+                            var accountProgresses = progress.AccountProgress.ToList();
+                            foreach (var accountProgress in accountProgresses)
+                            {
+                                _accountProgressRepository.Delete(accountProgress);
+                            }
+                        }
+
+                        if (progress.Additionals != null)
+                        {
+                            var additionals = progress.Additionals.ToList();
+                            foreach (var additional in additionals)
+                            {
+                                _additionalRepository.Delete(additional);
+                            }
+                        }
+
+                        _progressRepository.Delete(progress);
+                    }
+                }
+
+                _assignmentRepository.Delete(getAssignment);
+                transaction.Commit();
+                return 1;
             }
-            _assignmentRepository.Delete(getAssignment);
-            transaction.Commit();
-            return 1;
-        }
-        catch
-        {
-            transaction.Rollback();
-            return 0;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                transaction.Rollback();
+                return 0;
+            }
         }
     }
+
 
     public double CalculatePercentage(List<StatusEnum> progresses)
     {
