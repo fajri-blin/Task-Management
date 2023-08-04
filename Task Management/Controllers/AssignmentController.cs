@@ -64,7 +64,7 @@ public class AssignmentController : ControllerBase
     public IActionResult GetAll()
     {
         var entities = _assignmentServices.Get();
-        if (entities == null)
+        if (!entities.Any())
         {
             return NotFound(new ResponseHandlers<AssignmentByManagerDto>
             {

@@ -4,48 +4,53 @@
     ViewData["Title"] = "GetProgressForStaff";
 }
 
-<h1>GetProgressForStaff</h1>
+<style>
+    .card-title h5,
+    .card-title h6 {
+        margin-bottom: 5px;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Assignment Name
-            </th>
-            <th>
-                Manager Name
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AssignmentName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ManagerName)
-                </td>
-                <td>
-                    @foreach (var progress in item.ListProgress)
-                    {
-                        <p>
-                            Guid: @progress.Guid
-                        </p>
-                        <p>
-                            Assignment Guid: @progress.AssignmentGuid
-                        </p>
-                        <p>
-                            Description: @progress.Description
-                        </p>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    .no-line {
+        border-top: none;
+    }
+</style>
+
+<h1>Progress View</h1>
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Progress /</span>
+            Progress View
+        </h4>
+        <div class="row mb-3">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title d-flex flex-column">
+                                <h5>@Html.DisplayFor(modelItem => item.AssignmentName)</h5>
+                                <h6>@Html.DisplayFor(modelItem => item.ManagerName)</h6>
+                            </div>
+                            <div class="progress-items">
+                                @for (var i = 0; i < item.ListProgress.Count; i++)
+                                {
+                                    <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
+                                        @item.ListProgress[i].Description
+                                    </div>
+                                    <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
+                                        @item.ListProgress[i].StatusProgress
+                                    </div>
+                                    @if (i < item.ListProgress.Count - 1)
+                                    {
+                                        <hr />
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

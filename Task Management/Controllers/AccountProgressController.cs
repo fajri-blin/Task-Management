@@ -156,7 +156,7 @@ public class AccountProgressController : ControllerBase
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
-            Message = "Data failed to deleted"
+            Message = "Data Successfully Deleted"
         });
     }
     //==========
