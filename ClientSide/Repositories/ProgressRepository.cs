@@ -9,6 +9,8 @@ using System.Net;
 using ClientSide.ViewModels.Account;
 using ClientSide.ViewModels.Assignment;
 using Task_Management.DTOs.AccountDto;
+using System;
+using Syncfusion.EJ2.Grids;
 
 
 namespace ClientSide.Repositories
@@ -18,31 +20,23 @@ namespace ClientSide.Repositories
         public ProgressRepository(string request = "Progress/") : base(request)
         {
         }
-        public async Task<ResponseHandlers<IEnumerable<ProgressVM>>> GetAllProgress()
+        public async Task<ResponseHandlers<IEnumerable<ProgressVM>>> GetAllProgress(Guid guid)
         {
-            try
+            var response = await _httpClient.GetAsync(_request + "GetByAssignmentKey/" + guid);
+            string apiResponse = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
             {
-                var response = await _httpClient.GetAsync(_request); // Make sure to await the API response
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                var entityVM = JsonConvert.DeserializeObject<ResponseHandlers<IEnumerable<ProgressVM>>>(apiResponse);
-                return entityVM;
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions that may occur during data retrieval
                 return new ResponseHandlers<IEnumerable<ProgressVM>>
                 {
-                    Code = 500,
-                    Status = "Error",
-                    Message = ex.Message
+                    Code = (int)response.StatusCode,
+                    Status = response.StatusCode.ToString(),
+                    Message = apiResponse
                 };
             }
+            var entityVM = JsonConvert.DeserializeObject<ResponseHandlers<IEnumerable<ProgressVM>>>(apiResponse);
+            return entityVM;
         }
-
-        /* public async Task<ResponseHandlers<IEnumerable<ProgressVM>>> GetAllProgress()
-         {
-             return await Get();
-         }*/
 
         public async Task<ResponseHandlers<CreateProgressVM>> CreateProgress(CreateProgressVM createProgress)
         {
@@ -56,26 +50,6 @@ namespace ClientSide.Repositories
             return entityVM;
         }
 
-        /* public async Task<ResponseHandlers<CreateProgressVM>> CreateProgress(CreateProgressVM createProgress)
-         {
-             ResponseHandlers<CreateProgressVM> entityVM = null;
-
-             var request = new CreateProgressVM
-             {
-                 AssignmentGuid = createProgress.AssignmentGuid,
-             };
-
-             StringContent content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-
-             using (var response = await _httpClient.PutAsync(_request, content))
-             {
-                 string apiResponse = await response.Content.ReadAsStringAsync();
-                 Console.WriteLine(apiResponse);
-                 entityVM = JsonConvert.DeserializeObject<ResponseHandlers<CreateProgressVM>>(apiResponse);
-             }
-
-             return entityVM;
-         }*/
         public async Task<ResponseHandlers<UpdateProgressVM>> UpdateProgress(UpdateProgressVM updateProgress)
         {
             ResponseHandlers<UpdateProgressVM> entityVM = null;
@@ -132,6 +106,25 @@ namespace ClientSide.Repositories
             }
 
             return entityVM;
+        }
+
+        public async Task<ResponseHandlers<ProgressVM>> GetProgressById(Guid guid)
+        {
+            using (var httpResponse = await _httpClient.GetAsync(_request + guid))
+            {
+                string apiResponse = await httpResponse.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ResponseHandlers<ProgressVM>>(apiResponse);
+            }
+        }
+        public async Task<ResponseHandlers<ProgressVM>> UpdateProgress(ProgressVM progress)
+        {
+            string json = JsonConvert.SerializeObject(progress);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            using (var response = await _httpClient.PutAsync(_request, httpContent))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ResponseHandlers<ProgressVM>>(apiResponse);
+            }
         }
     }
 }

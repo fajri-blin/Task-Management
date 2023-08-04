@@ -9,6 +9,7 @@ using ClientSide.ViewModels.Assignment;
 using System;
 using ClientSide.ViewModels.Profile;
 using Syncfusion.EJ2.Grids;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ClientSide.Controllers;
 
@@ -17,14 +18,16 @@ public class ProgressController : Controller
 {
     private readonly IProgressRepository _progressRepository;
     private readonly IAssignmentRepository _assignmentRepository;
+    private readonly IAccountRepository _accountRepository;
 
-    public ProgressController(IProgressRepository progressRepository, IAssignmentRepository assignmentRepository)
+    public ProgressController(IProgressRepository progressRepository, IAssignmentRepository assignmentRepository, IAccountRepository accountRepository)
     {
         _progressRepository = progressRepository;
         _assignmentRepository = assignmentRepository;
+        _accountRepository = accountRepository;
     }
-
-    public async Task<IActionResult> Index()
+    [HttpGet]
+    public async Task<IActionResult> Index(Guid assignmentGuid)
     {
         var components = new ComponentHandlers
         {
@@ -34,7 +37,7 @@ public class ProgressController : Controller
         };
         ViewBag.Components = components;
 
-        var response = await _progressRepository.GetAllProgress();
+        var response = await _progressRepository.GetAllProgress(assignmentGuid);
         if (response.Data != null)
         {
             var tasks = response.Data.ToList();
@@ -46,7 +49,7 @@ public class ProgressController : Controller
             return View(emptyList);
         }
     }
-
+    
     [HttpGet]
     public IActionResult CreateProgress(Guid assignmentGuid)
     {
@@ -61,7 +64,7 @@ public class ProgressController : Controller
         {
             AssignmentGuid = assignmentGuid
         };
-        return View( "CreateProgress", createProgressVM);
+        return View("CreateProgress", createProgressVM);
     }
 
     [HttpPost]
@@ -125,7 +128,7 @@ public class ProgressController : Controller
             Status = result.Data.Status,
             Additional = result.Data.Additional,
             MessageManager = result.Data.MessageManager,
-            DueDate = result.Data.DueDate,
+            /*DueDate = result.Data.DueDate,*/
         };
 
         return View(updateProgressVM);
@@ -164,5 +167,43 @@ public class ProgressController : Controller
 
         return View("Index");
     }
+
+    [HttpGet]
+    public async Task<IActionResult> AddStaff(Guid guid)
+    {
+        var components = new ComponentHandlers
+        {
+            Footer = false,
+            SideBar = true,
+            Navbar = true,
+        };
+        ViewBag.Components = components;
+        var response = await _accountRepository.Get();
+            var staffList = response.Data.Select(staff => new AddStaffVM
+            {
+                Guid = staff.Guid,
+                Name = staff.Name
+            }).ToList();
+            ViewBag.ProgressGuid = guid;
+            return View("AddStaff", staffList); 
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AssignStaff(Guid progressGuid, List<Guid> selectedStaffGuids)
+    {
+        var progressResponse = await _progressRepository.GetProgressById(progressGuid);
+        if (progressResponse.Data == null)
+        {
+            return NotFound();
+        }
+        var progress = progressResponse.Data;
+        foreach (var staffGuid in selectedStaffGuids)
+        {
+            progress.StaffGuids.Add(staffGuid);
+        }
+        var updateResponse = await _progressRepository.UpdateProgress(progress);
+        return RedirectToAction("Index");
+    }
+
 
 }
