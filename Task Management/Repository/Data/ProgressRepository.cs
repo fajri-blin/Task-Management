@@ -19,4 +19,14 @@ public class ProgressRepository : GeneralRepository<Progress>, IProgressReposito
 
         return progresses.Any() ? progresses : Enumerable.Empty<Progress>();
     }
+
+    public Progress GetAnyRelatedByGuid(Guid guid)
+    {
+        var progress = _bookingDbContext.Progresses
+            .Include(p => p.AccountProgress)
+            .Include(p => p.Additionals)
+            .FirstOrDefault(p => p.Guid == guid);
+
+        return progress;
+    }
 }
