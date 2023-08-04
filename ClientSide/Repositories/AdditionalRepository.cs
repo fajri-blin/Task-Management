@@ -98,5 +98,47 @@ namespace ClientSide.Repositories
             }
             return entityVM;
         }
+
+        public async Task<ResponseHandlers<AdditionalVM>> DeleteAdditional(Guid guid)
+        {
+            try
+            {
+                ResponseHandlers<AdditionalVM> entityVM = null;
+                StringContent content = new StringContent(JsonConvert.SerializeObject(guid), System.Text.Encoding.UTF8, "application/json");
+                using (var response = _httpClient.DeleteAsync("Additional?guid=" + guid).Result)
+                {
+                    string responseApi = await response.Content.ReadAsStringAsync();
+                    var responseObject = JsonConvert.DeserializeObject<ResponseHandlers<AdditionalVM>>(responseApi);
+
+                    // Check if the data field is null
+                    if (responseObject.Data == null)
+                    {
+                        entityVM = new ResponseHandlers<AdditionalVM>
+                        {
+                            Code = responseObject.Code,
+                            Message = responseObject.Message
+                        };
+                    }
+                    else
+                    {
+                        // If the data field is not null, deserialize it to Guid
+                        entityVM = new ResponseHandlers<AdditionalVM>
+                        {
+                            Code = responseObject.Code,
+                            Message = responseObject.Message,
+                            Data = null
+                        };
+                    }
+
+                }
+                return entityVM;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+
+        }
     }
 }
