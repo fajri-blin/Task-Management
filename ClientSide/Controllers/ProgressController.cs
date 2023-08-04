@@ -1,6 +1,12 @@
 using ClientSide.Contract;
 using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Progress;
+using Microsoft.EntityFrameworkCore;
+using ClientSide.ViewModels.Assignment;
+using System;
+using ClientSide.ViewModels.Profile;
+using Syncfusion.EJ2.Grids;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientSide.Controllers;
@@ -68,12 +74,14 @@ public class ProgressController : Controller
             if (createdProgress != null)
             {
                 TempData["Success"] = "Data Berhasil Masuk";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { guid = createProgress.AssignmentGuid });
             }
             ModelState.AddModelError(string.Empty, "Failed to create progress.");
         }
         return View(createProgress);
     }
+
+
 
 
     [HttpPost]

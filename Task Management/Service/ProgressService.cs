@@ -54,28 +54,34 @@ public class ProgressService
         var transaction = _bookingContext.Database.BeginTransaction();
         try
         {
-            var getProgress = _progressRepository.GetByGuid(guid);
+            var getProgress = _progressRepository.GetAnyRelatedByGuid(guid);
             if (getProgress is null) return -1;
 
-            var getListAdditional = _additionalRepository.GetByProgressForeignKey(getProgress.Guid);
-            if (getListAdditional != null)
+            // Detach Progress from the Assignment entity to avoid cascading delete
+            var assignment = _assignmentRepository.GetByGuid((Guid)getProgress.AssignmentGuid);
+            if (assignment != null)
             {
-                foreach (var additional in getListAdditional)
-                {
-                    _additionalRepository.Delete(additional);
-                }
+                assignment.Progresses = null;
+                _assignmentRepository.Update(assignment);
             }
 
-            var getListAccountProgress = _accountProgressRepository.GetByProgressForeignKey(getProgress.Guid);
-            if (getListAccountProgress != null)
+            // Delete related AccountProgress entities
+            var accountProgresses = getProgress.AccountProgress.ToList();
+            foreach (var accountProgress in accountProgresses)
             {
-                foreach (var accountProgress in getListAccountProgress)
-                {
-                    _accountProgressRepository.Delete(accountProgress);
-                }
+                _accountProgressRepository.Delete(accountProgress);
             }
 
+            // Delete related Additionals
+            var additionals = getProgress.Additionals.ToList();
+            foreach (var additional in additionals)
+            {
+                _additionalRepository.Delete(additional);
+            }
+
+            // Now you can delete the Progress
             _progressRepository.Delete(getProgress);
+
             transaction.Commit();
             return 1;
         }
@@ -85,6 +91,9 @@ public class ProgressService
             return 0;
         }
     }
+
+
+
 
     public int UpdateStatus(UpdateStatusDto updateStatusDto)
     {

@@ -26,29 +26,31 @@
             @foreach (var item in Model)
             {
                 <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-title d-flex flex-column">
-                                <h5>@Html.DisplayFor(modelItem => item.AssignmentName)</h5>
-                                <h6>@Html.DisplayFor(modelItem => item.ManagerName)</h6>
-                            </div>
-                            <div class="progress-items">
-                                @for (var i = 0; i < item.ListProgress.Count; i++)
-                                {
-                                    <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
-                                        @item.ListProgress[i].Description
-                                    </div>
-                                    <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
-                                        @item.ListProgress[i].StatusProgress
-                                    </div>
-                                    @if (i < item.ListProgress.Count - 1)
+                    <a href="@Url.Action("Index", "Progress", new { guid = item.AssignmentGuid })" class="card-link">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-title d-flex flex-column">
+                                    <h5>@Html.DisplayFor(modelItem => item.AssignmentName)</h5>
+                                    <h6>@Html.DisplayFor(modelItem => item.ManagerName)</h6>
+                                </div>
+                                <div class="progress-items">
+                                    @for (var i = 0; i < item.ListProgress.Count; i++)
                                     {
-                                        <hr />
+                                        <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
+                                            @item.ListProgress[i].Description
+                                        </div>
+                                        <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
+                                            @item.ListProgress[i].StatusProgress
+                                        </div>
+                                        @if (i < item.ListProgress.Count - 1)
+                                        {
+                                            <hr />
+                                        }
                                     }
-                                }
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             }
         </div>
