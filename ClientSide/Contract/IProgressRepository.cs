@@ -1,6 +1,5 @@
-﻿using ClientSide.ViewModels.Progress;
-using ClientSide.Utilities.Handlers;
-
+﻿using ClientSide.Utilities.Handlers;
+using ClientSide.ViewModels.Progress;
 
 namespace ClientSide.Contract
 {

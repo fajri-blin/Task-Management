@@ -54,11 +54,19 @@
                                    asp-for="Username"
                                    placeholder="Enter your username"
                                    autofocus />
+                            @if (TempData.ContainsKey("Email_Error"))
+                            {
+                                <span class="text-danger">@Html.Raw(TempData["Username_Error"])</span>
+                            }
                             <span asp-validation-for="Username" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label asp-for="Email" class="form-label">Email</label>
                             <input type="text" class="form-control" asp-for="Email" placeholder="Enter your email" />
+                            @if (TempData.ContainsKey("Email_Error"))
+                            {
+                                <span class="text-danger">@Html.Raw(TempData["Email_Error"])</span>
+                            }
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="mb-3">

@@ -1,8 +1,5 @@
-﻿using ClientSide.Utilities.Handlers;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using ClientSide.Contract;
-using Task_Management.Utilities.Enum;
+using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Progress;
 using Microsoft.EntityFrameworkCore;
 using ClientSide.ViewModels.Assignment;

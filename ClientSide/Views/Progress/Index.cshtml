@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ClientSide.ViewModels.Progress.ProgressVM>
+@model IEnumerable<ClientSide.ViewModels.Progress.ProgressVM>
 @using Task_Management.Utilities.Enum;
 
 
@@ -35,6 +35,7 @@
                                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4" style="">
                                             <a class="dropdown-item" asp-action="EditProgress" asp-route-guid="@item.Guid">Edit</a>
                                             <a class="dropdown-item" asp-action="AddStaff" asp-route-guid="@item.Guid">Add Staff</a>
+                                            <a class="dropdown-item" asp-action="Index" asp-controller="Additional" asp-route-guid="@item.Guid">Additional</a>
                                             <button class="dropdown-item delete-button" onclick="deleteProgress('@item.Guid')">Delete</button>
                                         </div>
                                     </div>

@@ -1,7 +1,6 @@
-﻿using ClientSide.Contract;
-using ClientSide.ViewModels.Progress;
+using ClientSide.Contract;
 using ClientSide.Utilities.Handlers;
-using Microsoft.AspNetCore.Mvc;
+using ClientSide.ViewModels.Progress;
 using Newtonsoft.Json;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +10,7 @@ using ClientSide.ViewModels.Assignment;
 using Task_Management.DTOs.AccountDto;
 using System;
 using Syncfusion.EJ2.Grids;
+
 
 
 namespace ClientSide.Repositories

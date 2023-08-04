@@ -33,49 +33,61 @@ public class AssignmentService
     }
 
 
-
     public int DeleteDeepAssignment(Guid guid)
     {
-        var transaction = _bookingContext.Database.BeginTransaction();
-        try
+        using (var transaction = _bookingContext.Database.BeginTransaction())
         {
-            var getAssignment = _assignmentRepository.GetByGuid(guid);
-            if (getAssignment == null) return -1;
-
-            var getListProgress = _progressRepository.GetByAssignmentForeignKey(getAssignment.Guid);
-            if (getListProgress != null)
+            try
             {
-                foreach (var progress in getListProgress)
+                var getAssignment = _assignmentRepository.GetByGuid(guid);
+                if (getAssignment == null)
                 {
-                    var getListAccountProgress = _accountProgressRepository.GetByProgressForeignKey(progress.Guid);
-                    if (getListAccountProgress != null)
-                    {
-                        foreach (var accountProgress in getListAccountProgress)
-                        {
-                            _accountProgressRepository.Delete(accountProgress);
-                        }
-                    }
-                    var getListAdditional = _additionalRepository.GetByProgressForeignKey(progress.Guid);
-                    if (getListAdditional != null)
-                    {
-                        foreach (var additional in getListAdditional)
-                        {
-                            _additionalRepository.Delete(additional);
-                        }
-                    }
-                    _progressRepository.Delete(progress);
+                    Console.WriteLine("Assignment not found.");
+                    return -1;
                 }
+
+                var progresses = _progressRepository.GetByAssignmentForeignKey(getAssignment.Guid);
+
+                if (progresses != null)
+                {
+                    foreach (var progress in progresses.ToList())
+                    {
+                        if (progress.AccountProgress != null)
+                        {
+                            var accountProgresses = progress.AccountProgress.ToList();
+                            foreach (var accountProgress in accountProgresses)
+                            {
+                                _accountProgressRepository.Delete(accountProgress);
+                            }
+                        }
+
+                        if (progress.Additionals != null)
+                        {
+                            var additionals = progress.Additionals.ToList();
+                            foreach (var additional in additionals)
+                            {
+                                _additionalRepository.Delete(additional);
+                            }
+                        }
+
+                        _progressRepository.Delete(progress);
+                    }
+                }
+
+                _assignmentRepository.Delete(getAssignment);
+                transaction.Commit();
+                return 1;
             }
-            _assignmentRepository.Delete(getAssignment);
-            transaction.Commit();
-            return 1;
-        }
-        catch
-        {
-            transaction.Rollback();
-            return 0;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                transaction.Rollback();
+                return 0;
+            }
         }
     }
+
 
     public double CalculatePercentage(List<StatusEnum> progresses)
     {
@@ -366,41 +378,63 @@ public class AssignmentService
     //AssignmentRepository.cs
     public IEnumerable<GetForStaffDto> GetForStaff(Guid accountGuid)
     {
-        var getListAccountProgress = _accountProgressRepository.GetByAccountGuid(accountGuid);
-        if (getListAccountProgress is null)
-        {
-            return null;
-        }
+        var getListAccountProgress = _accountProgressRepository.GetByAccountGuid(accountGuid)?.ToList();
+        if (getListAccountProgress is null) return null;
 
         var staffViewDataList = new List<GetForStaffDto>();
 
-        foreach (var accountProgress in getListAccountProgress)
+        foreach (var item in getListAccountProgress)
         {
-            var progress = _progressRepository.GetByGuid((Guid)accountProgress.ProgressGuid);
-            var assignment = _assignmentRepository.GetByGuid(progress.AssignmentGuid.Value);
+            var progress = _progressRepository.GetByGuid((Guid)item.ProgressGuid);
+            if (progress is null) continue;
+
+            var assignment = _assignmentRepository.GetByGuid((Guid)progress.AssignmentGuid);
+            if (assignment is null) continue;
+
             var manager = _accountRepository.GetByGuid((Guid)assignment.ManagerGuid);
+            if (manager is null) continue;
 
-            var getForStaffDto = new GetForStaffDto
+            // Find existing GetForStaffDto in the staffViewDataList based on the AssignmentGuid
+            var existingDto = staffViewDataList.FirstOrDefault(dto => dto.AssignmentGuid == assignment.Guid);
+
+            if (existingDto != null)
             {
-                AssignmentName = assignment.Title,
-                ManagerName = manager.Name,
-                ListProgress = new List<GetProgressDto>()
-            };
+                // If GetForStaffDto already exists, add the new progress to its ListProgress
+                var getProgressDto = new GetProgressDto
+                {
+                    Guid = progress.Guid,
+                    Description = progress.Description,
+                    StatusProgress = progress.Status
+                };
 
-            // Here, progress is a single object of type 'Progress', not a collection
-            var getProgressDto = new GetProgressDto
+                existingDto.ListProgress.Add(getProgressDto);
+            }
+            else
             {
-                Guid = progress.Guid,
-                AssignmentGuid = progress.AssignmentGuid,
-                Description = progress.Description,
-            };
+                // If GetForStaffDto does not exist, create a new one and add it to staffViewDataList
+                var getForStaffDto = new GetForStaffDto
+                {
+                    AssignmentGuid = assignment.Guid,
+                    AssignmentName = assignment.Title,
+                    ManagerName = manager.Name,
+                    ListProgress = new List<GetProgressDto>()
+                };
 
-            getForStaffDto.ListProgress.Add(getProgressDto);
+                var getProgressDto = new GetProgressDto
+                {
+                    Guid = progress.Guid,
+                    Description = progress.Description,
+                    StatusProgress = progress.Status
+                };
 
-            staffViewDataList.Add(getForStaffDto);
+                getForStaffDto.ListProgress.Add(getProgressDto);
+                staffViewDataList.Add(getForStaffDto);
+            }
         }
 
         return staffViewDataList;
     }
+
+
 
 }

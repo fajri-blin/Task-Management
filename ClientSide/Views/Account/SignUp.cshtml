@@ -17,6 +17,10 @@
                     <div class="app-brand justify-content-center">
                         <span class="app-brand-text demo text-body fw-bolder">Create Account</span>
                     </div>
+                    @if (TempData["Error"] != null)
+                    {
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    }
                     <!-- /Logo -->
                     <form id="formAuthentication" class="mb-3" asp-action="SignUp">
                         <div class="mb-3">

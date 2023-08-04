@@ -5,6 +5,7 @@ using ClientSide.ViewModels.Account;
 using ClientSide.ViewModels.Profile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace ClientSide.Controllers;
@@ -108,6 +109,30 @@ public class AccountController : Controller
     public async Task<IActionResult> Profile([FromForm] GetProfileVM updateProfileVM)
     {
         var result = await _accountRepository.UpdateProfile(updateProfileVM);
+        if (result.Errors != null)
+        {
+            if (result.Errors is Dictionary<string, List<string>> errorDictionary)
+            {
+                foreach (var key in errorDictionary.Keys)
+                {
+                    foreach (var errorMessage in errorDictionary[key])
+                    {
+                        ModelState.AddModelError(key, errorMessage);
+                    }
+                }
+            }
+            var components = new ComponentHandlers
+            {
+                Footer = false,
+                SideBar = true,
+                Navbar = true,
+            };
+            ViewBag.Components = components;
+            string errorsJson = JsonConvert.SerializeObject(result.Errors);
+            TempData["Error"] = errorsJson;
+
+            return View("Profile");
+        }
         return RedirectToAction("Profile");
     }
 
@@ -116,30 +141,47 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateAccount([FromForm] UpdateAccountVM updateVM)
     {
-        if (ModelState.IsValid)
+        var result = await _accountRepository.Update(updateVM);
+        if (result.Errors != null)
         {
-            var result = await _accountRepository.Update(updateVM);
-            if (result == null)
+            if (result.Errors is Dictionary<string, List<string>> errorDictionary)
             {
-                return RedirectToAction("Error", "Index");
+                foreach (var key in errorDictionary.Keys)
+                {
+                    foreach (var errorMessage in errorDictionary[key])
+                    {
+                        TempData[$"{key}_Error"] = errorMessage;
+                    }
+                }
             }
-            else if (result.Code == 404)
-            {
-                return RedirectToAction("Index");
-            }
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Edit", new { guid = updateVM.Guid });
         }
-        return View(updateVM);
+        return RedirectToAction("Index");
+
     }
 
     [AllowAnonymous]
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> ForgotPass(ForgotPasswordVM forgotPasswordVM)
     {
         var result = await _accountRepository.ForgotPassword(forgotPasswordVM);
-        if (result == null || result.Code != 200)
+        if (result.Errors != null)
         {
-            return RedirectToAction("Error", "Index");
+            if (result.Errors is Dictionary<string, List<string>> errorDictionary)
+            {
+                foreach (var key in errorDictionary.Keys)
+                {
+                    foreach (var errorMessage in errorDictionary[key])
+                    {
+                        ModelState.AddModelError(key, errorMessage);
+                    }
+                }
+            }
+            string errorsJson = JsonConvert.SerializeObject(result.Errors);
+            TempData["Error"] = errorsJson;
+            return View();
         }
 
         // If the request is successful, redirect to the CheckAccountOTP action
@@ -159,7 +201,8 @@ public class AccountController : Controller
         var result = await _accountRepository.CheckAccountOTP(checkOTPVM);
         if (result.Code == 404)
         {
-            return RedirectToAction("Error", "Index");
+            TempData["Error"] = result.Message;
+            return RedirectToAction("CheckAccountOTP", new { email = checkOTPVM.Email });
         }
         else if (result is null)
         {
@@ -167,9 +210,8 @@ public class AccountController : Controller
         }
 
         // Store the OTP value in TempData to pass it to ChangeAccountPassword action
-        TempData["OTP"] = checkOTPVM.OTP; // Store the OTP value as int directly
 
-        return RedirectToAction("ChangeAccountPassword", new { email = checkOTPVM.Email });
+        return RedirectToAction("ChangeAccountPasswords", new { email = checkOTPVM.Email, otp = checkOTPVM.OTP });
     }
     [AllowAnonymous]
     [HttpGet]
@@ -190,7 +232,21 @@ public class AccountController : Controller
         var result = await _accountRepository.ChangeAccountPassword(changePasswordVM);
         if (result == null || result.Code != 200)
         {
-            return RedirectToAction("Error", "Index");
+            if (result.Errors != null)
+            {
+                if (result.Errors is Dictionary<string, List<string>> errorDictionary)
+                {
+                    foreach (var key in errorDictionary.Keys)
+                    {
+                        foreach (var errorMessage in errorDictionary[key])
+                        {
+                            TempData[$"{key}_Error"] = errorMessage;
+                        }
+                    }
+                }
+            }
+            TempData["Error"] = result.Message;
+            return RedirectToAction("ChangeAccountPasswords", new { email = changePasswordVM.Email, otp = changePasswordVM.OTP });
         }
 
         // If the password change is successful, redirect to the login page or another appropriate page.
@@ -199,11 +255,8 @@ public class AccountController : Controller
 
     [AllowAnonymous]
     [HttpGet]
-    public IActionResult ChangeAccountPassword(string email)
+    public IActionResult ChangeAccountPasswords(string email, int otp)
     {
-        // Retrieve the OTP value from TempData and convert it to int
-        var otp = TempData["OTP"];
-
         // Check if the OTP value is not null and can be parsed to int
         if (otp != null && int.TryParse(otp.ToString(), out int otpValue))
         {
@@ -214,7 +267,7 @@ public class AccountController : Controller
                 OTP = otpValue // Set the OTP value in the view model
             };
 
-            return View(viewModel);
+            return View("ChangeAccountPassword", viewModel);
         }
         else
         {
@@ -235,6 +288,21 @@ public class AccountController : Controller
         if (result == null)
         {
             return RedirectToAction("Error", "Index");
+        }
+        if (result.Errors != null)
+        {
+            if (result.Errors is Dictionary<string, List<string>> errorDictionary)
+            {
+                foreach (var key in errorDictionary.Keys)
+                {
+                    foreach (var errorMessage in errorDictionary[key])
+                    {
+                        ModelState.AddModelError(key, errorMessage);
+                    }
+                }
+            }
+            TempData["Error"] = result.Errors;
+            return View();
         }
         else if (result.Code == 200)
         {
@@ -260,7 +328,7 @@ public class AccountController : Controller
         }
         else if (result.Code == 404)
         {
-            ModelState.AddModelError(string.Empty, result.Message);
+            TempData["Error"] = $"{result.Message}!";
             return View();
         }
         else if (result.Code == 200)
@@ -291,6 +359,7 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     [HttpGet]
     public async Task<IActionResult> Edit(Guid guid)
     {
