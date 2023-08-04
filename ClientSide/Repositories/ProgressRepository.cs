@@ -1,14 +1,8 @@
 ﻿using ClientSide.Contract;
-using ClientSide.ViewModels.Progress;
 using ClientSide.Utilities.Handlers;
-using Microsoft.AspNetCore.Mvc;
+using ClientSide.ViewModels.Progress;
 using Newtonsoft.Json;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
-using ClientSide.ViewModels.Account;
-using ClientSide.ViewModels.Assignment;
-using Task_Management.DTOs.AccountDto;
 
 
 namespace ClientSide.Repositories

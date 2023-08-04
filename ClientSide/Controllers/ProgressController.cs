@@ -1,14 +1,7 @@
-﻿using ClientSide.Utilities.Handlers;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using ClientSide.Contract;
-using Task_Management.Utilities.Enum;
+﻿using ClientSide.Contract;
+using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Progress;
-using Microsoft.EntityFrameworkCore;
-using ClientSide.ViewModels.Assignment;
-using System;
-using ClientSide.ViewModels.Profile;
-using Syncfusion.EJ2.Grids;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ClientSide.Controllers;
 
@@ -61,7 +54,7 @@ public class ProgressController : Controller
         {
             AssignmentGuid = assignmentGuid
         };
-        return View( "CreateProgress", createProgressVM);
+        return View("CreateProgress", createProgressVM);
     }
 
     [HttpPost]
