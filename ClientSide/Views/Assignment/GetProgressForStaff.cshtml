@@ -5,12 +5,13 @@
 }
 
 <style>
-    .card-title h5, .card-title h6 {
+    .card-title h5,
+    .card-title h6 {
         margin-bottom: 5px;
     }
 
-    .progress-item:last-child hr {
-        display: none;
+    .no-line {
+        border-top: none;
     }
 </style>
 
@@ -32,15 +33,18 @@
                                 <h6>@Html.DisplayFor(modelItem => item.ManagerName)</h6>
                             </div>
                             <div class="progress-items">
-                                @foreach (var progress in item.ListProgress)
+                                @for (var i = 0; i < item.ListProgress.Count; i++)
                                 {
-                                    <div class="progress-item">
-                                        @progress.Description
+                                    <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
+                                        @item.ListProgress[i].Description
                                     </div>
-                                    <div class="progress-item">
-                                        @progress.StatusProgress
+                                    <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
+                                        @item.ListProgress[i].StatusProgress
                                     </div>
-                                    <hr />
+                                    @if (i < item.ListProgress.Count - 1)
+                                    {
+                                        <hr />
+                                    }
                                 }
                             </div>
                         </div>
@@ -50,48 +54,3 @@
         </div>
     </div>
 </div>
-
-
-
-@*
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Assignment Name
-            </th>
-            <th>
-                Manager Name
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AssignmentName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ManagerName)
-                </td>
-                <td>
-                    @foreach (var progress in item.ListProgress)
-                    {
-                        <p>
-                            Guid: @progress.Guid
-                        </p>
-                        <p>
-                            Assignment Guid: @progress.AssignmentGuid
-                        </p>
-                        <p>
-                            Description: @progress.Description
-                        </p>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-*@
