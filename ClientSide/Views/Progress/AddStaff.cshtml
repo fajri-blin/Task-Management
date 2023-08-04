@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ClientSide.ViewModels.Progress.AddStaffVM>
+
+@{
+    ViewData["Title"] = "AddStaff";
+}
+
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Progress/</span>
+            Add Staff
+        </h4>
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="card p-3">
+        <h4 class="fw-bold py-3 mb-4">Staff</h4>
+        <table id="tableAccounts" class="table table-striped">
+    <form asp-action="AssignStaff" method="post">
+        <table>
+            <thead>
+                <tr>
+                    <th>Staff Name</th>
+                    <th>Assign</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var staff in Model)
+                {
+                    <tr>
+                        <td>@staff.Name</td>
+                        <td>
+                            <input type="checkbox" name="selectedStaffGuids" value="@staff.Guid" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <input type="hidden" name="progressGuid" value="@ViewBag.ProgressGuid" />
+        <button type="submit">Assign Staff</button>
+    </form>
+    </table>
+    </div>
+    </div>
+</div>
+    </div>
+
