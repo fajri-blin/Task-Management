@@ -74,12 +74,14 @@ public class ProgressController : Controller
             if (createdProgress != null)
             {
                 TempData["Success"] = "Data Berhasil Masuk";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { guid = createProgress.AssignmentGuid });
             }
             ModelState.AddModelError(string.Empty, "Failed to create progress.");
         }
         return View(createProgress);
     }
+
+
 
 
     [HttpPost]
