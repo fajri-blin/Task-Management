@@ -4,11 +4,43 @@
     ViewData["Title"] = "GetProgressForStaff";
 }
 
-<h1>GetProgressForStaff</h1>
+<h1>Progress View</h1>
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Progress /</span>
+            Progress View
+        </h4>
+        <div class="row mb-3">
+        @foreach (var item in Model)
+            {
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                            <div class="card-title d-flex align-items-start justify-content-between">
+                                <h5>@Html.DisplayFor(modelItem => item.AssignmentName)</h5> <br>
+                                <h6>@Html.DisplayFor(modelItem => item.ManagerName)</h6>
+                            </div>
+                            <p class="card-text">
+                                Progress Descriptions : 
+                                @foreach (var progress in item.ListProgress)
+                                {
+                                    <div>
+                                        @progress.Description
+                                    </div>
+                                    @progress.StatusProgress
+                                }
+                            </p>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
+@*
 <table class="table">
     <thead>
         <tr>
@@ -49,3 +81,4 @@
         }
     </tbody>
 </table>
+*@

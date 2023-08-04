@@ -396,6 +396,7 @@ public class AssignmentService
                 Guid = progress.Guid,
                 AssignmentGuid = progress.AssignmentGuid,
                 Description = progress.Description,
+                StatusProgress = progress.Status
             };
 
             // Add the GetProgressDto object to ListProgress in GetForStaffDto
