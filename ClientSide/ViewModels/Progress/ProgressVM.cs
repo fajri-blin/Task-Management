@@ -11,9 +11,10 @@ public class ProgressVM
     public StatusEnum Status { get; set; }
     public string? Additional { get; set; }
     public string? MessageManager { get; set; }
-    public DateTime DueDate { get; set; }
-    public double Progress { get; set; }
+    public List<Guid> StaffGuids { get; set; }
 
+    /*  public DateTime DueDate { get; set; }
+      public double Progress { get; set; }*/
 }
 
 

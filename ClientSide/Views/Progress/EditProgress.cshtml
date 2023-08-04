@@ -12,7 +12,7 @@
         </h4>
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="EditProgress" method="post">
+        <form asp-action="EditProgress" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <input asp-for="Guid" class="form-control" hidden />
@@ -42,12 +42,12 @@
                 <input asp-for="Additional" class="form-control" />
                 <span asp-validation-for="Additional" class="text-danger"></span>
             </div>
-                    <div class="form-group">
+            <div class="form-group">
                 <label asp-for="MessageManager" class="control-label"></label>
                 <input asp-for="MessageManager" class="form-control" />
                 <span asp-validation-for="MessageManager" class="text-danger"></span>
             </div>
-                <div class="form-group">
+            <div class="form-group">
                 <input asp-for="DueDate" class="form-control" type="date" hidden/>
             </div>
             <div class="form-group">

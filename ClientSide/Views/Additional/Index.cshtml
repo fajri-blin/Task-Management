@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ClientSide.ViewModels.Additional.AdditionalVM>
+
+@{
+    ViewData["Title"] = "List Additional - Metrodata Task Management";
+    var no = 1;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="card p-3">
+        <a href="javascript:history.back()">
+            <i class='bx bx-arrow-back'></i>
+        </a>
+        <a asp-controller="Additional" asp-action="Create" asp-route-guid="@ViewBag.Guid" class="btn btn-primary mb-2">New Additional</a>
+        <h4 class="fw-bold py-3 mb-4">Accounts</h4>
+        <table id="tableAccounts" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Name File</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => no)
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.FileName)</td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item" onclick="DownloadAdditional('@item.Guid')"><i class="bx bx-edit-alt me-1"></i> Download</button>
+                                    <button class="dropdown-item" onclick="showDeleteAccount('@item.Guid')"><i class="bx bx-trash me-1"></i> Delete</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    no++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
