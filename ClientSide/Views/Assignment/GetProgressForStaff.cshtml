@@ -4,6 +4,16 @@
     ViewData["Title"] = "GetProgressForStaff";
 }
 
+<style>
+    .card-title h5, .card-title h6 {
+        margin-bottom: 5px;
+    }
+
+    .progress-item:last-child hr {
+        display: none;
+    }
+</style>
+
 <h1>Progress View</h1>
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -12,32 +22,35 @@
             Progress View
         </h4>
         <div class="row mb-3">
-        @foreach (var item in Model)
+            @foreach (var item in Model)
             {
-            <div class="col-md-6 col-lg-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                            <div class="card-title d-flex align-items-start justify-content-between">
-                                <h5>@Html.DisplayFor(modelItem => item.AssignmentName)</h5> <br>
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title d-flex flex-column">
+                                <h5>@Html.DisplayFor(modelItem => item.AssignmentName)</h5>
                                 <h6>@Html.DisplayFor(modelItem => item.ManagerName)</h6>
                             </div>
-                            <p class="card-text">
-                                Progress Descriptions : 
+                            <div class="progress-items">
                                 @foreach (var progress in item.ListProgress)
                                 {
-                                    <div>
+                                    <div class="progress-item">
                                         @progress.Description
                                     </div>
-                                    @progress.StatusProgress
+                                    <div class="progress-item">
+                                        @progress.StatusProgress
+                                    </div>
+                                    <hr />
                                 }
-                            </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
             }
         </div>
     </div>
 </div>
+
 
 
 @*

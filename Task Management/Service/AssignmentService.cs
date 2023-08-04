@@ -382,32 +382,47 @@ public class AssignmentService
             var manager = _accountRepository.GetByGuid((Guid)assignment.ManagerGuid);
             if (manager is null) continue;
 
-            // Create GetForStaffDto object and populate its properties
-            var getForStaffDto = new GetForStaffDto
+            // Find existing GetForStaffDto in the staffViewDataList based on the AssignmentGuid
+            var existingDto = staffViewDataList.FirstOrDefault(dto => dto.AssignmentGuid == assignment.Guid);
+
+            if (existingDto != null)
             {
-                AssignmentName = assignment.Title,
-                ManagerName = manager.Name,
-                ListProgress = new List<GetProgressDto>()
-            };
+                // If GetForStaffDto already exists, add the new progress to its ListProgress
+                var getProgressDto = new GetProgressDto
+                {
+                    Guid = progress.Guid,
+                    Description = progress.Description,
+                    StatusProgress = progress.Status
+                };
 
-            // Create GetProgressDto object and populate its properties
-            var getProgressDto = new GetProgressDto
+                existingDto.ListProgress.Add(getProgressDto);
+            }
+            else
             {
-                Guid = progress.Guid,
-                AssignmentGuid = progress.AssignmentGuid,
-                Description = progress.Description,
-                StatusProgress = progress.Status
-            };
+                // If GetForStaffDto does not exist, create a new one and add it to staffViewDataList
+                var getForStaffDto = new GetForStaffDto
+                {
+                    AssignmentGuid = assignment.Guid,
+                    AssignmentName = assignment.Title,
+                    ManagerName = manager.Name,
+                    ListProgress = new List<GetProgressDto>()
+                };
 
-            // Add the GetProgressDto object to ListProgress in GetForStaffDto
-            getForStaffDto.ListProgress.Add(getProgressDto);
+                var getProgressDto = new GetProgressDto
+                {
+                    Guid = progress.Guid,
+                    Description = progress.Description,
+                    StatusProgress = progress.Status
+                };
 
-            // Add the GetForStaffDto object to the staffViewDataList
-            staffViewDataList.Add(getForStaffDto);
+                getForStaffDto.ListProgress.Add(getProgressDto);
+                staffViewDataList.Add(getForStaffDto);
+            }
         }
 
         return staffViewDataList;
     }
+
 
 
 }
