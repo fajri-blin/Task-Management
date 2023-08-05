@@ -12,6 +12,8 @@ public class ProgressDto
     public string? Additional { get; set; }
     public bool CheckMark { get; set; }
     public string? MessageManager { get; set; }
+    public List<Guid>? StaffGuid { get; set; }
+    public List<string>? StaffName { get; set; }
 
     public static explicit operator ProgressDto(Progress progress)
     {
