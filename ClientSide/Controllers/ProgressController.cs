@@ -8,6 +8,7 @@ using ClientSide.ViewModels.Profile;
 using Syncfusion.EJ2.Grids;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
+using ClientSide.Utilities.Enum;
 
 namespace ClientSide.Controllers;
 
@@ -178,15 +179,22 @@ public class ProgressController : Controller
             Navbar = true,
         };
         ViewBag.Components = components;
+
         var response = await _accountRepository.Get();
-        var staffList = response.Data.Select(staff => new AddStaffVM
-        {
-            Guid = staff.Guid,
-            Name = staff.Name
-        }).ToList();
+        var staffList = response.Data
+            .Where(staff => staff.Role == RoleLevel.Staff) // Filter staff with RoleLevel.Staff
+            .Select(staff => new AddStaffVM
+            {
+                Guid = staff.Guid,
+                Name = staff.Name,
+                Role = staff.Role,
+            })
+            .ToList();
+
         ViewBag.ProgressGuid = guid;
         return View("AddStaff", staffList);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> AssignStaff(Guid progressGuid, List<Guid> selectedStaffGuids)
@@ -196,14 +204,24 @@ public class ProgressController : Controller
         {
             return NotFound();
         }
+
         var progress = progressResponse.Data;
+
+        // Initialize the StaffGuids list if it's null
+        if (progress.StaffGuids == null)
+        {
+            progress.StaffGuids = new List<Guid>();
+        }
+
         foreach (var staffGuid in selectedStaffGuids)
         {
             progress.StaffGuids.Add(staffGuid);
         }
+
         var updateResponse = await _progressRepository.UpdateProgress(progress);
         return RedirectToAction("Index");
     }
+
 
 
 }

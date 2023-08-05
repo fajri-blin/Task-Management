@@ -1,4 +1,6 @@
-﻿namespace ClientSide.ViewModels.Progress
+﻿using ClientSide.Utilities.Enum;
+
+namespace ClientSide.ViewModels.Progress
 {
     public class AddStaffVM
     {
@@ -6,5 +8,6 @@
         public Guid? AccountGuid { get; set; }
         public Guid? ProgressGuid { get; set; }
         public string Name { get; set; }
+        public RoleLevel Role { get; set; }
     }
 }
