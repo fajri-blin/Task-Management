@@ -9,6 +9,7 @@ using Syncfusion.EJ2.Grids;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 using ClientSide.Utilities.Enum;
+using ClientSide.ViewModels.AccountProgress;
 
 namespace ClientSide.Controllers;
 
@@ -30,6 +31,7 @@ public class ProgressController : Controller
         _accountRepository = accountRepository;
         _accountProgressRepository = accountProgressRepository;
     }
+
     [HttpGet]
     public async Task<IActionResult> Index(Guid guid)
     {
@@ -204,27 +206,14 @@ public class ProgressController : Controller
     [HttpPost]
     public async Task<IActionResult> AssignStaff(Guid progressGuid, List<Guid> selectedStaffGuids)
     {
-        var progressResponse = await _progressRepository.GetProgressById(progressGuid);
+        var progressResponse = await _accountProgressRepository.GetByProgress(progressGuid);
         if (progressResponse.Data == null)
         {
-            return NotFound();
+            var 
         }
 
-        var progress = progressResponse.Data;
 
-        // Initialize the StaffGuids list if it's null
-        if (progress.StaffGuids == null)
-        {
-            progress.StaffGuids = new List<Guid>();
-        }
 
-        foreach (var staffGuid in selectedStaffGuids)
-        {
-            progress.StaffGuids.Add(staffGuid);
-        }
-
-        var updateResponse = await _progressRepository.UpdateProgress(progress);
-        return RedirectToAction("Index");
     }
 
 

@@ -34,7 +34,7 @@ public class AccountProgressRepository : GeneralRepository<AccountProgressVM>, I
         return entityVM;
     }
 
-    public async Task<ResponseHandlers<AccountProgressVM>> AssignStaff(AccountProgressVM accountProgressVM)
+    public async Task<ResponseHandlers<AccountProgressVM>> AddAccountProgress(AccountProgressVM accountProgressVM)
     {
         ResponseHandlers<AccountProgressVM> entityVM = null;
         StringContent content = new StringContent(JsonConvert.SerializeObject(accountProgressVM), Encoding.UTF8, "application/json");
