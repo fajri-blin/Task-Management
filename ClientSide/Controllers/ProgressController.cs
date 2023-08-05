@@ -89,9 +89,6 @@ public class ProgressController : Controller
         return View(createProgress);
     }
 
-
-
-
     [HttpPost]
     public async Task<IActionResult> DeepDeleteProgress(Guid guid)
     {
@@ -112,7 +109,7 @@ public class ProgressController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> EditProgress(Guid guid)
+    public async Task<IActionResult> EditProgress(Guid guid, Guid assignmentGuid)
     {
         var components = new ComponentHandlers
         {
@@ -138,18 +135,18 @@ public class ProgressController : Controller
             MessageManager = result.Data.MessageManager,
             /*DueDate = result.Data.DueDate,*/
         };
-
+        ViewBag.AssignmentGuid = assignmentGuid; // Set the ViewBag.AssignmentGuid here
         return View(updateProgressVM);
     }
     [HttpPost]
-    public async Task<IActionResult> EditProgress(UpdateProgressVM updateProgress)
+    public async Task<IActionResult> EditProgress(UpdateProgressVM updateProgress, Guid assignmentGuid)
     {
 
         var result = await _progressRepository.UpdateProgress(updateProgress);
         if (result.Code == 200)
         {
             TempData["Success"] = "Data Berhasil Diupdate";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new { guid = assignmentGuid });
         }
         else if (result.Code == 400)
         {
@@ -175,7 +172,6 @@ public class ProgressController : Controller
 
         return View("Index");
     }
-
     [HttpGet]
     public async Task<IActionResult> AddStaff(Guid guid, Guid assignmentGuid)
     {
