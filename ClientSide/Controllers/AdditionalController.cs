@@ -90,6 +90,8 @@ namespace ClientSide.Controllers
             var fileResult = await _additionalRepository.DownloadFile(guid);
             if (fileResult != null)
             {
+                string charactersToRemove = "\"";
+                fileResult.FileDownloadName = fileResult.FileDownloadName.Replace(charactersToRemove, "");
                 return fileResult;
             }
             else
