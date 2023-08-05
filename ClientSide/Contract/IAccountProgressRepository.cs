@@ -7,6 +7,6 @@ public interface IAccountProgressRepository : IGeneralRepository<AccountProgress
 {
     Task<ResponseHandlers<IEnumerable<AccountProgressVM>>> GetByProgress(Guid guid);
     Task<ResponseHandlers<IEnumerable<AccountProgressVM>>> GetByAccount(Guid guid);
-    Task<ResponseHandlers<AccountProgressVM>> AddAccountProgress(AccountProgressVM accountProgressVM);
+    Task<ResponseHandlers<AssignStaff>> AddAccountProgress(AssignStaff accountProgressVM);
     Task<ResponseHandlers<Guid>> DeleteAccountProgress(Guid guid);
 }

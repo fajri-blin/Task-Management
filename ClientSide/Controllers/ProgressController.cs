@@ -201,20 +201,39 @@ public class ProgressController : Controller
         ViewBag.ProgressGuid = guid;
         return View("AddStaff", staffList);
     }
-
-
     [HttpPost]
     public async Task<IActionResult> AssignStaff(Guid progressGuid, List<Guid> selectedStaffGuids)
     {
-        var progressResponse = await _accountProgressRepository.GetByProgress(progressGuid);
-        if (progressResponse.Data == null)
+        try
         {
-            var 
+            var getAccountProgress = await _accountProgressRepository.GetByProgress(progressGuid);
+            if (getAccountProgress.Data != null)
+            {
+                foreach (var item in getAccountProgress.Data)
+                {
+                    await _accountProgressRepository.DeleteAccountProgress(item.Guid);
+                }
+            }
+
+            foreach (var item in selectedStaffGuids)
+            {
+                var dto = new AssignStaff
+                {
+                    AccountGuid = item,
+                    ProgressGuid = progressGuid,
+                };
+                await _accountProgressRepository.AddAccountProgress(dto);
+            }
+
+            return RedirectToAction("Index"); // Redirect to the appropriate action after the staff is assigned.
         }
-
-
-
+        catch (Exception ex)
+        {
+            // Handle the error appropriately (e.g., log the error, show an error message, etc.).
+            return View("Error");
+        }
     }
+
 
 
 

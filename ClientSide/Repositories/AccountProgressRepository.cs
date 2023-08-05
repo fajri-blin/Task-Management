@@ -34,14 +34,14 @@ public class AccountProgressRepository : GeneralRepository<AccountProgressVM>, I
         return entityVM;
     }
 
-    public async Task<ResponseHandlers<AccountProgressVM>> AddAccountProgress(AccountProgressVM accountProgressVM)
+    public async Task<ResponseHandlers<AssignStaff>> AddAccountProgress(AssignStaff accountProgressVM)
     {
-        ResponseHandlers<AccountProgressVM> entityVM = null;
+        ResponseHandlers<AssignStaff> entityVM = null;
         StringContent content = new StringContent(JsonConvert.SerializeObject(accountProgressVM), Encoding.UTF8, "application/json");
         using (var response = _httpClient.PostAsync(_request, content).Result)
         {
             string responseApi = await response.Content.ReadAsStringAsync();
-            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<AccountProgressVM>>(responseApi);
+            entityVM = JsonConvert.DeserializeObject<ResponseHandlers<AssignStaff>>(responseApi);
         }
         return entityVM;
     }
