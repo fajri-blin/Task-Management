@@ -22,12 +22,15 @@ public class AccountProgressController : ControllerBase
     public IActionResult GetByProgress(Guid guid)
     {
         var entities = _accountProgressSevices.GetByProgressGuid(guid);
-        if (entities == null) return NotFound(new ResponseHandlers<AccountProgressDto>
+        if (entities == null || !entities.Any())
         {
-            Code = StatusCodes.Status404NotFound,
-            Status = HttpStatusCode.NotFound.ToString(),
-            Message = "Data Not Found"
-        });
+            return NotFound(new ResponseHandlers<AccountProgressDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Not Found"
+            });
+        }
 
         return Ok(new ResponseHandlers<IEnumerable<AccountProgressDto>>
         {
