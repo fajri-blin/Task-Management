@@ -183,6 +183,17 @@ public class ProgressController : Controller
         };
         ViewBag.Components = components;
 
+        List<string> StaffName = new List<string>();
+        var getAccountProgress = await _accountProgressRepository.GetByProgress(guid);
+        if (getAccountProgress.Code == 200)
+        {
+            foreach (var item in getAccountProgress.Data)
+            {
+                var getAccount = await _accountRepository.Get(item.AccountGuid);
+                StaffName.Add(getAccount.Name);
+            }
+        }
+
         var response = await _accountRepository.Get();
         var staffList = response.Data
             .Where(staff => staff.Role == RoleLevel.Staff) // Filter staff with RoleLevel.Staff
@@ -193,10 +204,15 @@ public class ProgressController : Controller
                 Role = staff.Role,
             })
             .ToList();
-
         ViewBag.ProgressGuid = guid;
         ViewBag.AssignmentGuid = assignmentGuid; // Set the ViewBag.AssignmentGuid here
-        return View("AddStaff", staffList);
+
+        var viewModel = new
+        {
+            allStaff = staffList,
+            currentStaff = StaffName
+        };
+        return View("AddStaff", viewModel);
     }
     [HttpPost]
     public async Task<IActionResult> AssignStaff(Guid progressGuid, Guid assignmentGuid, List<Guid> selectedStaffGuids)

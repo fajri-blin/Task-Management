@@ -24,13 +24,19 @@
             <span class="text-muted fw-light">Progress /</span>
             Assign Staff
         </h4>
+
         <div class="card p-3">
             <h4 class="fw-bold py-3 mb-4">Staff</h4>
+            Current Assign Staff :
+            @foreach (var staff in Model.currentStaff)
+            {
+                <p>@staff</p>
+            }
             <form asp-action="AssignStaff" method="post">
                 <div class="form-group">
                     <label for="selectedStaffGuids">Select Staff</label>
                     <select class="form-control select2" multiple="multiple" name="selectedStaffGuids" style="width: 100%;">
-                        @foreach (var staff in Model)
+                        @foreach (var staff in Model.allStaff)
                         {
                             <option value="@staff.Guid">@staff.Name</option>
                         }
