@@ -177,7 +177,7 @@ public class ProgressController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddStaff(Guid guid)
+    public async Task<IActionResult> AddStaff(Guid guid, Guid assignmentGuid)
     {
         var components = new ComponentHandlers
         {
@@ -199,10 +199,11 @@ public class ProgressController : Controller
             .ToList();
 
         ViewBag.ProgressGuid = guid;
+        ViewBag.AssignmentGuid = assignmentGuid; // Set the ViewBag.AssignmentGuid here
         return View("AddStaff", staffList);
     }
     [HttpPost]
-    public async Task<IActionResult> AssignStaff(Guid progressGuid, List<Guid> selectedStaffGuids)
+    public async Task<IActionResult> AssignStaff(Guid progressGuid, Guid assignmentGuid, List<Guid> selectedStaffGuids)
     {
         try
         {
@@ -225,7 +226,8 @@ public class ProgressController : Controller
                 await _accountProgressRepository.AddAccountProgress(dto);
             }
 
-            return RedirectToAction("Index"); // Redirect to the appropriate action after the staff is assigned.
+            // Redirect to the appropriate action after the staff is assigned.
+            return RedirectToAction("Index", new { guid = assignmentGuid });
         }
         catch (Exception ex)
         {
@@ -233,8 +235,5 @@ public class ProgressController : Controller
             return View("Error");
         }
     }
-
-
-
 
 }
