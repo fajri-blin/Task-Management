@@ -36,6 +36,7 @@ namespace ClientSide.Controllers
             }).ToList();
             ViewBag.Components = components;
             ViewBag.Guid = guid;
+            ViewBag.Token = HttpContext.Session.GetString("JWToken");
             return View("Index", Additionals);
         }
 
@@ -63,6 +64,38 @@ namespace ClientSide.Controllers
             var additional = await _additionalRepository.PostAdditional(createAdditionalVM);
 
             return RedirectToAction("Index", new { guid = createAdditionalVM.ProgressGuid });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid guid)
+        {
+            var result = await _additionalRepository.DeleteAdditional(guid);
+            if (result.Code == 404)
+            {
+                return Json(new { code = 404, message = "Additional not found" });
+            }
+            else if (result.Code == 200)
+            {
+                return Json(new { code = 200, message = "Additional deleted successfully" });
+            }
+            else
+            {
+                return Json(new { code = result.Code, message = result.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadFile(Guid guid)
+        {
+            var fileResult = await _additionalRepository.DownloadFile(guid);
+            if (fileResult != null)
+            {
+                return fileResult;
+            }
+            else
+            {
+                return RedirectToAction("Index", new { guid = guid });
+            }
         }
     }
 }
