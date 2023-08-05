@@ -80,11 +80,12 @@ public class AssignmentController : Controller
             ModelState.AddModelError(string.Empty, created.Message);
             return View();
         }
+
         TempData["Success"] = "Data Berhasil Masuk";
         return RedirectToAction(nameof(GetAllAssignment));
     }
     [HttpGet]
-    public IActionResult AddAssignment()
+    public async Task<IActionResult> AddAssignment()
     {
         var components = new ComponentHandlers
         {
@@ -93,6 +94,13 @@ public class AssignmentController : Controller
             Navbar = true,
         };
         ViewBag.Components = components;
+
+        var listCategory = await _categoryRepository.Get();
+        if (listCategory is null)
+        {
+            listCategory = null;
+        }
+        ViewBag.ListCategory = listCategory.Data;
 
         // Call the method to set ManagerGuid in the session
         var managerGuid = GetManagerGuidFromToken();

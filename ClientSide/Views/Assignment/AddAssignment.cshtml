@@ -30,7 +30,12 @@
                                 <label asp-for="Category" class="control-label"></label>
                                 <!-- Add an ID to the select element -->
                                 <div>
-                                    <select id="mySelect2" asp-for="Category" class="form-control" multiple="multiple"></select>
+                                    <select id="mySelect2" asp-for="Category" class="form-control" multiple="multiple">
+                                        @foreach (var category in ViewBag.ListCategory)
+                                        {
+                                            <option value="@category.Name">@category.Name</option>
+                                        }
+                                    </select>
                                     <span asp-validation-for="Category" class="text-danger"></span>
                                 </div>
                             </div>

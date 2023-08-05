@@ -1,47 +1,49 @@
-﻿@model IEnumerable<ClientSide.ViewModels.Progress.AddStaffVM>
-
-@{
+﻿@{
     ViewData["Title"] = "AddStaff";
+}
+
+@section Styles {
+    <!-- Add the CSS for Select2 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <!-- Add the JavaScript for Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        // Initialize Select2
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+    </script>
 }
 
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="fw-bold py-3 mb-4">
-            <span class="text-muted fw-light">Progress/</span>
-            Add Staff
+            <span class="text-muted fw-light">Progress /</span>
+            Assign Staff
         </h4>
-
-        <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="card p-3">
-                <h4 class="fw-bold py-3 mb-4">Staff</h4>
-                <table id="tableAccounts" class="table table-striped">
-                    <form asp-action="AssignStaff" method="post">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Staff Name</th>
-                                    <th>Assign</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var staff in Model)
-                                {
-                                    <tr>
-                                        <td>@staff.Name</td>
-                                        <td>
-                                            <input type="checkbox" name="selectedStaffGuids" value="@staff.Guid" />
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                        <br />
-                        <input type="hidden" name="progressGuid" value="@ViewBag.ProgressGuid" />
-                        <input type="hidden" name="assignmentGuid" value="@ViewBag.AssignmentGuid" /> <!-- Add this line -->
-                        <button type="submit">Assign Staff</button>
-                    </form>
-                </table>
-            </div>
+        <div class="card p-3">
+            <h4 class="fw-bold py-3 mb-4">Staff</h4>
+            <form asp-action="AssignStaff" method="post">
+                <div class="form-group">
+                    <label for="selectedStaffGuids">Select Staff</label>
+                    <select class="form-control select2" multiple="multiple" name="selectedStaffGuids" style="width: 100%;">
+                        @foreach (var staff in Model)
+                        {
+                            <option value="@staff.Guid">@staff.Name</option>
+                        }
+                    </select>
+                </div>
+                <br />
+                <input type="hidden" name="progressGuid" value="@ViewBag.ProgressGuid" />
+                <input type="hidden" name="assignmentGuid" value="@ViewBag.AssignmentGuid" />
+                <button type="submit" class="btn btn-primary">Assign Staff</button>
+            </form>
         </div>
     </div>
+    <!-- Rest of your code remains the same -->
+
+ 
 </div>
