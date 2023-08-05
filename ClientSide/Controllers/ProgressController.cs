@@ -18,12 +18,17 @@ public class ProgressController : Controller
     private readonly IProgressRepository _progressRepository;
     private readonly IAssignmentRepository _assignmentRepository;
     private readonly IAccountRepository _accountRepository;
+    private readonly IAccountProgressRepository _accountProgressRepository;
 
-    public ProgressController(IProgressRepository progressRepository, IAssignmentRepository assignmentRepository, IAccountRepository accountRepository)
+    public ProgressController(IProgressRepository progressRepository, 
+                              IAssignmentRepository assignmentRepository,
+                              IAccountRepository accountRepository,
+                              IAccountProgressRepository accountProgressRepository)
     {
         _progressRepository = progressRepository;
         _assignmentRepository = assignmentRepository;
         _accountRepository = accountRepository;
+        _accountProgressRepository = accountProgressRepository;
     }
     [HttpGet]
     public async Task<IActionResult> Index(Guid guid)
