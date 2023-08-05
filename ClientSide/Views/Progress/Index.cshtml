@@ -215,7 +215,9 @@
 
 @section Styles{
     <link rel="stylesheet" href="~/css/kanban.css" />
+    <link rel="stylesheet" href="~/css/deep.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/perfect-scrollbar/1.5.1/css/perfect-scrollbar.min.css" />
+
 }
 
 @section Scripts {
@@ -235,24 +237,52 @@
 
     <script>
         function deleteProgress(guid) {
-            if (confirm("Are you sure you want to delete this item?")) {
-                $.ajax({
-                    url: "https://localhost:7296/Progress/DeepDeleteProgress?guid=${guid}",
-                    type: "POST",
-                    data: { guid: guid },
-                    success: function (response) {
-                        if (response.code === 200) {
-                            console.log("Item berhasil dihapus");
-                            location.reload();
-                        } else {
-                            console.error("Terjadi kesalahan saat menghapus item:", response.message);
+            // Use SweetAlert for the confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `https://localhost:7296/Progress/DeepDeleteProgress?guid=${guid}`,
+                        type: "POST",
+                        data: { guid: guid },
+                        success: function (response) {
+                            if (response.code === 200) {
+                                // Use SweetAlert for success message
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Item has been deleted.',
+                                    'success'
+                                ).then(() => {
+                                    // Reload the page after successful deletion
+                                    location.reload();
+                                });
+                            } else {
+                                // Use SweetAlert for error message
+                                Swal.fire(
+                                    'Error!',
+                                    `Failed to delete item. Error message: ${response.message}`,
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function (error) {
+                            // Use SweetAlert for error message
+                            Swal.fire(
+                                'Error!',
+                                'An error occurred while deleting item.',
+                                'error'
+                            );
                         }
-                    },
-                    error: function (error) {
-                        console.error("Terjadi kesalahan saat menghapus item:", error);
-                    }
-                });
-            }
+                    });
+                }
+            });
         }
     </script>
 
