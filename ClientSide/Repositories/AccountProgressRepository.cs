@@ -68,18 +68,33 @@ public class AccountProgressRepository : GeneralRepository<AccountProgressVM>, I
             }
             else
             {
-                // If the data field is not null, deserialize it to Guid
-                entityVM = new ResponseHandlers<Guid>
+                // Attempt to parse the Data field as a Guid
+                if (Guid.TryParse(responseObject.Data.ToString(), out Guid parsedGuid))
                 {
-                    Code = responseObject.Code,
-                    Message = responseObject.Message,
-                    Data = Guid.Parse(responseObject.Data.ToString())
-                };
+                    // If the parsing is successful, assign the parsed Guid to the Data field
+                    entityVM = new ResponseHandlers<Guid>
+                    {
+                        Code = responseObject.Code,
+                        Message = responseObject.Message,
+                        Data = parsedGuid
+                    };
+                }
+                else
+                {
+                    // If the parsing fails, handle it accordingly (e.g., log the error, set a default value, etc.)
+                    entityVM = new ResponseHandlers<Guid>
+                    {
+                        Code = responseObject.Code,
+                        Message = responseObject.Message,
+                        Data = Guid.Empty // Set a default Guid value or handle it as needed.
+                    };
+                }
             }
         }
 
         return entityVM;
     }
+
 
 
 }
