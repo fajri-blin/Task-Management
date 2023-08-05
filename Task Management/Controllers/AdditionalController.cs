@@ -39,7 +39,7 @@ public class AdditionalController : ControllerBase
         });
     }
 
-    [HttpPost("Download")]
+    [HttpGet("Download")]
     public IActionResult GetFile(Guid guid)
     {
         var fileResult = _additionalSevices.DownloadFile(guid);
@@ -122,14 +122,14 @@ public class AdditionalController : ControllerBase
     public async Task<IActionResult> Update([FromForm] NewAdditionalDto entity)
     {
         var updated = await _additionalSevices.Update(entity);
-        if (updated is 0) return NotFound(new ResponseHandlers<int>
+        if (updated is 0) return NotFound(new ResponseHandlers<string>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
 
-        return Ok(new ResponseHandlers<int>
+        return Ok(new ResponseHandlers<string>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
@@ -141,13 +141,13 @@ public class AdditionalController : ControllerBase
     public IActionResult Delete(Guid guid)
     {
         var delete = _additionalSevices.Delete(guid);
-        if (delete is -1) return NotFound(new ResponseHandlers<int>
+        if (delete is -1) return NotFound(new ResponseHandlers<string>
         {
             Code = StatusCodes.Status404NotFound,
             Status = HttpStatusCode.NotFound.ToString(),
             Message = "Data Not Found"
         });
-        return Ok(new ResponseHandlers<int>
+        return Ok(new ResponseHandlers<string>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),

@@ -103,42 +103,73 @@ namespace ClientSide.Repositories
         {
             try
             {
-                ResponseHandlers<AdditionalVM> entityVM = null;
-                StringContent content = new StringContent(JsonConvert.SerializeObject(guid), System.Text.Encoding.UTF8, "application/json");
-                using (var response = _httpClient.DeleteAsync("Additional?guid=" + guid).Result)
+                var response = await _httpClient.DeleteAsync($"Additional?guid={guid}");
+                if (!response.IsSuccessStatusCode)
                 {
-                    string responseApi = await response.Content.ReadAsStringAsync();
-                    var responseObject = JsonConvert.DeserializeObject<ResponseHandlers<AdditionalVM>>(responseApi);
-
-                    // Check if the data field is null
-                    if (responseObject.Data == null)
+                    return new ResponseHandlers<AdditionalVM>
                     {
-                        entityVM = new ResponseHandlers<AdditionalVM>
-                        {
-                            Code = responseObject.Code,
-                            Message = responseObject.Message
-                        };
-                    }
-                    else
-                    {
-                        // If the data field is not null, deserialize it to Guid
-                        entityVM = new ResponseHandlers<AdditionalVM>
-                        {
-                            Code = responseObject.Code,
-                            Message = responseObject.Message,
-                            Data = null
-                        };
-                    }
-
+                        Code = (int)response.StatusCode,
+                        Message = response.ReasonPhrase
+                    };
                 }
-                return entityVM;
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var responseObject = JsonConvert.DeserializeObject<ResponseHandlers<AdditionalVM>>(responseContent);
+
+                // Check if the data field is null
+                if (responseObject.Data == null)
+                {
+                    return new ResponseHandlers<AdditionalVM>
+                    {
+                        Code = responseObject.Code,
+                        Message = responseObject.Message
+                    };
+                }
+
+                // If the data field is not null, deserialize it to AdditionalVM
+                return new ResponseHandlers<AdditionalVM>
+                {
+                    Code = responseObject.Code,
+                    Message = responseObject.Message,
+                    Data = JsonConvert.DeserializeObject<AdditionalVM>(responseObject.Data.ToString())
+                };
             }
             catch (Exception ex)
             {
+                // Handle any exception that might occur during the request
+                Console.WriteLine($"An error occurred: {ex.Message}");
                 return null;
             }
+        }
 
+        public async Task<FileResult> DownloadFile(Guid guid)
+        {
+            using (var response = await _httpClient.GetAsync(_request + "Download?guid=" + guid))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var bytes = await response.Content.ReadAsByteArrayAsync();
+                    var contentDisposition = response.Content.Headers.ContentDisposition;
+                    var fileName = contentDisposition?.FileName ?? "file.bin"; // Jika tidak ada nama file yang diberikan oleh server, gunakan "file.bin" sebagai default.
 
+                    // Mengembalikan file hasil unduhan sebagai FileResult.
+                    return new FileContentResult(bytes, "application/octet-stream")
+                    {
+                        FileDownloadName = fileName
+                    };
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    // Jika server mengembalikan 404 Not Found, maka kembalikan pesan Not Found.
+                    return null;
+                }
+                else
+                {
+                    // Tangani kasus lain (misalnya, 500 Internal Server Error) sesuai kebutuhan Anda.
+                    // ...
+                    return null;
+                }
+            }
         }
     }
 }

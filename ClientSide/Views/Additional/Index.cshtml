@@ -34,7 +34,7 @@
                                     <i class="bx bx-dots-vertical-rounded"></i>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <button class="dropdown-item" onclick="DownloadAdditional('@item.Guid')"><i class="bx bx-edit-alt me-1"></i> Download</button>
+                                    <a class="dropdown-item" asp-action="DownloadFile" asp-route-guid="@item.Guid" download><i class="bx bx-edit-alt me-1"></i> Download</a>
                                     <button class="dropdown-item" onclick="showDeleteAccount('@item.Guid')"><i class="bx bx-trash me-1"></i> Delete</button>
                                 </div>
                             </div>
@@ -50,4 +50,10 @@
 
 @section Styles{
     <link rel="stylesheet" href="../css/deep.css" />
+}
+
+@section Scripts{
+    <script>
+        
+    </script>
 }

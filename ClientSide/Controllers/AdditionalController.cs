@@ -36,6 +36,7 @@ namespace ClientSide.Controllers
             }).ToList();
             ViewBag.Components = components;
             ViewBag.Guid = guid;
+            ViewBag.Token = HttpContext.Session.GetString("JWToken");
             return View("Index", Additionals);
         }
 
@@ -80,6 +81,20 @@ namespace ClientSide.Controllers
             else
             {
                 return Json(new { code = result.Code, message = result.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadFile(Guid guid)
+        {
+            var fileResult = await _additionalRepository.DownloadFile(guid);
+            if (fileResult != null)
+            {
+                return fileResult;
+            }
+            else
+            {
+                return RedirectToAction("Index", new { guid = guid });
             }
         }
     }
