@@ -183,14 +183,19 @@ public class ProgressController : Controller
         };
         ViewBag.Components = components;
 
-        List<string> StaffName = new List<string>();
+        List<CurrentStaffVM> StaffName = new List<CurrentStaffVM>();
         var getAccountProgress = await _accountProgressRepository.GetByProgress(guid);
         if (getAccountProgress.Code == 200)
         {
             foreach (var item in getAccountProgress.Data)
             {
                 var getAccount = await _accountRepository.Get(item.AccountGuid);
-                StaffName.Add(getAccount.Name);
+                var currentAccount = new CurrentStaffVM
+                {
+                    Guid = getAccount.Guid,
+                    Name = getAccount.Name
+                };
+                StaffName.Add(currentAccount);
             }
         }
 
@@ -207,10 +212,10 @@ public class ProgressController : Controller
         ViewBag.ProgressGuid = guid;
         ViewBag.AssignmentGuid = assignmentGuid; // Set the ViewBag.AssignmentGuid here
 
-        var viewModel = new
+        var viewModel = new AssignStaffVM
         {
-            allStaff = staffList,
-            currentStaff = StaffName
+            StaffListVMs = staffList,
+            CurrentStaffVMs = StaffName
         };
         return View("AddStaff", viewModel);
     }

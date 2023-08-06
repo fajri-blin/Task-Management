@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ClientSide.ViewModels.Progress.AssignStaffVM
+@{
     ViewData["Title"] = "AddStaff";
 }
 
@@ -28,15 +29,15 @@
         <div class="card p-3">
             <h4 class="fw-bold py-3 mb-4">Staff</h4>
             Current Assign Staff :
-            @foreach (var staff in Model.currentStaff)
+            @foreach (var staff in Model.CurrentStaffVMs)
             {
-                <p>@staff</p>
+                <p>@staff.Name</p>
             }
             <form asp-action="AssignStaff" method="post">
                 <div class="form-group">
                     <label for="selectedStaffGuids">Select Staff</label>
                     <select class="form-control select2" multiple="multiple" name="selectedStaffGuids" style="width: 100%;">
-                        @foreach (var staff in Model.allStaff)
+                        @foreach (var staff in Model.StaffListVMs)
                         {
                             <option value="@staff.Guid">@staff.Name</option>
                         }
