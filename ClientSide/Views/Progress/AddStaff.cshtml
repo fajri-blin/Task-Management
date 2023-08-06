@@ -3,21 +3,7 @@
     ViewData["Title"] = "AddStaff";
 }
 
-@section Styles {
-    <!-- Add the CSS for Select2 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-}
 
-@section Scripts {
-    <!-- Add the JavaScript for Select2 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script>
-        // Initialize Select2
-        $(document).ready(function () {
-            $('.select2').select2();
-        });
-    </script>
-}
 
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -29,10 +15,17 @@
         <div class="card p-3">
             <h4 class="fw-bold py-3 mb-4">Staff</h4>
             Current Assign Staff :
+            <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
             @foreach (var staff in Model.CurrentStaffVMs)
             {
-                <p>@staff.Name</p>
+                    <li data-bs-toggle="tooltip"
+                        data-popup="tooltip-custom" data-bs-placement="top"
+                        class="avatar avatar-xs pull-up" title="@staff.Name">
+                        <img src="https://localhost:7113/api/Account/Photo/@staff.Guid" alt="Avatar"
+                             class="rounded-circle" />
+                    </li>
             }
+            </ul>
             <form asp-action="AssignStaff" method="post">
                 <div class="form-group">
                     <label for="selectedStaffGuids">Select Staff</label>
@@ -54,3 +47,29 @@
 
  
 </div>
+
+@section Styles {
+    <!-- Add the CSS for Select2 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <!-- Add the JavaScript for Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        // Assuming currentStaff is an array of CurrentStaffVM objects with properties Guid and Name
+        var currentStaff = @Html.Raw(Json.Serialize(Model.CurrentStaffVMs));
+
+        $(document).ready(function () {
+            // Initialize Select2
+            var selectElement = $('.select2');
+            selectElement.select2();
+
+            // Set pre-selected options based on currentStaff
+            var selectedStaffGuids = currentStaff.map(function (staff) {
+                return staff.guid;
+            });
+            selectElement.val(selectedStaffGuids).trigger('change');
+        });
+    </script>
+}
