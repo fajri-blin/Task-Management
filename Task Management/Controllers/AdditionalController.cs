@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Task_Management.DTOs.AdditionalDto;
 using Task_Management.DTOs.NewAdditionalDto;
@@ -9,7 +10,7 @@ namespace Task_Management.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]
+[Authorize]
 public class AdditionalController : ControllerBase
 {
     private readonly AdditionalService _additionalSevices;

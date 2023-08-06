@@ -59,19 +59,22 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-        <!-- Dashboard -->
-        <li class="menu-item @(Context.Request.Path == "/Dashboard" ? "active" : "")">
-            <a asp-action="Index" asp-controller="Dashboard" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
-            </a>
-        </li>
-        <!-- /Dashboard -->
+        @if (!User.IsInRole(nameof(RoleLevel.Staff)))
+        {
+            <!-- Dashboard -->
+            <li class="menu-item @(Context.Request.Path == "/Dashboard" ? "active" : "")">
+                <a asp-action="Index" asp-controller="Dashboard" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                    <div data-i18n="Analytics">Dashboard</div>
+                </a>
+            </li>
+            <!-- /Dashboard -->
 
-        <!-- Menu -->
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Menu</span>
-        </li>
+            <!-- Menu -->
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Menu</span>
+            </li>
+        }
         @if (User.IsInRole(nameof(RoleLevel.Admin)))
         {
             <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Account")) ? "active" : "")">
@@ -118,21 +121,14 @@
             </li>
         }
         @if (User.IsInRole(nameof(RoleLevel.Staff)))
-        {    
-            <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Progress")) ? "active" : "")">
+        {
+            <li class="menu-item @(Context.Request.Path.StartsWithSegments(new PathString("/Assignment")) ? "active" : "")">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-task"></i>
                     <div data-i18n="Progress">Progress</div>
                 </a>
                 <ul class="menu-sub">
-                    <li class="menu-item @(Context.Request.Path == "/Progress/Index" ? "active" : "")">
-                        <a class="menu-link" asp-controller="Progress" asp-action="Index">
-                            <div data-i18n="Basic">Progress Task</div>
-                        </a>
-                    </li>
-                </ul>
-                <ul class="menu-sub">
-                    <li class="menu-item @(Context.Request.Path == "/Progress/Index" ? "active" : "")">
+                    <li class="menu-item @(Context.Request.Path == "/Assignment/GetProgressForStaff" ? "active" : "")">
                         <a class="menu-link" asp-controller="Assignment" asp-action="GetProgressForStaff">
                             <div data-i18n="Basic">View Task</div>
                         </a>

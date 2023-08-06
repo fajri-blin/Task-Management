@@ -150,23 +150,20 @@ namespace ClientSide.Repositories
                 {
                     var bytes = await response.Content.ReadAsByteArrayAsync();
                     var contentDisposition = response.Content.Headers.ContentDisposition;
-                    var fileName = contentDisposition?.FileName ?? "file.bin"; // Jika tidak ada nama file yang diberikan oleh server, gunakan "file.bin" sebagai default.
+                    var fileName = contentDisposition?.FileName.TrimStart('_').TrimEnd('_') ?? "file.bin"; // Jika tidak ada nama file yang diberikan oleh server, gunakan "file.bin" sebagai default.
 
                     // Mengembalikan file hasil unduhan sebagai FileResult.
                     return new FileContentResult(bytes, "application/octet-stream")
                     {
-                        FileDownloadName = fileName
+                        FileDownloadName = fileName,
                     };
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    // Jika server mengembalikan 404 Not Found, maka kembalikan pesan Not Found.
                     return null;
                 }
                 else
                 {
-                    // Tangani kasus lain (misalnya, 500 Internal Server Error) sesuai kebutuhan Anda.
-                    // ...
                     return null;
                 }
             }

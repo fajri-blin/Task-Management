@@ -10,10 +10,35 @@
         margin-bottom: 5px;
     }
 
+    .progress-item.text,
+    .progress-item {
+        color: black; /* Set the text color to black */
+    }
     .no-line {
         border-top: none;
     }
+
+    .badge-not-started {
+        background-color: gray;
+    }
+
+    .badge-in-progress {
+        background-color: yellow;
+    }
+
+    .badge-checking {
+        background-color: orange;
+    }
+
+    .badge-revision {
+        background-color: red;
+    }
+
+    .badge-done {
+        background-color: green;
+    }
 </style>
+
 
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -35,12 +60,32 @@
                                 <div class="progress-items">
                                     @for (var i = 0; i < item.ListProgress.Count; i++)
                                     {
-                                        <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
+                                        <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "") text">
                                             @item.ListProgress[i].Description
                                         </div>
                                         <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
-                                            @item.ListProgress[i].StatusProgress
+                                            @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.NotStarted)
+                                            {
+                                                <span class="badge badge-not-started">@item.ListProgress[i].StatusProgress</span>
+                                            }
+                                            @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.InProgress)
+                                            {
+                                                <span class="badge badge-in-progress">@item.ListProgress[i].StatusProgress</span>
+                                            }
+                                            @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.Checking)
+                                            {
+                                                <span class="badge badge-checking">@item.ListProgress[i].StatusProgress</span>
+                                            }
+                                            @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.Revision)
+                                            {
+                                                <span class="badge badge-revision">@item.ListProgress[i].StatusProgress</span>
+                                            }
+                                            @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.Done)
+                                            {
+                                                <span class="badge badge-done">@item.ListProgress[i].StatusProgress</span>
+                                            }
                                         </div>
+
                                         @if (i < item.ListProgress.Count - 1)
                                         {
                                             <hr />

@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Task_Management.DTOs.AccountProgressDto;
 using Task_Management.Service;
+using Task_Management.Utilities.Enum;
 using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]
 public class AccountProgressController : ControllerBase
 {
     private readonly AccountProgressService _accountProgressSevices;
@@ -19,6 +20,7 @@ public class AccountProgressController : ControllerBase
     }
 
     [HttpGet("GetByProgress/{guid}")]
+    [Authorize]
     public IActionResult GetByProgress(Guid guid)
     {
         var entities = _accountProgressSevices.GetByProgressGuid(guid);
@@ -42,6 +44,7 @@ public class AccountProgressController : ControllerBase
     }
 
     [HttpGet("GetByAccountGuid/{guid}")]
+    [Authorize]
     public IActionResult GetByAccountGuid(Guid guid)
     {
         var entities = _accountProgressSevices.GetByAccountGuid(guid);
@@ -65,6 +68,7 @@ public class AccountProgressController : ControllerBase
 
     //Basic CRUD
     [HttpGet]
+    [Authorize]
     public IActionResult GetAll()
     {
         var entities = _accountProgressSevices.Get();
@@ -87,6 +91,7 @@ public class AccountProgressController : ControllerBase
     }
 
     [HttpGet("{guid}")]
+    [Authorize]
     public IActionResult Get(Guid guid)
     {
         var entity = _accountProgressSevices.Get(guid);
@@ -107,6 +112,7 @@ public class AccountProgressController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult Create(NewAccountProgressDto entity)
     {
         var created = _accountProgressSevices.Create(entity);
@@ -127,6 +133,7 @@ public class AccountProgressController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult Update(AccountProgressDto entity)
     {
         var updated = _accountProgressSevices.Update(entity);
@@ -146,6 +153,7 @@ public class AccountProgressController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult Delete(Guid guid)
     {
         var delete = _accountProgressSevices.Delete(guid);

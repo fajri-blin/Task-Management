@@ -4,13 +4,13 @@ using System.Net;
 using Task_Management.Dtos.AccountDto;
 using Task_Management.DTOs.AccountDto;
 using Task_Management.Service;
+using Task_Management.Utilities.Enum;
 using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]
 public class AccountController : ControllerBase
 {
     private readonly AccountService _accountSevices;
@@ -20,8 +20,8 @@ public class AccountController : ControllerBase
         _accountSevices = accountSevices;
     }
 
-    [AllowAnonymous]
     [HttpPost("Register")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public IActionResult Register(RegisterDto registerDto)
     {
         var registerResult = _accountSevices.Register(registerDto);
@@ -44,7 +44,6 @@ public class AccountController : ControllerBase
     }
 
 
-    [AllowAnonymous]
     [HttpPost("Login")]
     public IActionResult Login(LoginDto loginDto)
     {
@@ -197,6 +196,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut("Activation")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public IActionResult Activation(GetGuidDto guid)
     {
         var activate = _accountSevices.Activation(guid.Guid);
@@ -216,6 +216,7 @@ public class AccountController : ControllerBase
 
     //Basic CRUD
     [HttpGet]
+    [Authorize]
     public IActionResult GetAll()
     {
         var entities = _accountSevices.Get();
@@ -238,6 +239,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("{guid}")]
+    [Authorize]
     public IActionResult Get(Guid guid)
     {
         var entity = _accountSevices.Get(guid);
@@ -253,6 +255,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public async Task<IActionResult> Update([FromForm] UpdateAccountDto entity)
     {
         var updated = await _accountSevices.Update(entity);
@@ -272,6 +275,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut("Profile/Update")]
+    [Authorize]
     public async Task<IActionResult> ProfileUpdate([FromForm] UpdateAccountDto entity)
     {
         var updated = await _accountSevices.ProfileUpdate(entity);
@@ -291,6 +295,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut("SoftDelete")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public IActionResult Delete(GetGuidDto guid)
     {
         var delete = _accountSevices.Delete(guid.Guid);

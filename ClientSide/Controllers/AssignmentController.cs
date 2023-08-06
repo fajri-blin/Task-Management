@@ -5,14 +5,13 @@ using ClientSide.ViewModels.Assignment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace ClientSide.Controllers;
 
 [Controller]
 public class AssignmentController : Controller
-{   
+{
     private readonly IAssignmentRepository _assignmentRepository;
     private readonly IAccountRepository _accountRepository;
     private readonly ICategoryRepository _categoryRepository;
@@ -72,10 +71,12 @@ public class AssignmentController : Controller
 
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddAssignment(CreateAssignmentVM assignment)
     {
         var created = await _assignmentRepository.AddAssignment(assignment);
-        if (created.Code == 404) 
+        if (created.Code == 404)
         {
             ModelState.AddModelError(string.Empty, created.Message);
             return View();
@@ -84,7 +85,9 @@ public class AssignmentController : Controller
         TempData["Success"] = "Data Berhasil Masuk";
         return RedirectToAction(nameof(GetAllAssignment));
     }
+
     [HttpGet]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public async Task<IActionResult> AddAssignment()
     {
         var components = new ComponentHandlers
@@ -112,6 +115,7 @@ public class AssignmentController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public async Task<IActionResult> DeepDeleteAssignments(Guid guid)
     {
         var result = await _assignmentRepository.DeepDeleteAssignment(guid);
@@ -131,7 +135,7 @@ public class AssignmentController : Controller
     }
 
     [HttpGet]
-    [Authorize] // Make sure the action requires authentication
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
     public async Task<IActionResult> GetAllAssignment()
     {
         var components = new ComponentHandlers
@@ -177,6 +181,7 @@ public class AssignmentController : Controller
 
 
     [HttpGet]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public async Task<IActionResult> EditAssignment(Guid guid)
     {
         var components = new ComponentHandlers
@@ -215,6 +220,8 @@ public class AssignmentController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditAssignment(UpdateAssignmentVM updateAssignmentVM)
     {
         // Map AssignmentVM to UpdateAssignmentVM (assuming both have similar properties)
