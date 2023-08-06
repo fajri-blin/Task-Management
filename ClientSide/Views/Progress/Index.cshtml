@@ -22,13 +22,12 @@
             <div class="kanban-board-container">
                 <div class="kanban-board d-flex flex-nowrap overflow-auto">
 
-                    <div class="column" data-status="NotStarted" ondragover="onDragOver(event)"
-                         ondrop="onDrop(event)">
+                    <div class="column" data-status="NotStarted">
                         <h5>Not Started</h5>
                         @foreach (var item in Model.Where(x => x.Status == StatusEnum.NotStarted))
                         {
                             <div class="card mb-3 card-subtitle text-muted mb-3" data-task-id="@item.Guid"
-                                 data-status="@item.Status" draggable="true" ondragstart="onDragStart(event)">
+                                 data-status="@item.Status">
                                 <div class="card-kanban">
                                     <div class="card-title d-flex align-items-start justify-content-between">
                                         <div class="avatar flex-shrink-0">
@@ -53,14 +52,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <p claass="bx bxs-notepad" style="font-size: 15px;">
+                                    <p class="bx bxs-notepad" style="font-size: 15px;">
                                         <strong>Description</strong>
                                     </p>
                                     <p class="card-title" style="font-size: 15px;">
                                         @Html.DisplayFor(modelItem =>
                                     item.Description)
                                     </p>
-                                    <p claass="bx bxs-notepad" style="font-size: 15px;">
+                                    <p class="bx bxs-group" style="font-size: 15px;">
                                         <strong>Staff</strong>
                                     </p>
                                     <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
@@ -76,16 +75,16 @@
                                             </li>
                                         }
                                     </ul>
-                                    @* <p style="font-size: 12px;">
-                                <strong>Message Manager :</strong>
+                                    <p class="bx bxs-message" style="font-size: 15px;">
+                                <strong>Message Manager </strong>
                                 </p>
-                                <p class="card-text" style="font-size: 12px;">@item.MessageManager</p>
-                                <p style="font-size: 12px;">
-                                <strong>Message Staff :</strong>
+                                <p class="card-text" style="font-size: 15px;">@item.MessageManager</p>
+                                <p class="bx bxs-message" style="font-size: 15px;">
+                                <strong>Message Staff </strong>
                                 </p>
-                                <p class="card-text" style="font-size: 12px;">
+                                <p class="card-text" style="font-size: 15px;">
                                 @item.Additional
-                                </p>*@
+                                </p>
 
                                 </div>
                             </div>
@@ -93,13 +92,12 @@
                         }
                     </div>
 
-                    <div class="column" data-status="InProgress" ondragover="onDragOver(event)"
-                         ondrop="onDrop(event)">
+                    <div class="column" data-status="InProgress" >
                         <h5>In Progress</h5>
                         @foreach (var item in Model.Where(x => x.Status == StatusEnum.InProgress))
                         {
                             <div class="card mb-3 card-subtitle text-muted mb-3" data-task-id="@item.Guid"
-                                 data-status="@item.Status" draggable="true" ondragstart="onDragStart(event)">
+                                 data-status="@item.Status" >
                                 <div class="card-kanban">
                                     <div class="card-title d-flex align-items-start justify-content-between">
                                         <div class="avatar flex-shrink-0">
@@ -113,8 +111,10 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4"
                                                  style="">
-                                                <a class="dropdown-item" asp-action="EditProgress"
-                                                   asp-route-guid="@item.Guid">Edit</a>
+                                                <a class="dropdown-item" asp-action="EditProgress" asp-route-guid="@item.Guid" asp-route-assignmentGuid="@item.AssignmentGuid">Edit</a>
+                                                <a class="dropdown-item" asp-action="AddStaff" asp-route-guid="@item.Guid" asp-route-assignmentGuid="@item.AssignmentGuid">Assign Staff</a>
+                                                <a class="dropdown-item" asp-action="Index" asp-controller="Additional"
+                                                   asp-route-guid="@item.Guid">Additional</a>
                                                 <button class="dropdown-item delete-button"
                                                         onclick="deleteProgress('@item.Guid')">
                                                     Delete
@@ -122,11 +122,14 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <p class="bx bxs-notepad" style="font-size: 15px;">
+                                        <strong>Description</strong>
+                                    </p>
                                     <p class="card-title" style="font-size: 15px;">
                                         @Html.DisplayFor(modelItem =>
                                     item.Description)
                                     </p>
-                                    <p claass="bx bxs-notepad" style="font-size: 15px;">
+                                    <p class="bx bxs-group" style="font-size: 15px;">
                                         <strong>Staff</strong>
                                     </p>
                                     <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
@@ -142,27 +145,26 @@
                                             </li>
                                         }
                                     </ul>
-                                    <p style="font-size: 12px;" class="mt-2">
-                                        <strong>Message Manager :</strong>
+                                    <p class="bx bxs-message" style="font-size: 15px;">
+                                        <strong>Message Manager </strong>
                                     </p>
-                                    <p class="card-text" style="font-size: 12px;">@item.MessageManager</p>
-                                    <p style="font-size: 12px;">
-                                        <strong>Message Staff :</strong>
+                                    <p class="card-text" style="font-size: 15px;">@item.MessageManager</p>
+                                    <p class="bx bxs-message" style="font-size: 15px;">
+                                        <strong>Message Staff </strong>
                                     </p>
-                                    <p class="card-text" style="font-size: 12px;">@item.Additional</p>
+                                    <p class="card-text" style="font-size: 15px;">@item.Additional</p>
 
                                 </div>
                             </div>
                         }
                     </div>
 
-                    <div class="column" data-status="Checking" ondragover="onDragOver(event)"
-                         ondrop="onDrop(event)">
+                    <div class="column" data-status="Checking" >
                         <h5>Checking</h5>
                         @foreach (var item in Model.Where(x => x.Status == StatusEnum.Checking))
                         {
                             <div class="card mb-3 card-subtitle text-muted mb-3" data-task-id="@item.Guid"
-                                 data-status="@item.Status" draggable="true" ondragstart="onDragStart(event)">
+                                 data-status="@item.Status" >
                                 <div class="card-kanban">
 
                                     <div class="card-title d-flex align-items-start justify-content-between">
@@ -177,8 +179,10 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4"
                                                  style="">
-                                                <a class="dropdown-item" asp-action="EditProgress"
-                                                   asp-route-guid="@item.Guid">Edit</a>
+                                                <a class="dropdown-item" asp-action="EditProgress" asp-route-guid="@item.Guid" asp-route-assignmentGuid="@item.AssignmentGuid">Edit</a>
+                                                <a class="dropdown-item" asp-action="AddStaff" asp-route-guid="@item.Guid" asp-route-assignmentGuid="@item.AssignmentGuid">Assign Staff</a>
+                                                <a class="dropdown-item" asp-action="Index" asp-controller="Additional"
+                                                   asp-route-guid="@item.Guid">Additional</a>
                                                 <button class="dropdown-item delete-button"
                                                         onclick="deleteProgress('@item.Guid')">
                                                     Delete
@@ -186,11 +190,14 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <p class="bx bxs-notepad" style="font-size: 15px;">
+                                        <strong>Description</strong>
+                                    </p>
                                     <p class="card-title" style="font-size: 15px;">
                                         @Html.DisplayFor(modelItem =>
                                     item.Description)
                                     </p>
-                                    <p claass="bx bxs-notepad" style="font-size: 15px;">
+                                    <p class="bx bxs-group" style="font-size: 15px;">
                                         <strong>Staff</strong>
                                     </p>
                                     <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
@@ -206,26 +213,24 @@
                                             </li>
                                         }
                                     </ul>
-                                    <p style="font-size: 12px;" class="mt-2">
-                                        <strong>Message Manager :</strong>
+                                    <p class="bx bxs-message" style="font-size: 15px;" >
+                                        <strong>Message Manager </strong>
                                     </p>
-                                    <p class="card-text" style="font-size: 12px;">@item.MessageManager</p>
-                                    <p style="font-size: 12px;">
-                                        <strong>Message Staff :</strong>
+                                    <p class="card-text" style="font-size: 15px;">@item.MessageManager</p>
+                                    <p class="bx bxs-message" style="font-size: 15px;">
+                                        <strong>Message Staff </strong>
                                     </p>
-                                    <p class="card-text" style="font-size: 12px;">@item.Additional</p>
+                                    <p class="card-text" style="font-size: 15px;">@item.Additional</p>
                                 </div>
                             </div>
                         }
                     </div>
 
-                    <div class="column" data-status="Revision" ondragover="onDragOver(event)"
-                         ondrop="onDrop(event)">
+                    <div class="column" data-status="Revision" >
                         <h5>Revision</h5>
                         @foreach (var item in Model.Where(x => x.Status == StatusEnum.Revision))
                         {
-                            <div class="card mb-3 card-subtitle text-muted mb-3" data-task-id="@item.Guid"
-                                 draggable="true">
+                            <div class="card mb-3 card-subtitle text-muted mb-3" data-task-id="@item.Guid" >
                                 <div class="card-kanban">
                                     <div class="card-title d-flex align-items-start justify-content-between">
                                         <div class="avatar flex-shrink-0">
@@ -239,8 +244,10 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4"
                                                  style="">
-                                                <a class="dropdown-item" asp-action="EditProgress"
-                                                   asp-route-guid="@item.Guid">Edit</a>
+                                                <a class="dropdown-item" asp-action="EditProgress" asp-route-guid="@item.Guid" asp-route-assignmentGuid="@item.AssignmentGuid">Edit</a>
+                                                <a class="dropdown-item" asp-action="AddStaff" asp-route-guid="@item.Guid" asp-route-assignmentGuid="@item.AssignmentGuid">Assign Staff</a>
+                                                <a class="dropdown-item" asp-action="Index" asp-controller="Additional"
+                                                   asp-route-guid="@item.Guid">Additional</a>
                                                 <button class="dropdown-item delete-button"
                                                         onclick="deleteProgress('@item.Guid')">
                                                     Delete
@@ -248,11 +255,14 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <p class="bx bxs-notepad" style="font-size: 15px;">
+                                        <strong>Description</strong>
+                                    </p>
                                     <p class="card-title" style="font-size: 15px;">
                                         @Html.DisplayFor(modelItem =>
                                     item.Description)
                                     </p>
-                                    <p claass="bx bxs-notepad" style="font-size: 15px;">
+                                    <p class="bx bxs-group" style="font-size: 15px;">
                                         <strong>Staff</strong>
                                     </p>
                                     <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
@@ -268,26 +278,25 @@
                                             </li>
                                         }
                                     </ul>
-                                    <p style="font-size: 12px;" class="mt-2">
-                                        <strong>Message Manager :</strong>
+                                    <p class="bx bxs-message" style="font-size: 15px;" >
+                                        <strong>Message Manager </strong>
                                     </p>
-                                    <p class="card-text" style="font-size: 12px;">@item.MessageManager</p>
-                                    <p style="font-size: 12px;">
-                                        <strong>Message Staff :</strong>
+                                    <p class="card-text" style="font-size: 15px;">@item.MessageManager</p>
+                                    <p class="bx bxs-message" style="font-size: 15px;">
+                                        <strong>Message Staff </strong>
                                     </p>
-                                    <p class="card-text" style="font-size: 12px;">@item.Additional</p>
+                                    <p class="card-text" style="font-size: 15px;">@item.Additional</p>
 
                                 </div>
                             </div>
                         }
                     </div>
 
-                    <div class="column" data-status="Done" ondragover="onDragOver(event)" ondrop="onDrop(event)">
+                    <div class="column" data-status="Done" >
                         <h5>Done</h5>
                         @foreach (var item in Model.Where(x => x.Status == StatusEnum.Done))
                         {
-                            <div class="card mb-3 card-subtitle text-muted mb-3" data-task-id="@item.Guid"
-                                 draggable="true">
+                            <div class="card mb-3 card-subtitle text-muted mb-3" data-task-id="@item.Guid">
                                 <div class="card-kanban">
                                     <div class="card-title d-flex align-items-start justify-content-between">
                                         <div class="avatar flex-shrink-0">
@@ -301,8 +310,10 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4"
                                                  style="">
-                                                <a class="dropdown-item" asp-action="EditProgress"
-                                                   asp-route-guid="@item.Guid">Edit</a>
+                                                <a class="dropdown-item" asp-action="EditProgress" asp-route-guid="@item.Guid" asp-route-assignmentGuid="@item.AssignmentGuid">Edit</a>
+                                                <a class="dropdown-item" asp-action="AddStaff" asp-route-guid="@item.Guid" asp-route-assignmentGuid="@item.AssignmentGuid">Assign Staff</a>
+                                                <a class="dropdown-item" asp-action="Index" asp-controller="Additional"
+                                                   asp-route-guid="@item.Guid">Additional</a>
                                                 <button class="dropdown-item delete-button"
                                                         onclick="deleteProgress('@item.Guid')">
                                                     Delete
@@ -310,11 +321,14 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <p class="bx bxs-notepad" style="font-size: 15px;">
+                                        <strong>Description</strong>
+                                    </p>
                                     <p class="card-title" style="font-size: 15px;">
                                         @Html.DisplayFor(modelItem =>
                                     item.Description)
                                     </p>
-                                    <p claass="bx bxs-notepad" style="font-size: 15px;">
+                                    <p class="bx bxs-group" style="font-size: 15px;">
                                         <strong>Staff</strong>
                                     </p>
                                     <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
@@ -330,15 +344,14 @@
                                             </li>
                                         }
                                     </ul>
-                                    <p style="font-size: 12px;" class="mt-2">
-                                        <strong>Message Manager :</strong>
+                                    <p class="bx bxs-message" style="font-size: 15px;" >
+                                        <strong>Message Manager </strong>
                                     </p>
-                                    <p class="card-text" style="font-size: 12px;">@item.MessageManager</p>
-                                    <p style="font-size: 12px;">
-                                        <strong>Message Staff :</strong>
+                                    <p class="card-text" style="font-size: 15px;">@item.MessageManager</p>
+                                    <p class="bx bxs-message" style="font-size: 15px;">
+                                        <strong>Message Staff </strong>
                                     </p>
-                                    <p class="card-text" style="font-size: 12px;">@item.Additional</p>
-
+                                    <p class="card-text" style="font-size: 15px;">@item.Additional</p>
                                 </div>
                             </div>
                         }
@@ -418,34 +431,6 @@
                             );
                         }
                     });
-                }
-            });
-        }
-    </script>
-
-    <script>
-        function onDragStart(event) {
-            event.dataTransfer.setData("text", event.target.dataset.taskId);
-        }
-
-        function onDragOver(event) {
-            event.preventDefault();
-        }
-
-        function onDrop(event) {
-            event.preventDefault();
-            const guid = event.dataTransfer.getData("text");
-            const status = event.target.closest('.column').dataset.status;
-
-            $.ajax({
-                url: "https://localhost:7296/Progress/Status",
-                type: "POST",
-                data: { guid: guid, newStatus: status },
-                success: function (response) {
-                    console.log("Status task berhasil diperbarui");
-                },
-                error: function (error) {
-                    console.error("Terjadi kesalahan saat memperbarui status task:", error);
                 }
             });
         }
