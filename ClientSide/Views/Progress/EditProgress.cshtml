@@ -1,4 +1,5 @@
-﻿@model ClientSide.ViewModels.Progress.UpdateProgressVM
+﻿@using ClientSide.Utilities.Enum
+@model ClientSide.ViewModels.Progress.UpdateProgressVM
 
 @{
     ViewData["Title"] = "EditProgress";
@@ -22,33 +23,66 @@
                             <div class="form-group">
                                 <input asp-for="AssignmentGuid" class="form-control" hidden />
                             </div>
-                            <div class="form-group">
-                                <label asp-for="Description" class="control-label"></label>
-                                <input asp-for="Description" class="form-control" />
-                                <span asp-validation-for="Description" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Status" class="control-label"></label>
-                                <select asp-for="Status" class="form-control">
-                                    <option selected disabled value="">Choose</option>
-                                    <option value="1">NotStarted</option>
-                                    <option value="2">InProgress</option>
-                                    <option value="3">Checking</option>
-                                    <option value="4">Revision</option>
-                                    <option value="5">Done</option>
-                                </select>
-                                <span asp-validation-for="Status" class="text-danger"></span>
-                            </div>
-                            <div class="form-group ">
-                                <label asp-for="Additional" class="control-label"></label>
-                                <input asp-for="Additional" class="form-control" />
-                                <span asp-validation-for="Additional" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="MessageManager" class="control-label"></label>
-                                <input asp-for="MessageManager" class="form-control" />
-                                <span asp-validation-for="MessageManager" class="text-danger"></span>
-                            </div>
+                            @if (User.IsInRole(nameof(RoleLevel.ProjectManager)))
+                            {
+                                <div class="form-group">
+                                    <label asp-for="Description" class="control-label"></label>
+                                    <input asp-for="Description" class="form-control" />
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Status" class="control-label"></label>
+                                    <select asp-for="Status" class="form-control">
+                                        <option selected disabled value="">Choose</option>
+                                        <option value="1">NotStarted</option>
+                                        <option value="2">InProgress</option>
+                                        <option value="3">Checking</option>
+                                        <option value="4">Revision</option>
+                                        <option value="5">Done</option>
+
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                                <div class="form-group ">
+                                    <label asp-for="Additional" class="control-label"></label>
+                                    <input asp-for="Additional" class="form-control" readonly />
+                                    <span asp-validation-for="Additional" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="MessageManager" class="control-label"></label>
+                                    <input asp-for="MessageManager" class="form-control" />
+                                    <span asp-validation-for="MessageManager" class="text-danger"></span>
+                                </div>
+                            }
+                            @if (User.IsInRole(nameof(RoleLevel.Staff)))
+                            {
+                                <div class="form-group">
+                                    <label asp-for="Description" class="control-label"></label>
+                                    <input asp-for="Description" class="form-control" readonly/>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Status" class="control-label"></label>
+                                    <select asp-for="Status" class="form-control">
+                                        <option selected disabled value="">Choose</option>
+                                        <option value="1">NotStarted</option>
+                                        <option value="2">InProgress</option>
+                                        <option value="3">Checking</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                                <div class="form-group ">
+                                    <label asp-for="Additional" class="control-label"></label>
+                                    <input asp-for="Additional" class="form-control" />
+                                    <span asp-validation-for="Additional" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="MessageManager" class="control-label"></label>
+                                    <input asp-for="MessageManager" class="form-control" readonly/>
+                                    <span asp-validation-for="MessageManager" class="text-danger"></span>
+                                </div>
+                            }
+
                             <div class="form-group">
                                 <input asp-for="DueDate" class="form-control" type="date" hidden />
                             </div>
@@ -56,10 +90,10 @@
                                 <input asp-for="Progress" class="form-control" hidden />
                             </div>
                             <div class="form-group mt-3">
-                                <a asp-action="Index" class="btn btn-secondary">Back</a>
+                                <a asp-action="Index" asp-route-guid="@Model.AssignmentGuid" class="btn btn-secondary">Back</a>
                                 <input type="submit" value="Save" class="btn btn-primary" />
                             </div>
-                            <input type="hidden" name="assignmentGuid" value="@ViewBag.AssignmentGuid" />
+                            <input type="hidden" name="assignmentGuid" value="@Model.AssignmentGuid" />
                         </form>
                     </div>
                 </div>
@@ -69,5 +103,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

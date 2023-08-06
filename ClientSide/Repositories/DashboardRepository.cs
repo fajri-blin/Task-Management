@@ -2,20 +2,25 @@
 using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Dashboard;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace ClientSide.Repositories
 {
     public class DashboardRepository : IDashboardRepository
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _request;
+        protected readonly string _request;
+        protected readonly HttpClient _httpClient;
+        protected readonly IHttpContextAccessor _contextAccessor;
         public DashboardRepository(string request = "Dashboard/")
         {
+            _contextAccessor = new HttpContextAccessor();
             _httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://localhost:7113/api/")
             };
             this._request = request;
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", _contextAccessor.HttpContext?.Session.GetString("JWToken"));
         }
 
         public async Task<ResponseHandlers<DashboardMonthMangerVM>> CountMonth(Guid guid)

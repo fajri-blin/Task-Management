@@ -64,7 +64,7 @@ namespace ClientSide.Controllers
             }
             else
             {
-                return View("Staff");
+                return RedirectToAction("GetProgressForStaff", "Assignment");
             }
 
         }
