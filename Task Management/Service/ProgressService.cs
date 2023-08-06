@@ -132,7 +132,7 @@ public class ProgressService
             var progress = new Progress
             {
                 Guid = getEntity.Guid,
-                Description = getEntity.Description,
+                Description = updateStatusDto.Description,
                 Status = updateStatusDto.Status,
                 AssignmentGuid = getEntity.AssignmentGuid,
                 Additional = updateStatusDto.Additional ?? getEntity.Additional ?? null,

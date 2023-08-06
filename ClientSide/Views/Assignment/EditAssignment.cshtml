@@ -27,9 +27,9 @@
                                 <select id="mySelect2Edit" name="Category" class="form-control" asp-for="Category" multiple="multiple">
                                     @{
                                         // Loop through the selected categories in updateAssignmentVM.Category
-                                        foreach (var category in Model.Category)
+                                        foreach (var category in ViewBag.ListCategory)
                                         {
-                                            <option value="@category" selected>@category</option>
+                                            <option value="@category.Name">@category.Name</option>
                                         }
                                     }
                                 </select>
