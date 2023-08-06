@@ -6,6 +6,7 @@ namespace Task_Management.Dtos.ProgressDto
     {
         public Guid Guid { get; set; }
         public Guid? AccountGuid { get; set; }
+        public string Description { get; set; }
         public StatusEnum Status { get; set; }
         public string? MessageManager { get; set; }
         public string? Additional { get; set; }

@@ -216,6 +216,14 @@ public class AssignmentController : Controller
             Text = category
         }).ToList();
 
+        // Select all Category
+        var listCategory = await _categoryRepository.Get();
+        if (listCategory is null)
+        {
+            listCategory = null;
+        }
+        ViewBag.ListCategory = listCategory.Data;
+
         return View(updateAssignmentVM);
     }
 
