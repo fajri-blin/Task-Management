@@ -44,7 +44,7 @@
                                     <span asp-validation-for="Status" class="text-danger"></span>
                                 </div>
                                 <div class="form-group ">
-                                    <label asp-for="Additional" class="control-label"></label>
+                                    <label asp-for="Additional" class="control-label">Message Staff</label>
                                     <input asp-for="Additional" class="form-control" readonly />
                                     <span asp-validation-for="Additional" class="text-danger"></span>
                                 </div>
@@ -72,7 +72,7 @@
                                     <span asp-validation-for="Status" class="text-danger"></span>
                                 </div>
                                 <div class="form-group ">
-                                    <label asp-for="Additional" class="control-label"></label>
+                                    <label asp-for="Additional" class="control-label">Message Staff</label>
                                     <input asp-for="Additional" class="form-control" />
                                     <span asp-validation-for="Additional" class="text-danger"></span>
                                 </div>
@@ -82,13 +82,6 @@
                                     <span asp-validation-for="MessageManager" class="text-danger"></span>
                                 </div>
                             }
-
-                            <div class="form-group">
-                                <input asp-for="DueDate" class="form-control" type="date" hidden />
-                            </div>
-                            <div class="form-group">
-                                <input asp-for="Progress" class="form-control" hidden />
-                            </div>*@
                             <div class="form-group mt-3">
                                 <a asp-action="Index" asp-route-guid="@Model.AssignmentGuid" class="btn btn-secondary">Back</a>
                                 <input type="submit" value="Save" class="btn btn-primary" />
