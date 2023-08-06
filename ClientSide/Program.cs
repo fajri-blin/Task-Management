@@ -78,7 +78,7 @@ app.UseStatusCodePages(async context =>
     }
     else if (response.StatusCode.Equals((int)HttpStatusCode.NotFound))
     {
-        response.Redirect("/notfound");
+        response.Redirect("/Home/NotFound404");
     }
     else if (response.StatusCode.Equals((int)HttpStatusCode.Forbidden))
     {

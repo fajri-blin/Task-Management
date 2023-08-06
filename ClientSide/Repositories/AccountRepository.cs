@@ -12,16 +12,9 @@ namespace ClientSide.Repositories;
 
 public class AccountRepository : GeneralRepository<AccountVM>, IAccountRepository
 {
-    private readonly HttpClient _httpClient;
-    private readonly string _request;
-
     public AccountRepository(string request = "Account/") : base(request)
     {
-        _httpClient = new HttpClient
-        {
-            BaseAddress = new Uri("https://localhost:7113/api/")
-        };
-        this._request = request;
+
     }
 
     public async Task<ResponseHandlers<GetForStaffVM>> GetAssignmentForStaff(Guid guid)
