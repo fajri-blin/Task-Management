@@ -6,6 +6,7 @@ namespace ClientSide.ViewModels.Progress
     {
         public Guid Guid { get; set; }
         public Guid? AssignmentGuid { get; set; }
+        public Guid? AccountGuid { get; set; }
         public string Description { get; set; }
         public StatusEnum Status { get; set; }
         public string? Additional { get; set; }

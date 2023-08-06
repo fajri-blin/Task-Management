@@ -81,6 +81,7 @@
                                     <input asp-for="MessageManager" class="form-control" readonly/>
                                     <span asp-validation-for="MessageManager" class="text-danger"></span>
                                 </div>
+                                <input asp-for="AccountGuid" value="@Guid.Parse(User.FindFirst("Guid").Value)" hidden/>
                             }
 
                             <div class="form-group">
