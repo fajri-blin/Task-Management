@@ -39,12 +39,33 @@ public class ProgressService
         var list = _progressRepository.GetByAssignmentForeignKey(guid);
         if (list == null) return null;
 
-        var baseList = new List<ProgressDto>();
+        var accountProgress = _accountProgressRepository.GetAll();
+        var account = _accountRepository.GetAll();
 
-        foreach (var item in list)
+        var baseList = list.Select(item => new ProgressDto
         {
-            baseList.Add((ProgressDto)item);
-        }
+            Guid = item.Guid,
+            AssignmentGuid = item.AssignmentGuid,
+            Description = item.Description,
+            Status = item.Status,
+            Additional = item.Additional,
+            CheckMark = item.CheckMark,
+            MessageManager = item.MessageManager,
+            StaffGuid = accountProgress
+            .Where(ap => ap.ProgressGuid == item.Guid)
+            .Select(ap => ap.AccountGuid.Value)
+            .ToList(),
+            StaffName = account
+            .Join(accountProgress,
+                acc => acc.Guid,
+                ap => ap.AccountGuid.Value,
+                (acc, ap) => new { Account = acc, Progress = ap })
+            .Where(x => x.Progress.ProgressGuid == item.Guid)
+            .Select(x => x.Account.Name)
+            .ToList()
+        }).ToList();
+
+
 
         return baseList;
     }

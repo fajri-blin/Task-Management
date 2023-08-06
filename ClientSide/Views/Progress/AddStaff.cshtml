@@ -1,47 +1,75 @@
-﻿@model IEnumerable<ClientSide.ViewModels.Progress.AddStaffVM>
-
+﻿@model ClientSide.ViewModels.Progress.AssignStaffVM
 @{
     ViewData["Title"] = "AddStaff";
 }
 
+
+
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="fw-bold py-3 mb-4">
-            <span class="text-muted fw-light">Progress/</span>
-            Add Staff
+            <span class="text-muted fw-light">Progress /</span>
+            Assign Staff
         </h4>
 
-    <div class="container-xxl flex-grow-1 container-p-y">
-    <div class="card p-3">
-        <h4 class="fw-bold py-3 mb-4">Staff</h4>
-        <table id="tableAccounts" class="table table-striped">
-    <form asp-action="AssignStaff" method="post">
-        <table>
-            <thead>
-                <tr>
-                    <th>Staff Name</th>
-                    <th>Assign</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var staff in Model)
-                {
-                    <tr>
-                        <td>@staff.Name</td>
-                        <td>
-                            <input type="checkbox" name="selectedStaffGuids" value="@staff.Guid" />
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        <br />
-        <input type="hidden" name="progressGuid" value="@ViewBag.ProgressGuid" />
-        <button type="submit">Assign Staff</button>
-    </form>
-    </table>
+        <div class="card p-3">
+            <h4 class="fw-bold py-3 mb-4">Staff</h4>
+            Current Assign Staff :
+            <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+            @foreach (var staff in Model.CurrentStaffVMs)
+            {
+                    <li data-bs-toggle="tooltip"
+                        data-popup="tooltip-custom" data-bs-placement="top"
+                        class="avatar avatar-xs pull-up" title="@staff.Name">
+                        <img src="https://localhost:7113/api/Account/Photo/@staff.Guid" alt="Avatar"
+                             class="rounded-circle" />
+                    </li>
+            }
+            </ul>
+            <form asp-action="AssignStaff" method="post">
+                <div class="form-group">
+                    <label for="selectedStaffGuids">Select Staff</label>
+                    <select class="form-control select2" multiple="multiple" name="selectedStaffGuids" style="width: 100%;">
+                        @foreach (var staff in Model.StaffListVMs)
+                        {
+                            <option value="@staff.Guid">@staff.Name</option>
+                        }
+                    </select>
+                </div>
+                <br />
+                <input type="hidden" name="progressGuid" value="@ViewBag.ProgressGuid" />
+                <input type="hidden" name="assignmentGuid" value="@ViewBag.AssignmentGuid" />
+                <button type="submit" class="btn btn-primary">Assign Staff</button>
+            </form>
+        </div>
     </div>
-    </div>
-</div>
-    </div>
+    <!-- Rest of your code remains the same -->
 
+ 
+</div>
+
+@section Styles {
+    <!-- Add the CSS for Select2 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <!-- Add the JavaScript for Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        // Assuming currentStaff is an array of CurrentStaffVM objects with properties Guid and Name
+        var currentStaff = @Html.Raw(Json.Serialize(Model.CurrentStaffVMs));
+
+        $(document).ready(function () {
+            // Initialize Select2
+            var selectElement = $('.select2');
+            selectElement.select2();
+
+            // Set pre-selected options based on currentStaff
+            var selectedStaffGuids = currentStaff.map(function (staff) {
+                return staff.guid;
+            });
+            selectElement.val(selectedStaffGuids).trigger('change');
+        });
+    </script>
+}

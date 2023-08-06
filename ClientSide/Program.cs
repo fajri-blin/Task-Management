@@ -20,6 +20,7 @@ builder.Services.AddScoped<IProgressRepository, ProgressRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IAdditionalRepository, AdditionalRepository>();
+builder.Services.AddScoped<IAccountProgressRepository, AccountProgressRepository>();
 
 // Add Cors
 builder.Services.AddCors(options =>

@@ -8,6 +8,8 @@ using ClientSide.ViewModels.Profile;
 using Syncfusion.EJ2.Grids;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
+using ClientSide.Utilities.Enum;
+using ClientSide.ViewModels.AccountProgress;
 
 namespace ClientSide.Controllers;
 
@@ -17,13 +19,19 @@ public class ProgressController : Controller
     private readonly IProgressRepository _progressRepository;
     private readonly IAssignmentRepository _assignmentRepository;
     private readonly IAccountRepository _accountRepository;
+    private readonly IAccountProgressRepository _accountProgressRepository;
 
-    public ProgressController(IProgressRepository progressRepository, IAssignmentRepository assignmentRepository, IAccountRepository accountRepository)
+    public ProgressController(IProgressRepository progressRepository, 
+                              IAssignmentRepository assignmentRepository,
+                              IAccountRepository accountRepository,
+                              IAccountProgressRepository accountProgressRepository)
     {
         _progressRepository = progressRepository;
         _assignmentRepository = assignmentRepository;
         _accountRepository = accountRepository;
+        _accountProgressRepository = accountProgressRepository;
     }
+
     [HttpGet]
     public async Task<IActionResult> Index(Guid guid)
     {
@@ -81,9 +89,6 @@ public class ProgressController : Controller
         return View(createProgress);
     }
 
-
-
-
     [HttpPost]
     public async Task<IActionResult> DeepDeleteProgress(Guid guid)
     {
@@ -104,7 +109,7 @@ public class ProgressController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> EditProgress(Guid guid)
+    public async Task<IActionResult> EditProgress(Guid guid, Guid assignmentGuid)
     {
         var components = new ComponentHandlers
         {
@@ -130,18 +135,18 @@ public class ProgressController : Controller
             MessageManager = result.Data.MessageManager,
             /*DueDate = result.Data.DueDate,*/
         };
-
+        ViewBag.AssignmentGuid = assignmentGuid; // Set the ViewBag.AssignmentGuid here
         return View(updateProgressVM);
     }
     [HttpPost]
-    public async Task<IActionResult> EditProgress(UpdateProgressVM updateProgress)
+    public async Task<IActionResult> EditProgress(UpdateProgressVM updateProgress, Guid assignmentGuid)
     {
 
         var result = await _progressRepository.UpdateProgress(updateProgress);
         if (result.Code == 200)
         {
             TempData["Success"] = "Data Berhasil Diupdate";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new { guid = assignmentGuid });
         }
         else if (result.Code == 400)
         {
@@ -167,9 +172,8 @@ public class ProgressController : Controller
 
         return View("Index");
     }
-
     [HttpGet]
-    public async Task<IActionResult> AddStaff(Guid guid)
+    public async Task<IActionResult> AddStaff(Guid guid, Guid assignmentGuid)
     {
         var components = new ComponentHandlers
         {
@@ -178,32 +182,75 @@ public class ProgressController : Controller
             Navbar = true,
         };
         ViewBag.Components = components;
+
+        List<CurrentStaffVM> StaffName = new List<CurrentStaffVM>();
+        var getAccountProgress = await _accountProgressRepository.GetByProgress(guid);
+        if (getAccountProgress.Code == 200)
+        {
+            foreach (var item in getAccountProgress.Data)
+            {
+                var getAccount = await _accountRepository.Get(item.AccountGuid);
+                var currentAccount = new CurrentStaffVM
+                {
+                    Guid = getAccount.Guid,
+                    Name = getAccount.Name
+                };
+                StaffName.Add(currentAccount);
+            }
+        }
+
         var response = await _accountRepository.Get();
-        var staffList = response.Data.Select(staff => new AddStaffVM
-        {
-            Guid = staff.Guid,
-            Name = staff.Name
-        }).ToList();
+        var staffList = response.Data
+            .Where(staff => staff.Role == RoleLevel.Staff) // Filter staff with RoleLevel.Staff
+            .Select(staff => new AddStaffVM
+            {
+                Guid = staff.Guid,
+                Name = staff.Name,
+                Role = staff.Role,
+            })
+            .ToList();
         ViewBag.ProgressGuid = guid;
-        return View("AddStaff", staffList);
-    }
+        ViewBag.AssignmentGuid = assignmentGuid; // Set the ViewBag.AssignmentGuid here
 
+        var viewModel = new AssignStaffVM
+        {
+            StaffListVMs = staffList,
+            CurrentStaffVMs = StaffName
+        };
+        return View("AddStaff", viewModel);
+    }
     [HttpPost]
-    public async Task<IActionResult> AssignStaff(Guid progressGuid, List<Guid> selectedStaffGuids)
+    public async Task<IActionResult> AssignStaff(Guid progressGuid, Guid assignmentGuid, List<Guid> selectedStaffGuids)
     {
-        var progressResponse = await _progressRepository.GetProgressById(progressGuid);
-        if (progressResponse.Data == null)
+        try
         {
-            return NotFound();
-        }
-        var progress = progressResponse.Data;
-        foreach (var staffGuid in selectedStaffGuids)
-        {
-            progress.StaffGuids.Add(staffGuid);
-        }
-        var updateResponse = await _progressRepository.UpdateProgress(progress);
-        return RedirectToAction("Index");
-    }
+            var getAccountProgress = await _accountProgressRepository.GetByProgress(progressGuid);
+            if (getAccountProgress.Data != null)
+            {
+                foreach (var item in getAccountProgress.Data)
+                {
+                    await _accountProgressRepository.DeleteAccountProgress(item.Guid);
+                }
+            }
 
+            foreach (var item in selectedStaffGuids)
+            {
+                var dto = new AssignStaff
+                {
+                    AccountGuid = item,
+                    ProgressGuid = progressGuid,
+                };
+                await _accountProgressRepository.AddAccountProgress(dto);
+            }
+
+            // Redirect to the appropriate action after the staff is assigned.
+            return RedirectToAction("Index", new { guid = assignmentGuid });
+        }
+        catch (Exception ex)
+        {
+            // Handle the error appropriately (e.g., log the error, show an error message, etc.).
+            return View("Error");
+        }
+    }
 
 }
