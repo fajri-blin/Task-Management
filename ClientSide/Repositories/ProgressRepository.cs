@@ -56,7 +56,7 @@ namespace ClientSide.Repositories
                 Status = updateProgress.Status,
                 Additional = updateProgress.Additional,
                 MessageManager = updateProgress.MessageManager,
-               /* DueDate = updateProgress.DueDate,*/
+                /* DueDate = updateProgress.DueDate,*/
             };
 
             StringContent content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
@@ -107,16 +107,6 @@ namespace ClientSide.Repositories
             using (var httpResponse = await _httpClient.GetAsync(_request + guid))
             {
                 string apiResponse = await httpResponse.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<ResponseHandlers<ProgressVM>>(apiResponse);
-            }
-        }
-        public async Task<ResponseHandlers<ProgressVM>> UpdateProgress(ProgressVM progress)
-        {
-            string json = JsonConvert.SerializeObject(progress);
-            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            using (var response = await _httpClient.PutAsync(_request, httpContent))
-            {
-                string apiResponse = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<ResponseHandlers<ProgressVM>>(apiResponse);
             }
         }

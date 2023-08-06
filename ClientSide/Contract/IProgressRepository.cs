@@ -10,7 +10,5 @@ namespace ClientSide.Contract
         Task<ResponseHandlers<UpdateProgressVM>> UpdateProgress(UpdateProgressVM updateProgress);
         Task<ResponseHandlers<Guid>> DeepDeleteProgress(Guid guid);
         Task<ResponseHandlers<ProgressVM>> GetProgressById(Guid guid);
-        Task<ResponseHandlers<ProgressVM>> UpdateProgress(ProgressVM progress);
-        
     }
 }

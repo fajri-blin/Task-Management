@@ -127,67 +127,6 @@ public class AdditionalService
         }
     }
 
-    public async Task<int> Update(NewAdditionalDto additionaldto)
-    {
-        var additionals = _additionalRepository.GetByProgressForeignKey((Guid)additionaldto.ProgressGuid);
-        if (additionals is null) return 0;
-
-
-
-        var transaction = _bookingContext.Database.BeginTransaction();
-        try
-        {
-
-            foreach (var additional in additionals)
-            {
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files\\Additional", additional.FileData);
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-                _additionalRepository.Delete(additional);
-            }
-            foreach (var file in additionaldto.FileName)
-            {
-                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
-                string fileData = DateTime.Now.Ticks.ToString() + extension;
-
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files\\Additional");
-
-                if (!Directory.Exists(filePath))
-                {
-                    Directory.CreateDirectory(filePath);
-                }
-
-                var exacPath = Path.Combine(filePath, fileData);
-                using (var stream = new FileStream(exacPath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-
-                var additonal = new Additional
-                {
-                    Guid = new Guid(),
-                    ProgressGuid = additionaldto.ProgressGuid,
-                    FileName = file.FileName,
-                    FileData = fileData,
-                    CreatedAt = DateTime.Now,
-                    ModifiedAt = DateTime.Now,
-                };
-
-                _additionalRepository.Create(additonal);
-
-            }
-            transaction.Commit();
-            return 1;
-        }
-        catch
-        {
-            transaction.Rollback();
-            return 0;
-        }
-    }
-
     public int Delete(Guid guid)
     {
         var additional = _additionalRepository.GetByGuid(guid);

@@ -100,7 +100,7 @@ namespace Task_Management.Service
             var entity = (
                             from account in accounts
                             join role in roles on account.RoleGuid equals role.Guid
-                            where roleAccount.Contains(role.Name)
+                            where roleAccount.Contains(role.Name) && !account.IsDeleted
                             group account by role.Name into accountRole
                             select new
                             {
