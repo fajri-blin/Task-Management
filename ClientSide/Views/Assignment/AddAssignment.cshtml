@@ -72,20 +72,21 @@
 
 
     <script>
-        // Initialize Select2 with tagging and token separators
         $(document).ready(function () {
             $('#mySelect2').select2({
                 tags: true,
                 tokenSeparators: [',']
             });
 
-            // Handle tagging and splitting values by commas
+            // Handle tagging and adding multiple values separated by commas
             $('#mySelect2').on('select2:select', function (e) {
                 var data = e.params.data;
                 if (data.element && data.element.value === data.id) {
                     // New tag added, split the value by commas
-                    var values = data.id.split(',');
-                    $(this).val(values).trigger('change');
+                    var existingValues = $(this).val(); // Get the existing selected values as an array
+                    var newValues = data.id.split(','); // Split the new tag value by commas
+                    var mergedValues = existingValues.concat(newValues); // Merge the existing and new values
+                    $(this).val(mergedValues).trigger('change'); // Set the updated values and trigger the change event
                 }
             });
 
