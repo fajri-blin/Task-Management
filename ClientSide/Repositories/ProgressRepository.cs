@@ -55,7 +55,7 @@ namespace ClientSide.Repositories
                 Status = updateProgress.Status,
                 Additional = updateProgress.Additional,
                 MessageManager = updateProgress.MessageManager,
-                DueDate = updateProgress.DueDate,
+               /* DueDate = updateProgress.DueDate,*/
             };
 
             StringContent content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");

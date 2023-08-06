@@ -12,9 +12,6 @@ public class ProgressVM
     public string? MessageManager { get; set; }
     public List<Guid>? StaffGuid { get; set; }
     public List<string>? StaffName { get; set; }
-
-    /*  public DateTime DueDate { get; set; }
-      public double Progress { get; set; }*/
 }
 
 
