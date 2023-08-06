@@ -4,13 +4,14 @@ using System.Net;
 using Task_Management.DTOs.AdditionalDto;
 using Task_Management.DTOs.NewAdditionalDto;
 using Task_Management.Service;
+using Task_Management.Utilities.Enum;
 using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
 public class AdditionalController : ControllerBase
 {
     private readonly AdditionalService _additionalSevices;
@@ -116,25 +117,6 @@ public class AdditionalController : ControllerBase
             Status = HttpStatusCode.OK.ToString(),
             Message = "Data created",
             Data = created
-        });
-    }
-
-    [HttpPut]
-    public async Task<IActionResult> Update([FromForm] NewAdditionalDto entity)
-    {
-        var updated = await _additionalSevices.Update(entity);
-        if (updated is 0) return NotFound(new ResponseHandlers<string>
-        {
-            Code = StatusCodes.Status404NotFound,
-            Status = HttpStatusCode.NotFound.ToString(),
-            Message = "Data Not Found"
-        });
-
-        return Ok(new ResponseHandlers<string>
-        {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Data Updated",
         });
     }
 
