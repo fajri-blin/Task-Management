@@ -44,8 +44,11 @@ public class ProgressController : Controller
         ViewBag.Components = components;
 
         var response = await _progressRepository.GetAllProgress(guid);
+        var getAssignment = await _assignmentRepository.Get(guid);
+
         if (response.Data != null)
         {
+            ViewBag.Description = getAssignment.Data.Description;
             var tasks = response.Data.ToList();
             return View(tasks);
         }
@@ -55,6 +58,7 @@ public class ProgressController : Controller
             return View(emptyList);
         }
     }
+
 
     [HttpGet]
     public IActionResult CreateProgress(Guid assignmentGuid)
