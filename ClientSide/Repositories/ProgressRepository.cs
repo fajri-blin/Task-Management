@@ -51,6 +51,7 @@ namespace ClientSide.Repositories
             {
                 Guid = updateProgress.Guid,
                 AssignmentGuid = updateProgress.AssignmentGuid,
+                AccountGuid = updateProgress.AccountGuid,
                 Description = updateProgress.Description,
                 Status = updateProgress.Status,
                 Additional = updateProgress.Additional,
@@ -60,7 +61,7 @@ namespace ClientSide.Repositories
 
             StringContent content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
 
-            using (var response = await _httpClient.PutAsync(_request, content))
+            using (var response = await _httpClient.PutAsync(_request + "Status/", content))
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 Console.WriteLine(apiResponse);

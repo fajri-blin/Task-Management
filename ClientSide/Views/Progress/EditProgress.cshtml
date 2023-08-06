@@ -81,6 +81,7 @@
                                     <input asp-for="MessageManager" class="form-control" readonly/>
                                     <span asp-validation-for="MessageManager" class="text-danger"></span>
                                 </div>
+                                <input asp-for="AccountGuid" value="@Guid.Parse(User.FindFirst("Guid").Value)" hidden/>
                             }
                             <div class="form-group mt-3">
                                 <a asp-action="Index" asp-route-guid="@Model.AssignmentGuid" class="btn btn-secondary">Back</a>

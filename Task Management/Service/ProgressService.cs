@@ -1,4 +1,5 @@
-﻿using Task_Management.Contract.Data;
+﻿using System.Security.Claims;
+using Task_Management.Contract.Data;
 using Task_Management.Data;
 using Task_Management.Dtos.ProgressDto;
 using Task_Management.DTOs.ProgressDto;
@@ -15,6 +16,7 @@ public class ProgressService
     private readonly IEmailHandler _emailHandler;
     private readonly IAccountRepository _accountRepository;
     private readonly IAssignmentRepository _assignmentRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     private readonly BookingDbContext _bookingContext;
 
@@ -23,7 +25,8 @@ public class ProgressService
                            IAccountProgressRepository accountProgressRepository,
                            BookingDbContext bookingDbContext,
                            IEmailHandler emailHandler,
-                           IAccountRepository accountRepository, IAssignmentRepository assignmentRepository)
+                           IAccountRepository accountRepository, IAssignmentRepository assignmentRepository,
+                           IHttpContextAccessor httpContextAccessor)
     {
         _progressRepository = ProgressRepository;
         _additionalRepository = additionalRepository;
@@ -32,6 +35,7 @@ public class ProgressService
         _emailHandler = emailHandler;
         _accountRepository = accountRepository;
         _assignmentRepository = assignmentRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public IEnumerable<ProgressDto> GetByAssignmentGuid(Guid guid)
@@ -134,93 +138,109 @@ public class ProgressService
                 Additional = updateStatusDto.Additional ?? getEntity.Additional ?? null,
                 MessageManager = updateStatusDto.MessageManager ?? getEntity.MessageManager ?? null,
                 CreatedAt = getEntity.CreatedAt,
+                ModifiedAt = DateTime.Now
             };
-            progress.ModifiedAt = DateTime.Now;
-            if (updateStatusDto.Status == StatusEnum.Done || updateStatusDto.Status == StatusEnum.Revision)
-            {
-                progress.CheckMark = true;
-            }
-            else
-            {
-                progress.CheckMark = false;
-            }
+
+            var user = _httpContextAccessor.HttpContext.User;
+            var role = user.FindFirstValue(ClaimTypes.Role);
+
             var account = _accountRepository.GetAll();
 
             var assignment = _assignmentRepository.GetByGuid((Guid)getEntity.AssignmentGuid);
             var accountManager = account.FirstOrDefault(a => a.Guid == (Guid)assignment.ManagerGuid);
             var accountProgresses = _accountProgressRepository.GetByProgressForeignKey(getEntity.Guid);
 
-            if (updateStatusDto.Status == StatusEnum.Done)
+            if (role == "Staff")
             {
-                foreach (var accountProgress in accountProgresses)
+                if (updateStatusDto.Status == StatusEnum.Done || updateStatusDto.Status == StatusEnum.Revision)
                 {
-                    var accountStaff = account.FirstOrDefault(a => a.Guid == (Guid)accountProgress.AccountGuid);
-                    _emailHandler.SendEmail(accountStaff.Email,
-                                    $"No Reply - Task Completed",
-                                    $"<p>Dear {accountStaff.Name}</p>" +
-                                    $"<p>We hope this message finds you well. We are pleased to inform you that the task assigned to you has been completed successfully!</p>" +
-                                    $"<div style=\"padding: 20px 0px;\">" +
-                                    $"<h3>Task Details:</h3>" +
-                                    $"<ul>" +
-                                    $"<li><strong>Project:</strong> {assignment.Title}</li>" +
-                                    $"<li><strong>Task:</strong> {progress.Description}</li>" +
-                                    $"<li><strong>Due Date:</strong> {assignment.DueDate.ToString("dddd, dd-MM-yyyy")}</li>" +
-                                    $"<li><strong>Completion Date:</strong> {DateTime.Now.ToString("dddd, dd-MM-yyyy")}</li>" +
-                                    $"</ul>" +
-                                    $"<p>Your dedication and effort in accomplishing this task are highly commendable. The work you've done will undoubtedly contribute significantly to the overall success of the project.</p>" +
-                                    $"<p>If you have any further tasks or require any assistance, please don't hesitate to reach out to your supervisor or the relevant department.</p>" +
-                                    $"<p>Once again, thank you for your hard work and commitment. We appreciate your valuable contributions to the team.</p>" +
-                                    $"</div>" +
-                                    $"<p>Best regards,</p>" +
-                                    $"<p>Metrodata<br>");
+                    progress.Status = getEntity.Status;
                 }
-            }
-            else if (updateStatusDto.Status == StatusEnum.Revision)
-            {
-                foreach (var accountProgress in accountProgresses)
+                else
                 {
-                    var accountStaff = account.FirstOrDefault(a => a.Guid == (Guid)accountProgress.AccountGuid);
-                    _emailHandler.SendEmail(accountStaff.Email,
-                                    $"No Reply - Task Revision Required",
-                                    $"<p>Dear {accountStaff.Name}</p>" +
-                                    $"<p>We hope this message finds you well. The task assigned to you requires some revision.</p>" +
-                                    $"<div style=\"padding: 20px 0px;\">" +
-                                    $"<h3>Task Details:</h3>" +
-                                    $"<ul>" +
-                                    $"<li><strong>Project:</strong> {assignment.Title}</li>" +
-                                    $"<li><strong>Task:</strong> {progress.Description}</li>" +
-                                    $"<li><strong>Due Date:</strong> {assignment.DueDate.ToString("dddd, dd-MM-yyyy")}</li>" +
-                                    $"</ul>" +
-                                    $"<p>Upon review, we have identified areas that need improvement. We kindly request you to address the feedback and make the necessary revisions accordingly.</p>" +
-                                    $"<p>If you have any questions or need further clarifications regarding the required changes, please don't hesitate to reach out to your supervisor or the relevant department.</p>" +
-                                    $"<p>Thank you for your attention to this matter. We appreciate your commitment to delivering high-quality work for the success of the project.</p>" +
-                                    $"</div>" +
-                                    $"<p>Best regards,</p>" +
-                                    $"<p>Metrodata<br>");
+                    progress.Status = updateStatusDto.Status;
                 }
+
+                if (updateStatusDto.Status == StatusEnum.Checking)
+                {
+                    var accountStaff = _accountRepository.GetByGuid((Guid)updateStatusDto.AccountGuid);
+                    _emailHandler.SendEmail(accountManager.Email,
+                                        $"No Reply - Task Review Required",
+                                        $"<p>Dear {accountManager.Name}</p>" +
+                                        $"<p>We hope this message finds you well. There is a task that requires your review for the project {assignment.Title}.</p>" +
+                                        $"<div style=\"padding: 20px 0px;\">" +
+                                        $"<h3>Task Details:</h3>" +
+                                        $"<ul>" +
+                                        $"<li><strong>Project:</strong> {assignment.Title}</li>" +
+                                        $"<li><strong>Task:</strong> {progress.Description}</li>" +
+                                        $"<li><strong>Due Date:</strong> {assignment.DueDate.ToString("dddd, dd-MM-yyyy")}</li>" +
+                                        $"</ul>" +
+                                        $"<p>The assigned staff, {accountStaff.Name ?? null}, has completed this task and awaits your review and approval to proceed.</p>" +
+                                        $"<p>Please take the time to review the task details and provide your feedback or approval as necessary. Your timely action will contribute to the successful completion of the project.</p>" +
+                                        $"<p>If you have any questions or need further information, please don't hesitate to reach out to the staff member or the relevant department.</p>" +
+                                        $"<p>Thank you for your prompt attention to this matter. Your review is greatly appreciated.</p>" +
+                                        $"</div>" +
+                                        $"<p>Best regards,</p>" +
+                                        $"<p>Metrodata<br>");
+                }
+
             }
-            else if (updateStatusDto.Status == StatusEnum.Checking)
+            else
             {
-                var accountStaff = _accountRepository.GetByGuid((Guid)updateStatusDto.AccountGuid);
-                _emailHandler.SendEmail(accountManager.Email,
-                                    $"No Reply - Task Review Required",
-                                    $"<p>Dear {accountManager.Name}</p>" +
-                                    $"<p>We hope this message finds you well. There is a task that requires your review for the project {assignment.Title}.</p>" +
-                                    $"<div style=\"padding: 20px 0px;\">" +
-                                    $"<h3>Task Details:</h3>" +
-                                    $"<ul>" +
-                                    $"<li><strong>Project:</strong> {assignment.Title}</li>" +
-                                    $"<li><strong>Task:</strong> {progress.Description}</li>" +
-                                    $"<li><strong>Due Date:</strong> {assignment.DueDate.ToString("dddd, dd-MM-yyyy")}</li>" +
-                                    $"</ul>" +
-                                    $"<p>The assigned staff, {accountStaff.Name ?? null}, has completed this task and awaits your review and approval to proceed.</p>" +
-                                    $"<p>Please take the time to review the task details and provide your feedback or approval as necessary. Your timely action will contribute to the successful completion of the project.</p>" +
-                                    $"<p>If you have any questions or need further information, please don't hesitate to reach out to the staff member or the relevant department.</p>" +
-                                    $"<p>Thank you for your prompt attention to this matter. Your review is greatly appreciated.</p>" +
-                                    $"</div>" +
-                                    $"<p>Best regards,</p>" +
-                                    $"<p>Metrodata<br>");
+                if (updateStatusDto.Status == StatusEnum.Done)
+                {
+                    foreach (var accountProgress in accountProgresses)
+                    {
+                        var accountStaff = account.FirstOrDefault(a => a.Guid == (Guid)accountProgress.AccountGuid);
+                        _emailHandler.SendEmail(accountStaff.Email,
+                                        $"No Reply - Task Completed",
+                                        $"<p>Dear {accountStaff.Name}</p>" +
+                                        $"<p>We hope this message finds you well. We are pleased to inform you that the task assigned to you has been completed successfully!</p>" +
+                                        $"<div style=\"padding: 20px 0px;\">" +
+                                        $"<h3>Task Details:</h3>" +
+                                        $"<ul>" +
+                                        $"<li><strong>Project:</strong> {assignment.Title}</li>" +
+                                        $"<li><strong>Task:</strong> {progress.Description}</li>" +
+                                        $"<li><strong>Due Date:</strong> {assignment.DueDate.ToString("dddd, dd-MM-yyyy")}</li>" +
+                                        $"<li><strong>Completion Date:</strong> {DateTime.Now.ToString("dddd, dd-MM-yyyy")}</li>" +
+                                        $"</ul>" +
+                                        $"<p>Your dedication and effort in accomplishing this task are highly commendable. The work you've done will undoubtedly contribute significantly to the overall success of the project.</p>" +
+                                        $"<p>If you have any further tasks or require any assistance, please don't hesitate to reach out to your supervisor or the relevant department.</p>" +
+                                        $"<p>Once again, thank you for your hard work and commitment. We appreciate your valuable contributions to the team.</p>" +
+                                        $"</div>" +
+                                        $"<p>Best regards,</p>" +
+                                        $"<p>Metrodata<br>");
+                    }
+
+                    progress.CheckMark = true;
+                }
+                else if (updateStatusDto.Status == StatusEnum.Revision)
+                {
+                    foreach (var accountProgress in accountProgresses)
+                    {
+                        var accountStaff = account.FirstOrDefault(a => a.Guid == (Guid)accountProgress.AccountGuid);
+                        _emailHandler.SendEmail(accountStaff.Email,
+                                        $"No Reply - Task Revision Required",
+                                        $"<p>Dear {accountStaff.Name}</p>" +
+                                        $"<p>We hope this message finds you well. The task assigned to you requires some revision.</p>" +
+                                        $"<div style=\"padding: 20px 0px;\">" +
+                                        $"<h3>Task Details:</h3>" +
+                                        $"<ul>" +
+                                        $"<li><strong>Project:</strong> {assignment.Title}</li>" +
+                                        $"<li><strong>Task:</strong> {progress.Description}</li>" +
+                                        $"<li><strong>Due Date:</strong> {assignment.DueDate.ToString("dddd, dd-MM-yyyy")}</li>" +
+                                        $"</ul>" +
+                                        $"<p>Upon review, we have identified areas that need improvement. We kindly request you to address the feedback and make the necessary revisions accordingly.</p>" +
+                                        $"<p>If you have any questions or need further clarifications regarding the required changes, please don't hesitate to reach out to your supervisor or the relevant department.</p>" +
+                                        $"<p>Thank you for your attention to this matter. We appreciate your commitment to delivering high-quality work for the success of the project.</p>" +
+                                        $"</div>" +
+                                        $"<p>Best regards,</p>" +
+                                        $"<p>Metrodata<br>");
+                    }
+                }
+
             }
+
             _progressRepository.Update(progress);
             transaction.Commit();
             return 1;

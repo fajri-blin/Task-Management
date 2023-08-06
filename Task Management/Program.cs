@@ -51,6 +51,8 @@ builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AdditionalService>();
 builder.Services.AddScoped<DashboardService>();
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 // Register Fluent validation
 builder.Services.AddFluentValidationAutoValidation()
        .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
