@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Task_Management.Dtos.AssignmentDto;
 using Task_Management.DTOs.AssignmentDto;
 using Task_Management.Service;
+using Task_Management.Utilities.Enum;
 using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]
 public class AssignmentController : ControllerBase
 {
     private readonly AssignmentService _assignmentServices;
@@ -20,6 +21,7 @@ public class AssignmentController : ControllerBase
     }
 
     [HttpGet("GetForStaff/{guid}")]
+    [Authorize]
     public IActionResult GetForStaff(Guid guid)
     {
         var entity = _assignmentServices.GetForStaff(guid);
@@ -40,6 +42,7 @@ public class AssignmentController : ControllerBase
     }
 
     [HttpDelete("DeepDelete/{guid}")]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult DeepDelete(Guid guid)
     {
         var delete = _assignmentServices.DeleteDeepAssignment(guid);
@@ -61,6 +64,7 @@ public class AssignmentController : ControllerBase
 
     //Basic CRUD
     [HttpGet]
+    [Authorize]
     public IActionResult GetAll()
     {
         var entities = _assignmentServices.Get();
@@ -83,6 +87,7 @@ public class AssignmentController : ControllerBase
     }
 
     [HttpGet("{guid}")]
+    [Authorize]
     public IActionResult Get(Guid guid)
     {
         var entity = _assignmentServices.Get(guid);
@@ -103,6 +108,7 @@ public class AssignmentController : ControllerBase
     }
 
     [HttpGet("Manager/{guid}")]
+    [Authorize]
     public IActionResult GetByManagerId(Guid guid)
     {
         var entity = _assignmentServices.GetByManager(guid);
@@ -123,6 +129,7 @@ public class AssignmentController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult Create(NewAssignmentDto entity)
     {
         var created = _assignmentServices.Create(entity);
@@ -143,6 +150,7 @@ public class AssignmentController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult Update(UpdateAssignmentDto entity)
     {
         var updated = _assignmentServices.Update(entity);
@@ -162,6 +170,7 @@ public class AssignmentController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult Delete(Guid guid)
     {
         var delete = _assignmentServices.Delete(guid);

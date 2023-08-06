@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Task_Management.Dtos.ProgressDto;
 using Task_Management.DTOs.ProgressDto;
 using Task_Management.Service;
+using Task_Management.Utilities.Enum;
 using Task_Management.Utilities.Handler;
 
 namespace Task_Management.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-/*[Authorize(Roles = $"{nameof(RoleLevel.Developer)}")]*/
 public class ProgressController : ControllerBase
 {
     private readonly ProgressService _progressServices;
@@ -20,6 +21,7 @@ public class ProgressController : ControllerBase
     }
 
     [HttpGet("GetByAssignmentKey/{guid}")]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
     public IActionResult GetByAssigmentKey(Guid guid)
     {
         var entities = _progressServices.GetByAssignmentGuid(guid);
@@ -40,6 +42,7 @@ public class ProgressController : ControllerBase
     }
 
     [HttpDelete("DeepDelete/{guid}")]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult DeepDelete(Guid guid)
     {
         var delete = _progressServices.DeleteDeepProgress(guid);
@@ -59,6 +62,7 @@ public class ProgressController : ControllerBase
 
     //Basic CRUD
     [HttpGet]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
     public IActionResult GetAll()
     {
         var entities = _progressServices.Get();
@@ -81,6 +85,7 @@ public class ProgressController : ControllerBase
     }
 
     [HttpGet("{guid}")]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
     public IActionResult Get(Guid guid)
     {
         var entity = _progressServices.Get(guid);
@@ -101,6 +106,7 @@ public class ProgressController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult Create(NewProgressDto entity)
     {
         var created = _progressServices.Create(entity);
@@ -121,6 +127,7 @@ public class ProgressController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
     public IActionResult Update(ProgressDto entity)
     {
         var updated = _progressServices.Update(entity);
@@ -140,6 +147,7 @@ public class ProgressController : ControllerBase
     }
 
     [HttpPut("Status")]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
     public IActionResult UpdateStatus(UpdateStatusDto entity)
     {
         var updated = _progressServices.UpdateStatus(entity);
@@ -159,6 +167,7 @@ public class ProgressController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult Delete(Guid guid)
     {
         var delete = _progressServices.Delete(guid);

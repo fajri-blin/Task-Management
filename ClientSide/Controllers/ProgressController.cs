@@ -1,15 +1,10 @@
 using ClientSide.Contract;
-using ClientSide.Utilities.Handlers;
-using ClientSide.ViewModels.Progress;
-using Microsoft.EntityFrameworkCore;
-using ClientSide.ViewModels.Assignment;
-using System;
-using ClientSide.ViewModels.Profile;
-using Syncfusion.EJ2.Grids;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc;
 using ClientSide.Utilities.Enum;
+using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.AccountProgress;
+using ClientSide.ViewModels.Progress;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ClientSide.Controllers;
 
@@ -21,7 +16,7 @@ public class ProgressController : Controller
     private readonly IAccountRepository _accountRepository;
     private readonly IAccountProgressRepository _accountProgressRepository;
 
-    public ProgressController(IProgressRepository progressRepository, 
+    public ProgressController(IProgressRepository progressRepository,
                               IAssignmentRepository assignmentRepository,
                               IAccountRepository accountRepository,
                               IAccountProgressRepository accountProgressRepository)
@@ -33,6 +28,7 @@ public class ProgressController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
     public async Task<IActionResult> Index(Guid guid)
     {
         var components = new ComponentHandlers
@@ -57,6 +53,7 @@ public class ProgressController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public IActionResult CreateProgress(Guid assignmentGuid)
     {
         var components = new ComponentHandlers
@@ -74,6 +71,8 @@ public class ProgressController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateProgress(CreateProgressVM createProgress)
     {
         if (ModelState.IsValid)
@@ -90,6 +89,7 @@ public class ProgressController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public async Task<IActionResult> DeepDeleteProgress(Guid guid)
     {
         var result = await _progressRepository.DeepDeleteProgress(guid);
@@ -109,6 +109,7 @@ public class ProgressController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
     public async Task<IActionResult> EditProgress(Guid guid, Guid assignmentGuid)
     {
         var components = new ComponentHandlers
@@ -138,7 +139,10 @@ public class ProgressController : Controller
         ViewBag.AssignmentGuid = assignmentGuid; // Set the ViewBag.AssignmentGuid here
         return View(updateProgressVM);
     }
+
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditProgress(UpdateProgressVM updateProgress, Guid assignmentGuid)
     {
 
@@ -172,7 +176,9 @@ public class ProgressController : Controller
 
         return View("Index");
     }
+
     [HttpGet]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
     public async Task<IActionResult> AddStaff(Guid guid, Guid assignmentGuid)
     {
         var components = new ComponentHandlers
@@ -219,7 +225,10 @@ public class ProgressController : Controller
         };
         return View("AddStaff", viewModel);
     }
+
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AssignStaff(Guid progressGuid, Guid assignmentGuid, List<Guid> selectedStaffGuids)
     {
         try

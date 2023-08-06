@@ -155,7 +155,7 @@ function showActivateAccount(guid) {
     });
 }
 
-function showDeleteAccount(guid) {
+function showDeleteAdditional(guid) {
     Swal.fire({
         title: 'Confirm Delete',
         text: 'Are you sure you want to delete this additional?',

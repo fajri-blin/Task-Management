@@ -1,4 +1,5 @@
 ﻿using ClientSide.Contract;
+using ClientSide.Utilities.Enum;
 using ClientSide.Utilities.Handlers;
 using ClientSide.ViewModels.Additional;
 using Microsoft.AspNetCore.Authorization;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClientSide.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = $"{nameof(RoleLevel.ProjectManager)}, {nameof(RoleLevel.Staff)}")]
     [Controller]
     public class AdditionalController : Controller
     {
