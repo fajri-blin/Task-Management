@@ -148,10 +148,10 @@ public class AccountService
         {
             return -1;
         }
-
+        DateTime otpExpirationTime = DateTime.Now.AddMinutes(3);
         _emailHandler.SendEmail(forgotPassword.Email,
                                 "Forgot Password",
-                                $"Your OTP is {otp}");
+                        $"Your OTP is {otp}. This OTP is valid until {otpExpirationTime.ToString("hh:mm tt")}. Please use it within 3 minutes for security reasons.");
 
         return 1;
     }
