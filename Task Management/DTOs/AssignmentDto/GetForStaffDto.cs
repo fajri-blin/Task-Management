@@ -7,6 +7,7 @@ namespace Task_Management.DTOs.AssignmentDto
     {
         public List<GetProgressDto> ListProgress { get; set; }
         public Guid AssignmentGuid { get; set; }
+        public DateTime? DueDate { get; set; }
         public string AssignmentName { get; set; }
         public string ManagerName { get; set; }
     }
