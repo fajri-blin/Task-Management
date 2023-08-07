@@ -77,7 +77,7 @@
                                 <div class="card-title d-flex flex-column">
                                     <h5>@Html.DisplayFor(modelItem => item.AssignmentName)</h5>
                                     <h6>@Html.DisplayFor(modelItem => item.ManagerName)</h6>
-                                    <h6>@Html.DisplayFor(modelItem => item.DueDate)</h6>
+                                <h6 id="dueDate">@Html.DisplayFor(modelItem => item.DueDate)</h6>
                                 </div>
                                 <div class="progress-items">
                                     @for (var i = 0; i < item.ListProgress.Count; i++)
@@ -130,14 +130,14 @@
     <script>
         // Format the DueDate using Moment.js and replace the content of the #dueDate element for each assignment card
         document.addEventListener('DOMContentLoaded', function () {
-            const dueDateElements = document.querySelectorAll('[id^="dueDate_"]');
+            const dueDateElements = document.querySelectorAll('#dueDate');
             dueDateElements.forEach(dueDateElement => {
-                const assignmentGuid = dueDateElement.id.replace('dueDate_', '');
                 const dueDateValue = dueDateElement.textContent;
                 const formattedDueDate = moment(dueDateValue).format('D MMMM YYYY - h:mm A');
                 dueDateElement.textContent = formattedDueDate;
             });
         });
+
         $(document).ready(function () {
             $('#searchInput').on('keyup', function () {
                 var value = $(this).val().toLowerCase();
