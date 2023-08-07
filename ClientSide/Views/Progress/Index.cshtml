@@ -22,7 +22,7 @@
             <div class="kanban-board-container">
                 <div class="kanban-board d-flex flex-nowrap overflow-auto">
 
-                    <div class="column" data-status="NotStarted">
+                    <div class="column card shadow-sm p-3 mb-5 bg-white rounded" data-status="NotStarted">
                         <h5>Not Started</h5>
                         @foreach (var item in Model.Where(x => x.Status == StatusEnum.NotStarted))
                         {
@@ -92,7 +92,7 @@
                         }
                     </div>
 
-                    <div class="column" data-status="InProgress" >
+                    <div class="column card" data-status="InProgress" >
                         <h5>In Progress</h5>
                         @foreach (var item in Model.Where(x => x.Status == StatusEnum.InProgress))
                         {
@@ -159,7 +159,7 @@
                         }
                     </div>
 
-                    <div class="column" data-status="Checking" >
+                    <div class="column card" data-status="Checking" >
                         <h5>Checking</h5>
                         @foreach (var item in Model.Where(x => x.Status == StatusEnum.Checking))
                         {
@@ -226,7 +226,7 @@
                         }
                     </div>
 
-                    <div class="column" data-status="Revision" >
+                    <div class="column card" data-status="Revision" >
                         <h5>Revision</h5>
                         @foreach (var item in Model.Where(x => x.Status == StatusEnum.Revision))
                         {
@@ -292,7 +292,7 @@
                         }
                     </div>
 
-                    <div class="column" data-status="Done" >
+                    <div class="column card" data-status="Done" >
                         <h5>Done</h5>
                         @foreach (var item in Model.Where(x => x.Status == StatusEnum.Done))
                         {
