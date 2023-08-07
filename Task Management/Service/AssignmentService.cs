@@ -416,6 +416,7 @@ public class AssignmentService
                 {
                     AssignmentGuid = assignment.Guid,
                     AssignmentName = assignment.Title,
+                    DueDate = assignment.DueDate,
                     ManagerName = manager.Name,
                     ListProgress = new List<GetProgressDto>()
                 };
