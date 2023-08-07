@@ -37,6 +37,23 @@
     .badge-done {
         background-color: green;
     }
+
+    .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        max-width: 100%; /* To ensure cards don't overflow the container */
+    }
+
+    .card {
+        flex-basis: calc(33.33% - 1rem);
+        margin-bottom: 1rem;
+        width: 18rem; /* Set a fixed width for each card */
+    }
+
+    .hidden {
+        display: none;
+    }
 </style>
 
 
@@ -47,15 +64,20 @@
             Progress View
         </h4>
         <div class="row mb-3">
+            <div class="col">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by title or category">
+            </div>
+        </div>
+        <div class="cards">
             @foreach (var item in Model)
             {
-                <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card flex-row m-2" style="width: 18rem;">
                     <a href="@Url.Action("Index", "Progress", new { guid = item.AssignmentGuid })" class="card-link">
-                        <div class="card">
-                            <div class="card-body">
+                        <div class="card-body">
                                 <div class="card-title d-flex flex-column">
                                     <h5>@Html.DisplayFor(modelItem => item.AssignmentName)</h5>
                                     <h6>@Html.DisplayFor(modelItem => item.ManagerName)</h6>
+                                <h6 id="dueDate">@Html.DisplayFor(modelItem => item.DueDate)</h6>
                                 </div>
                                 <div class="progress-items">
                                     @for (var i = 0; i < item.ListProgress.Count; i++)
@@ -92,7 +114,6 @@
                                         }
                                     }
                                 </div>
-                            </div>
                         </div>
                     </a>
                 </div>
@@ -100,3 +121,47 @@
         </div>
     </div>
 </div>
+
+
+@section Scripts {
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    <script>
+        // Format the DueDate using Moment.js and replace the content of the #dueDate element for each assignment card
+        document.addEventListener('DOMContentLoaded', function () {
+            const dueDateElements = document.querySelectorAll('#dueDate');
+            dueDateElements.forEach(dueDateElement => {
+                const dueDateValue = dueDateElement.textContent;
+                const formattedDueDate = moment(dueDateValue).format('D MMMM YYYY - h:mm A');
+                dueDateElement.textContent = formattedDueDate;
+            });
+        });
+
+        $(document).ready(function () {
+            $('#searchInput').on('keyup', function () {
+                var value = $(this).val().toLowerCase();
+                $(".card").each(function () {
+                    var title = $(this).find('.card-title').text().toLowerCase();
+                    var categories = $(this).find('.badge').text().toLowerCase();
+                    if (title.indexOf(value) > -1 || categories.indexOf(value) > -1) {
+                        $(this).removeClass('hidden');
+                    } else {
+                        $(this).addClass('hidden');
+                    }
+                });
+            });
+        });
+
+        //$(document).ready(function () {
+        //    $('#searchInput').on('keyup', function () {
+        //        var value = $(this).val().toLowerCase();
+        //        $(".card").filter(function () {
+        //            var title = $(this).find('.card-title').text().toLowerCase();
+        //            var categories = $(this).find('.badge').text().toLowerCase();
+        //            $(this).toggle(title.indexOf(value) > -1 || categories.indexOf(value) > -1)
+        //        });
+        //    });
+        //});
+    </script>
+}
