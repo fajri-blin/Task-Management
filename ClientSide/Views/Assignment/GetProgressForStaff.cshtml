@@ -4,6 +4,9 @@
     ViewData["Title"] = "GetProgressForStaff";
 }
 
+@section Styles{
+
+
 <style>
     .card-title h5,
     .card-title h6 {
@@ -54,8 +57,22 @@
     .hidden {
         display: none;
     }
-</style>
 
+    /* New styles to create a flex container for each card */
+    .card-container {
+        display: flex;
+        flex-direction: column;
+        width: 18rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Adjust the height of progress items */
+    .progress-items {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+</style>
+}
 
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -71,51 +88,53 @@
         <div class="cards">
             @foreach (var item in Model)
             {
-                <div class="card flex-row m-2" style="width: 18rem;">
-                    <a href="@Url.Action("Index", "Progress", new { guid = item.AssignmentGuid })" class="card-link">
-                        <div class="card-body">
-                                <div class="card-title d-flex flex-column">
-                                    <h5>@Html.DisplayFor(modelItem => item.AssignmentName)</h5>
-                                    <h6>@Html.DisplayFor(modelItem => item.ManagerName)</h6>
-                                <h6 id="dueDate">@Html.DisplayFor(modelItem => item.DueDate)</h6>
-                                </div>
-                                <div class="progress-items">
-                                    @for (var i = 0; i < item.ListProgress.Count; i++)
-                                    {
-                                        <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "") text">
-                                            @item.ListProgress[i].Description
-                                        </div>
-                                        <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
-                                            @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.NotStarted)
-                                            {
-                                                <span class="badge badge-not-started">@item.ListProgress[i].StatusProgress</span>
-                                            }
-                                            @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.InProgress)
-                                            {
-                                                <span class="badge badge-in-progress">@item.ListProgress[i].StatusProgress</span>
-                                            }
-                                            @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.Checking)
-                                            {
-                                                <span class="badge badge-checking">@item.ListProgress[i].StatusProgress</span>
-                                            }
-                                            @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.Revision)
-                                            {
-                                                <span class="badge badge-revision">@item.ListProgress[i].StatusProgress</span>
-                                            }
-                                            @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.Done)
-                                            {
-                                                <span class="badge badge-done">@item.ListProgress[i].StatusProgress</span>
-                                            }
-                                        </div>
-
-                                        @if (i < item.ListProgress.Count - 1)
+                <div class="card-container m-2">
+                    <div class="card flex-row " style="width: 18rem;">
+                        <a href="@Url.Action("Index", "Progress", new { guid = item.AssignmentGuid })" class="card-link">
+                            <div class="card-body">
+                                    <div class="card-title d-flex flex-column">
+                                        <h5>@Html.DisplayFor(modelItem => item.AssignmentName)</h5>
+                                        <h6>@Html.DisplayFor(modelItem => item.ManagerName)</h6>
+                                    <h6 id="dueDate">@Html.DisplayFor(modelItem => item.DueDate)</h6>
+                                    </div>
+                                    <div class="progress-items">
+                                        @for (var i = 0; i < item.ListProgress.Count; i++)
                                         {
-                                            <hr />
+                                            <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "") text">
+                                                @item.ListProgress[i].Description
+                                            </div>
+                                            <div class="progress-item @((i == item.ListProgress.Count - 1) ? "no-line" : "")">
+                                                @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.NotStarted)
+                                                {
+                                                    <span class="badge badge-not-started">@item.ListProgress[i].StatusProgress</span>
+                                                }
+                                                @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.InProgress)
+                                                {
+                                                    <span class="badge badge-in-progress">@item.ListProgress[i].StatusProgress</span>
+                                                }
+                                                @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.Checking)
+                                                {
+                                                    <span class="badge badge-checking">@item.ListProgress[i].StatusProgress</span>
+                                                }
+                                                @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.Revision)
+                                                {
+                                                    <span class="badge badge-revision">@item.ListProgress[i].StatusProgress</span>
+                                                }
+                                                @if (item.ListProgress[i].StatusProgress == Task_Management.Utilities.Enum.StatusEnum.Done)
+                                                {
+                                                    <span class="badge badge-done">@item.ListProgress[i].StatusProgress</span>
+                                                }
+                                            </div>
+
+                                            @if (i < item.ListProgress.Count - 1)
+                                            {
+                                                <hr />
+                                            }
                                         }
-                                    }
-                                </div>
-                        </div>
-                    </a>
+                                    </div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             }
         </div>
@@ -153,15 +172,5 @@
             });
         });
 
-        //$(document).ready(function () {
-        //    $('#searchInput').on('keyup', function () {
-        //        var value = $(this).val().toLowerCase();
-        //        $(".card").filter(function () {
-        //            var title = $(this).find('.card-title').text().toLowerCase();
-        //            var categories = $(this).find('.badge').text().toLowerCase();
-        //            $(this).toggle(title.indexOf(value) > -1 || categories.indexOf(value) > -1)
-        //        });
-        //    });
-        //});
     </script>
 }
