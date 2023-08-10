@@ -32,14 +32,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="Status" class="control-label"></label>
-                                    <select asp-for="Status" class="form-control">
+                                    <select asp-for="Status" class="form-control custom-dropdown" id="statusDropdown">
                                         <option selected disabled value="">Choose</option>
-                                        <option value="1">Not Started</option>
-                                        <option value="2">In Progress</option>
-                                        <option value="3">Checking</option>
-                                        <option value="4">Revision</option>
-                                        <option value="5">Done</option>
-
+                                        <option value="1" class="status-option-gray">Not Started</option>
+                                        <option value="2" class="status-option-yellow">In Progress</option>
+                                        <option value="3" class="status-option-orange">Checking</option>
+                                        <option value="4" class="status-option-red">Revision</option>
+                                        <option value="5" class="status-option-green">Done</option>
                                     </select>
                                     <span asp-validation-for="Status" class="text-danger"></span>
                                 </div>
@@ -58,16 +57,16 @@
                             {
                                 <div class="form-group">
                                     <label asp-for="Description" class="control-label"></label>
-                                    <input asp-for="Description" class="form-control" readonly/>
+                                    <input asp-for="Description" class="form-control" readonly />
                                     <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="Status" class="control-label"></label>
-                                    <select asp-for="Status" class="form-control">
+                                    <select asp-for="Status" class="form-control custom-dropdown" id="statusDropdown">
                                         <option selected disabled value="">Choose</option>
-                                        <option value="1">Not Started</option>
-                                        <option value="2">In Progress</option>
-                                        <option value="3">Checking</option>
+                                        <option value="1" class="status-option-gray">Not Started</option>
+                                        <option value="2" class="status-option-yellow">In Progress</option>
+                                        <option value="3" class="status-option-orange">Checking</option>
                                     </select>
                                     <span asp-validation-for="Status" class="text-danger"></span>
                                 </div>
@@ -78,10 +77,10 @@
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="MessageManager" class="control-label"></label>
-                                    <input asp-for="MessageManager" class="form-control" readonly/>
+                                    <input asp-for="MessageManager" class="form-control" readonly />
                                     <span asp-validation-for="MessageManager" class="text-danger"></span>
                                 </div>
-                                <input asp-for="AccountGuid" value="@Guid.Parse(User.FindFirst("Guid").Value)" hidden/>
+                                <input asp-for="AccountGuid" value="@Guid.Parse(User.FindFirst("Guid").Value)" hidden />
                             }
                             <div class="form-group mt-3">
                                 <a asp-action="Index" asp-route-guid="@Model.AssignmentGuid" class="btn btn-secondary">Back</a>
@@ -96,8 +95,47 @@
     </div>
 </div>
 
+@section Styles{
+    <style>
+        .status-option-gray {
+            color: gray;
+        }
+
+        .status-option-yellow {
+            color: #FFC107; /* Adjusted yellow color */
+        }
+
+        .status-option-orange {
+            color: #FFA500; /* Adjusted orange color */
+        }
+
+        .status-option-red {
+            color: red;
+        }
+
+        .status-option-green {
+            color: green;
+        }
+
+        .custom-dropdown {
+            width: 100%; /* Set the width to match other input fields */
+        }
+    </style>
+}
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#statusDropdown").change(function () {
+                var selectedOption = $(this).children("option:selected");
+                var selectedClass = selectedOption.attr("class");
+
+                $(this).removeClass().addClass(selectedClass);
+            });
+        });
+    </script>
 }
